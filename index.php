@@ -1,7 +1,48 @@
 <?php
 $is_auth = rand(0, 1);
 
-$user_name = 'Ivan'; // укажите здесь ваше имя
+$user_name = 'Ivan';
+
+$types = ['post-quote', 'post-text', 'post-photo', 'post-link'];
+
+$cards_information = [
+    [
+        'heading' => 'Цитата',
+        'type' => 'post-quote',
+        'content' => 'Мы в жизни любим только раз, а после ищем лишь похожих',
+        'user_name' => 'Лариса',
+        'avatar' => 'userpic-larisa-small.jpg'
+    ],
+    [
+        'heading' => 'Игра престолов',
+        'type' => 'post-text',
+        'content' => 'Не могу дождаться начала финального сезона своего любимого сериала!',
+        'user_name' => 'Владик',
+        'avatar' => 'userpic.jpg'
+    ],
+    [
+        'heading' => 'Наконец, обработал фотки!',
+        'type' => 'post-photo',
+        'content' => 'rock-medium.jpg',
+        'user_name' => 'Виктор',
+        'avatar' => 'userpic-mark.jpg'
+    ],
+    [
+        'heading' => 'Моя мечта',
+        'type' => 'post-photo',
+        'content' => 'coast-medium.jpg',
+        'user_name' => 'Лариса',
+        'avatar' => 'userpic-larisa-small.jpg'
+    ],
+    [
+        'heading' => 'Лучшие курсы',
+        'type' => 'post-link',
+        'content' => 'www.htmlacademy.ru',
+        'user_name' => 'Владик',
+        'avatar' => 'userpic.jpg'
+    ]
+];
+
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -40,7 +81,6 @@ $user_name = 'Ivan'; // укажите здесь ваше имя
             </div>
         </form>
         <div class="header__nav-wrapper">
-            <!-- здесь должен быть PHP код, который показывает следующий тег по условию -->
             <?php if ($is_auth === 1): ?>
             <nav class="header__nav">
                 <ul class="header__my-nav">
@@ -69,7 +109,6 @@ $user_name = 'Ivan'; // укажите здесь ваше имя
                             </div>
                             <div class="header__profile-name">
                                 <span>
-                                    <!--здесь должно быть имя пользователя-->
                                     <?= $user_name ?>
                                 </span>
                                 <svg class="header__link-arrow" width="10" height="6">
@@ -204,69 +243,54 @@ $user_name = 'Ivan'; // укажите здесь ваше имя
             </div>
         </div>
         <div class="popular__posts">
-            <div class="visually-hidden" id="donor">
-                <!--содержимое для поста-цитаты-->
-                <blockquote>
-                    <p>
-                        <!--здесь текст-->
-                    </p>
-                    <cite>Неизвестный Автор</cite>
-                </blockquote>
 
-                <!--содержимое для поста-ссылки-->
-                <div class="post-link__wrapper">
-                    <a class="post-link__external" href="http://" title="Перейти по ссылке">
-                        <div class="post-link__info-wrapper">
-                            <div class="post-link__icon-wrapper">
-                                <img src="https://www.google.com/s2/favicons?domain=vitadental.ru" alt="Иконка">
-                            </div>
-                            <div class="post-link__info">
-                                <h3><!--здесь заголовок--></h3>
-                            </div>
-                        </div>
-                        <span><!--здесь ссылка--></span>
-                    </a>
-                </div>
-
-                <!--содержимое для поста-фото-->
-                <div class="post-photo__image-wrapper">
-                    <img src="img/" alt="Фото от пользователя" width="360" height="240">
-                </div>
-
-                <!--содержимое для поста-видео-->
-                <div class="post-video__block">
-                    <div class="post-video__preview">
-                        <?=embed_youtube_cover(/* вставьте ссылку на видео */); ?>
-                        <img src="img/coast-medium.jpg" alt="Превью к видео" width="360" height="188">
-                    </div>
-                    <a href="post-details.html" class="post-video__play-big button">
-                        <svg class="post-video__play-big-icon" width="14" height="14">
-                            <use xlink:href="#icon-video-play-big"></use>
-                        </svg>
-                        <span class="visually-hidden">Запустить проигрыватель</span>
-                    </a>
-                </div>
-
-                <!--содержимое для поста-текста-->
-                <p><!--здесь текст--></p>
-            </div>
-
-            <article class="popular__post post">
+            <?php foreach ($cards_information as $card_information): ?>
+            <article class="popular__post post <?= $card_information['type'] ?>">
                 <header class="post__header">
-                    <h2><!--здесь заголовок--></h2>
+                    <h2><?= $card_information['heading'] ?></h2>
                 </header>
                 <div class="post__main">
-                    <!--здесь содержимое карточки-->
+                    <?php if ($card_information['type'] === $types[0]): ?>
+                    <blockquote>
+                        <p>
+                            <?= $card_information['content'] ?>
+                        </p>
+                        <cite>Неизвестный Автор</cite>
+                    </blockquote>
+
+                    <?php elseif ($card_information['type'] === $types[1]): ?>
+                        <p><?= $card_information['content'] ?></p>
+
+                    <?php elseif ($card_information['type'] === $types[2]): ?>
+                        <div class="post-photo__image-wrapper">
+                            <img src="img/<?= $card_information['content'] ?>" alt="Фото от пользователя" width="360" height="240">
+                        </div>
+
+                    <?php elseif ($card_information['type'] === $types[3]): ?>
+                        <div class="post-link__wrapper">
+                            <a class="post-link__external" href="http://" title="Перейти по ссылке">
+                                <div class="post-link__info-wrapper">
+                                    <div class="post-link__icon-wrapper">
+                                        <img src="https://www.google.com/s2/favicons?domain=vitadental.ru" alt="Иконка">
+                                    </div>
+                                    <div class="post-link__info">
+                                        <h3><?= $card_information['heading'] ?></h3>
+                                    </div>
+                                </div>
+                                <span><?= $card_information['content'] ?></span>
+                            </a>
+                        </div>
+
+                    <?php endif; ?>
                 </div>
                 <footer class="post__footer">
                     <div class="post__author">
                         <a class="post__author-link" href="#" title="Автор">
                             <div class="post__avatar-wrapper">
-                                <!--укажите путь к файлу аватара-->
-                                <img class="post__author-avatar" src="img/" alt="Аватар пользователя">
+                                <img class="post__author-avatar" src="img/<?= $card_information['avatar'] ?>" alt="Аватар пользователя">
                             </div>
                             <div class="post__info">
-                                <b class="post__author-name"><!--здесь имя пользоателя--></b>
+                                <b class="post__author-name"><?= $card_information['user_name'] ?></b>
                                 <time class="post__time" datetime="">дата</time>
                             </div>
                         </a>
@@ -294,6 +318,7 @@ $user_name = 'Ivan'; // укажите здесь ваше имя
                     </div>
                 </footer>
             </article>
+            <?php endforeach; ?>
         </div>
     </div>
 </section>
