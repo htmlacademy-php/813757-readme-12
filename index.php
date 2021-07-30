@@ -1,7 +1,7 @@
 <?php
 $is_auth = rand(0, 1);
 
-$user_name = 'Ivan';
+$userName = 'Ivan';
 
 $types = ['post-quote', 'post-text', 'post-photo', 'post-link'];
 
@@ -243,81 +243,80 @@ $cards_information = [
             </div>
         </div>
         <div class="popular__posts">
-
             <?php foreach ($cards_information as $card_information): ?>
-            <article class="popular__post post <?= $card_information['type'] ?>">
-                <header class="post__header">
-                    <h2><?= $card_information['heading'] ?></h2>
-                </header>
-                <div class="post__main">
-                    <?php if ($card_information['type'] === $types[0]): ?>
-                    <blockquote>
-                        <p>
-                            <?= $card_information['content'] ?>
-                        </p>
-                        <cite>Неизвестный Автор</cite>
-                    </blockquote>
+                <article class="popular__post post <?= $card_information['type'] ?>">
+                    <header class="post__header">
+                        <h2><?= $card_information['heading'] ?></h2>
+                    </header>
+                    <div class="post__main">
+                        <?php if ($card_information['type'] === $types[0]): ?>
+                        <blockquote>
+                            <p>
+                                <?= $card_information['content'] ?>
+                            </p>
+                            <cite>Неизвестный Автор</cite>
+                        </blockquote>
 
-                    <?php elseif ($card_information['type'] === $types[1]): ?>
-                        <p><?= $card_information['content'] ?></p>
+                        <?php elseif ($card_information['type'] === $types[1]): ?>
+                            <p><?= $card_information['content'] ?></p>
 
-                    <?php elseif ($card_information['type'] === $types[2]): ?>
-                        <div class="post-photo__image-wrapper">
-                            <img src="img/<?= $card_information['content'] ?>" alt="Фото от пользователя" width="360" height="240">
-                        </div>
+                        <?php elseif ($card_information['type'] === $types[2]): ?>
+                            <div class="post-photo__image-wrapper">
+                                <img src="img/<?= $card_information['content'] ?>" alt="Фото от пользователя" width="360" height="240">
+                            </div>
 
-                    <?php elseif ($card_information['type'] === $types[3]): ?>
-                        <div class="post-link__wrapper">
-                            <a class="post-link__external" href="http://" title="Перейти по ссылке">
-                                <div class="post-link__info-wrapper">
-                                    <div class="post-link__icon-wrapper">
-                                        <img src="https://www.google.com/s2/favicons?domain=vitadental.ru" alt="Иконка">
+                        <?php elseif ($card_information['type'] === $types[3]): ?>
+                            <div class="post-link__wrapper">
+                                <a class="post-link__external" href="http://" title="Перейти по ссылке">
+                                    <div class="post-link__info-wrapper">
+                                        <div class="post-link__icon-wrapper">
+                                            <img src="https://www.google.com/s2/favicons?domain=vitadental.ru" alt="Иконка">
+                                        </div>
+                                        <div class="post-link__info">
+                                            <h3><?= $card_information['heading'] ?></h3>
+                                        </div>
                                     </div>
-                                    <div class="post-link__info">
-                                        <h3><?= $card_information['heading'] ?></h3>
-                                    </div>
+                                    <span><?= $card_information['content'] ?></span>
+                                </a>
+                            </div>
+
+                        <?php endif; ?>
+                    </div>
+                    <footer class="post__footer">
+                        <div class="post__author">
+                            <a class="post__author-link" href="#" title="Автор">
+                                <div class="post__avatar-wrapper">
+                                    <img class="post__author-avatar" src="img/<?= $card_information['avatar'] ?>" alt="Аватар пользователя">
                                 </div>
-                                <span><?= $card_information['content'] ?></span>
+                                <div class="post__info">
+                                    <b class="post__author-name"><?= $card_information['user_name'] ?></b>
+                                    <time class="post__time" datetime="">дата</time>
+                                </div>
                             </a>
                         </div>
-
-                    <?php endif; ?>
-                </div>
-                <footer class="post__footer">
-                    <div class="post__author">
-                        <a class="post__author-link" href="#" title="Автор">
-                            <div class="post__avatar-wrapper">
-                                <img class="post__author-avatar" src="img/<?= $card_information['avatar'] ?>" alt="Аватар пользователя">
+                        <div class="post__indicators">
+                            <div class="post__buttons">
+                                <a class="post__indicator post__indicator--likes button" href="#" title="Лайк">
+                                    <svg class="post__indicator-icon" width="20" height="17">
+                                        <use xlink:href="#icon-heart"></use>
+                                    </svg>
+                                    <svg class="post__indicator-icon post__indicator-icon--like-active" width="20" height="17">
+                                        <use xlink:href="#icon-heart-active"></use>
+                                    </svg>
+                                    <span>0</span>
+                                    <span class="visually-hidden">количество лайков</span>
+                                </a>
+                                <a class="post__indicator post__indicator--comments button" href="#" title="Комментарии">
+                                    <svg class="post__indicator-icon" width="19" height="17">
+                                        <use xlink:href="#icon-comment"></use>
+                                    </svg>
+                                    <span>0</span>
+                                    <span class="visually-hidden">количество комментариев</span>
+                                </a>
                             </div>
-                            <div class="post__info">
-                                <b class="post__author-name"><?= $card_information['user_name'] ?></b>
-                                <time class="post__time" datetime="">дата</time>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="post__indicators">
-                        <div class="post__buttons">
-                            <a class="post__indicator post__indicator--likes button" href="#" title="Лайк">
-                                <svg class="post__indicator-icon" width="20" height="17">
-                                    <use xlink:href="#icon-heart"></use>
-                                </svg>
-                                <svg class="post__indicator-icon post__indicator-icon--like-active" width="20" height="17">
-                                    <use xlink:href="#icon-heart-active"></use>
-                                </svg>
-                                <span>0</span>
-                                <span class="visually-hidden">количество лайков</span>
-                            </a>
-                            <a class="post__indicator post__indicator--comments button" href="#" title="Комментарии">
-                                <svg class="post__indicator-icon" width="19" height="17">
-                                    <use xlink:href="#icon-comment"></use>
-                                </svg>
-                                <span>0</span>
-                                <span class="visually-hidden">количество комментариев</span>
-                            </a>
                         </div>
-                    </div>
-                </footer>
-            </article>
+                    </footer>
+                </article>
             <?php endforeach; ?>
         </div>
     </div>
