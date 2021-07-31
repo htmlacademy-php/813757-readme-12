@@ -43,6 +43,32 @@ $cards_information = [
     ]
 ];
 
+function getCutString($string, $limit = 300) {
+
+    if (mb_strlen($string, "UTF-8") > $limit) {
+
+        $arr = explode(" ", $string);
+        $count = 0;
+
+        foreach ($arr as $key => $elem) {
+            $count += mb_strlen($elem, "UTF-8");
+
+            if ($count > $limit) {
+                break;
+            };
+
+        };
+
+        $cutString = trim(implode(" ", array_slice($arr, 0, $key)));
+
+        return "<p>$cutString...</p><a class=\"post-text__more-link\" href=\"#\">Читать далее</a>";
+
+    }
+
+    return "<p>$string</p>";
+
+};
+
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -109,7 +135,7 @@ $cards_information = [
                             </div>
                             <div class="header__profile-name">
                                 <span>
-                                    <?= $user_name ?>
+                                    <?= $userName ?>
                                 </span>
                                 <svg class="header__link-arrow" width="10" height="6">
                                     <use xlink:href="#icon-arrow-right-ad"></use>
@@ -258,7 +284,7 @@ $cards_information = [
                         </blockquote>
 
                         <?php elseif ($card_information['type'] === $types[1]): ?>
-                            <p><?= $card_information['content'] ?></p>
+                            <p><?= getCutString($card_information['content']) ?></p>
 
                         <?php elseif ($card_information['type'] === $types[2]): ?>
                             <div class="post-photo__image-wrapper">
