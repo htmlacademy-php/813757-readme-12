@@ -70,7 +70,51 @@ function getCutString($string, $limit = 300) {
 
 };
 
+function getPublicationTime($key) {
+    $curent_date = new DateTime("", new DateTimeZone("Europe/Moscow"));
+    $publication_date = new DateTime(generate_random_date($key));
+    $format = $publication_date -> format("c");
+    return $format;
+};
 
+
+function getFormatTime($key) {
+    $curent_date = new DateTime("", new DateTimeZone("Europe/Moscow"));
+    $publication_date = new DateTime(generate_random_date($key));
+    $timeFormat = $publication_date -> format("d.m.Y H:i");
+    return $timeFormat;
+};
+
+function getRelativeFormat($index) {
+    $curent_date = new DateTime("", new DateTimeZone("Europe/Moscow"));
+    $publication_date = new DateTime(generate_random_date($index));
+    $difference  = $curent_date -> diff($publication_date);
+    $minutes = $difference -> i;
+    $hours = $difference -> h;
+    $days = $difference -> d;
+    $weeks = floor($days / 7);
+    $months = $difference -> m;
+
+    $minute = get_noun_plural_form($minutes, 'минуту', 'минуты', 'минут');
+    $hour = get_noun_plural_form($hours, 'час', 'часа', 'часов');
+    $day = get_noun_plural_form($days, 'день', 'дня', 'дней');
+    $week = get_noun_plural_form($weeks, 'неделю', 'недели', 'недель');
+    $month = get_noun_plural_form($months, 'месяц', 'месяца', 'месяцев');
+
+    if ($months > 0) {
+        $timeDifference = "{$months} {$month} назад";
+    } elseif ($weeks > 0) {
+        $timeDifference = "{$weeks} {$week} назад";
+    } elseif ($days > 0) {
+        $timeDifference = "{$days} {$day} назад";
+    } elseif ($hours > 0) {
+        $timeDifference = "{$hours} {$hour} назад";
+    } elseif ($minutes > 0) {
+        $timeDifference = "{$minutes} {$minute} назад";
+    };
+
+    return $timeDifference;
+};
 
 $content = include_template('main.php', [
     'cards_information' => $cards_information,
