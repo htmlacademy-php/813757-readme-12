@@ -71,29 +71,26 @@ function getCutString($string, $limit = 300) {
 };
 
 function getPublicationTime($key) {
-    $curent_date = new DateTime("", new DateTimeZone("Europe/Moscow"));
-    $publication_date = new DateTime(generate_random_date($key));
-    $format = $publication_date -> format("c");
-    return $format;
+    $publicationDate = new DateTime(generate_random_date($key));
+    return $publicationDate->format("c");
 };
 
 
 function getFormatTime($key) {
-    $curent_date = new DateTime("", new DateTimeZone("Europe/Moscow"));
-    $publication_date = new DateTime(generate_random_date($key));
-    $timeFormat = $publication_date -> format("d.m.Y H:i");
+    $publicationDate = new DateTime(generate_random_date($key));
+    $timeFormat = $publicationDate->format("d.m.Y H:i");
     return $timeFormat;
 };
 
 function getRelativeFormat($index) {
-    $curent_date = new DateTime("", new DateTimeZone("Europe/Moscow"));
-    $publication_date = new DateTime(generate_random_date($index));
-    $difference  = $curent_date -> diff($publication_date);
-    $minutes = $difference -> i;
-    $hours = $difference -> h;
-    $days = $difference -> d;
+    $curentDate = new DateTime("", new DateTimeZone("Europe/Moscow"));
+    $publicationDate = new DateTime(generate_random_date($index));
+    $difference = $curentDate->diff($publicationDate);
+    $minutes = $difference->i;
+    $hours = $difference->h;
+    $days = $difference->d;
     $weeks = floor($days / 7);
-    $months = $difference -> m;
+    $months = $difference->m;
 
     $minute = get_noun_plural_form($minutes, 'минуту', 'минуты', 'минут');
     $hour = get_noun_plural_form($hours, 'час', 'часа', 'часов');
@@ -111,7 +108,7 @@ function getRelativeFormat($index) {
         $timeDifference = "{$hours} {$hour} назад";
     } elseif ($minutes > 0) {
         $timeDifference = "{$minutes} {$minute} назад";
-    };
+    }
 
     return $timeDifference;
 };
