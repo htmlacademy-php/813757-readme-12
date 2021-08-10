@@ -70,7 +70,48 @@ function getCutString($string, $limit = 300) {
 
 };
 
+function getPublicationTime($key) {
+    $publicationDate = new DateTime(generate_random_date($key));
+    return $publicationDate->format("c");
+};
 
+
+function getFormatTime($key) {
+    $publicationDate = new DateTime(generate_random_date($key));
+    $timeFormat = $publicationDate->format("d.m.Y H:i");
+    return $timeFormat;
+};
+
+function getRelativeFormat($index) {
+    $curentDate = new DateTime("", new DateTimeZone("Europe/Moscow"));
+    $publicationDate = new DateTime(generate_random_date($index));
+    $difference = $curentDate->diff($publicationDate);
+    $minutes = $difference->i;
+    $hours = $difference->h;
+    $days = $difference->d;
+    $weeks = floor($days / 7);
+    $months = $difference->m;
+
+    $minute = get_noun_plural_form($minutes, 'минуту', 'минуты', 'минут');
+    $hour = get_noun_plural_form($hours, 'час', 'часа', 'часов');
+    $day = get_noun_plural_form($days, 'день', 'дня', 'дней');
+    $week = get_noun_plural_form($weeks, 'неделю', 'недели', 'недель');
+    $month = get_noun_plural_form($months, 'месяц', 'месяца', 'месяцев');
+
+    if ($months > 0) {
+        $timeDifference = "{$months} {$month} назад";
+    } elseif ($weeks > 0) {
+        $timeDifference = "{$weeks} {$week} назад";
+    } elseif ($days > 0) {
+        $timeDifference = "{$days} {$day} назад";
+    } elseif ($hours > 0) {
+        $timeDifference = "{$hours} {$hour} назад";
+    } elseif ($minutes > 0) {
+        $timeDifference = "{$minutes} {$minute} назад";
+    }
+
+    return $timeDifference;
+};
 
 $content = include_template('main.php', [
     'cards_information' => $cards_information,
