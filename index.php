@@ -68,24 +68,21 @@ function getCutString($string, $limit = 300) {
 
     return "<p>{$string}</p>";
 
-};
+}
 
 function getPublicationTime($key) {
-    $publicationDate = new DateTime(generate_random_date($key));
-    return $publicationDate->format("c");
-};
+    return (new DateTime(generate_random_date($key)))->format("c");
+}
 
 
 function getFormatTime($key) {
-    $publicationDate = new DateTime(generate_random_date($key));
-    $timeFormat = $publicationDate->format("d.m.Y H:i");
-    return $timeFormat;
-};
+    return (new DateTime(generate_random_date($key)))->format("d.m.Y H:i");
+}
 
 function getRelativeFormat($index) {
-    $curentDate = new DateTime("", new DateTimeZone("Europe/Moscow"));
+    $currentDate = new DateTime("", new DateTimeZone("Europe/Moscow"));
     $publicationDate = new DateTime(generate_random_date($index));
-    $difference = $curentDate->diff($publicationDate);
+    $difference = $currentDate->diff($publicationDate);
     $minutes = $difference->i;
     $hours = $difference->h;
     $days = $difference->d;
@@ -111,7 +108,7 @@ function getRelativeFormat($index) {
     }
 
     return $timeDifference;
-};
+}
 
 $content = include_template('main.php', [
     'cards_information' => $cards_information,
@@ -128,4 +125,3 @@ $pageInformation = [
 $layout = include_template('layout.php', $pageInformation);
 
 print($layout);
-?>
