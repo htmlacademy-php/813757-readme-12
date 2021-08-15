@@ -35,7 +35,7 @@ FROM posts AS p, users AS u, content_type AS ct
 WHERE p.author_id = u.id AND p.type_id = ct.id ORDER BY p.views_number DESC;
 
 /*получает список постов для конкретного пользователя*/
-SELECT p.title, p.type_id, p.content, p.author_id, p.views_number
+SELECT p.title, p.content, u.login, p.views_number
 FROM posts AS p
 LEFT JOIN users AS u ON p.author_id=u.id
 WHERE u.id=1;
