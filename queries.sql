@@ -20,7 +20,7 @@ VALUES
 ('Игра престолов', 2, 'Не могу дождаться начала финального сезона своего любимого сериала!', 3000, 2),
 ('Наконец, обработал фотки!', 3, 'rock-medium.jpg', 150, 3),
 ('Моя мечта', 3, 'coast-medium.jpg', 10000, 1),
-('Лучшие курсы', 2, 'www.htmlacademy.ru', 400, 2);
+('Лучшие курсы', 4, 'www.htmlacademy.ru', 400, 2);
 
 /*комментарии к разным постам*/
 INSERT INTO comments (creation_date, content, author_id, post_id)
@@ -30,7 +30,7 @@ VALUES
 ('2021.08.08 17:02:23', 'Лучше курсов не стречал!', 3, 5);
 
 /*получает список постов с сортировкой по популярности и вместе с именами авторов и типом контента;*/
-SELECT p.title, p.type_id, p.content, p.author_id, p.views_number
+SELECT p.title, ct.content_title, p.content, p.views_number, u.login
 FROM posts AS p, users AS u, content_type AS ct
 WHERE p.author_id = u.id AND p.type_id = ct.id ORDER BY p.views_number DESC;
 
