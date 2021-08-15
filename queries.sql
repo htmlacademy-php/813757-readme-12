@@ -41,7 +41,7 @@ LEFT JOIN users AS u ON p.author_id=u.id
 WHERE u.id=1;
 
 /*получает список комментариев для одного поста, в комментариях должен быть логин пользователя*/
-SELECT c.*, u.login
+SELECT c.creation_date, c.content, u.login
 FROM comments AS c
 LEFT JOIN users AS u ON c.id=u.id
 WHERE c.post_id=1;
