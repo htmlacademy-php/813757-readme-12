@@ -17,9 +17,15 @@ VALUES
 INSERT INTO posts (title, type_id, content, views_number, author_id)
 VALUES
 ('Цитата', 1, 'Мы в жизни любим только раз, а после ищем лишь похожих', 200, 1),
-('Игра престолов', 2, 'Не могу дождаться начала финального сезона своего любимого сериала!', 3000, 2),
+('Игра престолов', 2, 'Не могу дождаться начала финального сезона своего любимого сериала!', 3000, 2);
+
+INSERT INTO posts (title, type_id, image, views_number, author_id)
+VALUES
 ('Наконец, обработал фотки!', 3, 'rock-medium.jpg', 150, 3),
-('Моя мечта', 3, 'coast-medium.jpg', 10000, 1),
+('Моя мечта', 3, 'coast-medium.jpg', 10000, 1);
+
+INSERT INTO posts (title, type_id, website_link, views_number, author_id)
+VALUES
 ('Лучшие курсы', 4, 'www.htmlacademy.ru', 400, 2);
 
 /*комментарии к разным постам*/
