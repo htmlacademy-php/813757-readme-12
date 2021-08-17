@@ -30,9 +30,11 @@ VALUES
 ('2021.08.08 17:02:23', 'Лучше курсов не стречал!', 3, 5);
 
 /*получает список постов с сортировкой по популярности и вместе с именами авторов и типом контента;*/
-SELECT p.title, ct.content_title, p.content, p.views_number, u.login
-FROM posts AS p, users AS u, content_type AS ct
-WHERE p.author_id = u.id AND p.type_id = ct.id ORDER BY p.views_number DESC;
+SELECT p.*, ct.content_title, u.login
+FROM posts AS p
+JOIN content_type ct ON p.type_id = ct.id
+JOIN users u ON p.author_id = u.id
+ORDER BY p.views_number DESC;
 
 /*получает список постов для конкретного пользователя*/
 SELECT p.title, p.content, u.login, p.views_number
