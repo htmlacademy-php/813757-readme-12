@@ -2,8 +2,25 @@
 
 require("helpers.php");
 
+$host = '813757-readme-12';
+$login = 'root';
+$password = 'root';
+$database = 'readme';
+
+$connect = mysqli_connect($host, $login, $password, $database);
+mysqli_set_charset($connect, "utf8");
+
+if ($connect === false) {
+    print("Ошибка подключения: " . mysqli_connect_error());
+}
+
+$query = "SELECT p.*, ct.content_title, ct.icon_class, u.login, u.avatar FROM posts AS p JOIN content_type ct ON p.type_id = ct.id JOIN users u ON p.author_id = u.id ORDER BY p.views_number DESC LIMIT 6";
+$result = mysqli_query($connect, $query);
+$posts = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
 $types = ['post-quote', 'post-text', 'post-photo', 'post-link'];
 
+/*пока оставил похже удалю!!!
 $cards_information = [
     [
         'heading' => 'Цитата',
@@ -40,7 +57,7 @@ $cards_information = [
         'user_name' => 'Владик',
         'avatar' => 'userpic.jpg'
     ]
-];
+];*/
 
 function getCutString($string, $limit = 300) {
 
@@ -111,7 +128,7 @@ function getRelativeFormat($index) {
 }
 
 $content = include_template('main.php', [
-    'cards_information' => $cards_information,
+    'cards_information' => $posts,
     'types' => $types
 ]);
 
