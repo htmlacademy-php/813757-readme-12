@@ -85,12 +85,12 @@
         </div>
         <div class="popular__posts">
             <?php foreach ($cards_information as $key => $card_information): ?>
-                <article class="popular__post post <?= $card_information['type'] ?>">
+                <article class="popular__post post <?= $card_information['icon_class'] ?>">
                     <header class="post__header">
-                        <h2><?= htmlspecialchars($card_information['heading']) ?></h2>
+                        <h2><?= htmlspecialchars($card_information['title']) ?></h2>
                     </header>
                     <div class="post__main">
-                        <?php if ($card_information['type'] === $types[0]): ?>
+                        <?php if ($card_information['icon_class'] === $types[0]): ?>
                         <blockquote>
                             <p>
                                 <?= htmlspecialchars($card_information['content']) ?>
@@ -98,15 +98,15 @@
                             <cite>Неизвестный Автор</cite>
                         </blockquote>
 
-                        <?php elseif ($card_information['type'] === $types[1]): ?>
+                        <?php elseif ($card_information['icon_class'] === $types[1]): ?>
                             <p><?= getCutString(htmlspecialchars($card_information['content'])) ?></p>
 
-                        <?php elseif ($card_information['type'] === $types[2]): ?>
+                        <?php elseif ($card_information['icon_class'] === $types[2]): ?>
                             <div class="post-photo__image-wrapper">
-                                <img src="img/<?= htmlspecialchars($card_information['content']) ?>" alt="Фото от пользователя" width="360" height="240">
+                                <img src="img/<?= htmlspecialchars($card_information['image']) ?>" alt="Фото от пользователя" width="360" height="240">
                             </div>
 
-                        <?php elseif ($card_information['type'] === $types[3]): ?>
+                        <?php elseif ($card_information['icon_class'] === $types[3]): ?>
                             <div class="post-link__wrapper">
                                 <a class="post-link__external" href="http://" title="Перейти по ссылке">
                                     <div class="post-link__info-wrapper">
@@ -114,10 +114,10 @@
                                             <img src="https://www.google.com/s2/favicons?domain=vitadental.ru" alt="Иконка">
                                         </div>
                                         <div class="post-link__info">
-                                            <h3><?= htmlspecialchars($card_information['heading']) ?></h3>
+                                            <h3><?= htmlspecialchars($card_information['title']) ?></h3>
                                         </div>
                                     </div>
-                                    <span><?= htmlspecialchars($card_information['content']) ?></span>
+                                    <span><?= htmlspecialchars($card_information['website_link']) ?></span>
                                 </a>
                             </div>
 
@@ -130,7 +130,7 @@
                                     <img class="post__author-avatar" src="img/<?= htmlspecialchars($card_information['avatar']) ?>" alt="Аватар пользователя">
                                 </div>
                                 <div class="post__info">
-                                    <b class="post__author-name"><?= htmlspecialchars($card_information['user_name']) ?></b>
+                                    <b class="post__author-name"><?= htmlspecialchars($card_information['login']) ?></b>
                                     <time class="post__time" datetime="<?= getPublicationTime($key) ?>" title="<?= getFormatTime($key); ?>"><?= getRelativeFormat($key); ?></time>
                                 </div>
                             </a>
@@ -144,7 +144,7 @@
                                     <svg class="post__indicator-icon post__indicator-icon--like-active" width="20" height="17">
                                         <use xlink:href="#icon-heart-active"></use>
                                     </svg>
-                                    <span>0</span>
+                                    <span><?= htmlspecialchars($card_information['views_number']) ?></span>
                                     <span class="visually-hidden">количество лайков</span>
                                 </a>
                                 <a class="post__indicator post__indicator--comments button" href="#" title="Комментарии">
