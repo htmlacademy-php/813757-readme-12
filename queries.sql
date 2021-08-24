@@ -1,10 +1,11 @@
 /*добавляет список типов контента для поста*/
 INSERT INTO content_type (content_title, icon_class)
 VALUES
-('Цитата', 'post-quote'),
-('Текст', 'post-text'),
-('Фото', 'post-photo'),
-('Ссылка', 'post-link');
+('Цитата', 'quote'),
+('Текст', 'text'),
+('Фото', 'photo'),
+('Ссылка', 'link'),
+('Видео', 'video');
 
 /*добавляет выдуманных пользователей*/
 INSERT INTO users (registration_date, email, login, password, avatar)
@@ -27,6 +28,10 @@ VALUES
 INSERT INTO posts (title, type_id, website_link, views_number, author_id)
 VALUES
 ('Лучшие курсы', 4, 'www.htmlacademy.ru', 400, 2);
+
+INSERT INTO posts (title, type_id, video, views_number, author_id)
+VALUES
+('Что такое flexbox', 5, 'https://www.youtube.com/watch?v=8Gu40PFzOHI', 2000, 3);
 
 /*комментарии к разным постам*/
 INSERT INTO comments (creation_date, content, author_id, post_id)
