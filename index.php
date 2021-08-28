@@ -11,6 +11,11 @@ if ($connect === false) {
 
 $contentQuery = "SELECT * FROM content_type";
 $contentResult = mysqli_query($connect, $contentQuery);
+
+if (!$contentResult) {
+    print("Ошибка подготовки запроса: " . mysqli_error($connect));
+}
+
 $contentType = mysqli_fetch_all($contentResult, MYSQLI_ASSOC);
 
 $query = "SELECT p.*, ct.content_title, ct.icon_class, u.login, u.avatar FROM posts AS p JOIN content_type ct ON p.type_id = ct.id JOIN users u ON p.author_id = u.id WHERE 1";
@@ -20,25 +25,23 @@ if (isset($_GET['type_id'])) {
     $query .= " AND p.type_id = $type_id";
 }
 
-$sort = "p.views_number";
+$sort = isset($_GET['sort']) ? filter_input(INPUT_GET, 'sort') : "p.views_number";
 
-if (isset($_GET['sort'])) {
-    $sort = filter_input(INPUT_GET, 'sort');
-}
+$order = isset($_GET['ord']) ? filter_input(INPUT_GET, 'ord') : "DESC";
 
-$ord = "DESC";
-
-if (isset($_GET['ord'])) {
-    $ord = filter_input(INPUT_GET, 'ord');
-}
-
-$query .= " ORDER BY $sort $ord";
+$query .= " ORDER BY $sort $order";
 $query .= " LIMIT 6";
 
 
 $result = mysqli_query($connect, $query);
-$posts = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
+if (!$result) {
+    print("Ошибка подготовки запроса: " . mysqli_error($connect));
+}
+
+mysqli_close($connect);
+
+$posts = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
 function getCutString($string, $limit = 300) {
 
@@ -112,7 +115,7 @@ $content = include_template('main.php', [
     'cards_information' => $posts,
     'types' => $types,
     'content_type' => $contentType,
-    'ord' => $ord,
+    'ord' => $order,
     'sort' => $sort,
 ]);
 
