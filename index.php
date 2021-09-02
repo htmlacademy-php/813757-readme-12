@@ -14,6 +14,7 @@ $contentResult = mysqli_query($connect, $contentQuery);
 
 if (!$contentResult) {
     print("Ошибка подготовки запроса: " . mysqli_error($connect));
+    exit();
 }
 
 $contentType = mysqli_fetch_all($contentResult, MYSQLI_ASSOC);
@@ -37,6 +38,7 @@ $result = mysqli_query($connect, $query);
 
 if (!$result) {
     print("Ошибка подготовки запроса: " . mysqli_error($connect));
+    exit();
 }
 
 mysqli_close($connect);

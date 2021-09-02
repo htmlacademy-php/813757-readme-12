@@ -262,3 +262,78 @@ function generate_random_date($index)
 
     return $dt;
 }
+
+/*проверка на email*/
+function validateEmail($name) {
+    if (!filter_input(INPUT_POST, $name, FILTER_VALIDATE_EMAIL)) {
+        return "Введите корректный email";
+    }
+}
+
+/*проверка заполненности*/
+function validateFilled($name) {
+    if (empty($_POST[$name])) {
+        return "Это поле должно быть заполнено";
+    }
+}
+
+/*проверка длины*/
+function isCorrectLength($name, $min, $max) {
+    $len = strlen($_POST[$name]);
+
+    if ($len < $min or $len > $max) {
+        return "Значение должно быть от $min до $max символов";
+    }
+}
+
+/*значение полей*/
+function getPostVal($name) {
+    return $_POST[$name] ?? "";
+}
+
+/*перевод слов*/
+function getTranslate($word) {
+    switch ($word) {
+        case 'heading':
+            $russian = 'Заголовок';
+            break;
+
+        case 'cite-text':
+            $russian = 'Текст цитаты';
+            break;
+
+        case 'tags':
+            $russian = 'Теги';
+            break;
+
+        case 'post-link':
+            $russian = 'Ссылка';
+            break;
+
+        case 'post-text':
+            $russian = 'Текст поста';
+            break;
+
+        case 'video-url':
+            $russian = 'Ссылка YOUTUBE';
+            break;
+        }
+
+    return $russian;
+}
+
+/*валидация поля с тегами*/
+function getTags($tags) {
+    $string = strlen($_POST[$tags]);
+
+    if (empty($string)) {
+        return 'Введите хотя бы один тег!';
+    }
+}
+
+/*валидация поля с ссылкой*/
+function getLink($link) {
+    if ((strpos($link, 'www') !== 0) && (strrpos($link, '.ru') !== 0) || empty($link)) {
+        return 'Введите правильную ссылку! Типа www.htmlacademy.ru';
+    }
+}
