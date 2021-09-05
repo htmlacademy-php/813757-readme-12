@@ -310,6 +310,10 @@ function getTranslate($word) {
             $russian = 'Ссылка';
             break;
 
+        case 'photo-url':
+            $russian = 'Ссылка из интернета';
+            break;
+
         case 'post-text':
             $russian = 'Текст поста';
             break;
@@ -317,7 +321,11 @@ function getTranslate($word) {
         case 'video-url':
             $russian = 'Ссылка YOUTUBE';
             break;
-        }
+
+        case 'photo':
+            $russian = 'Перетащите фото сюда';
+            break;
+    }
 
     return $russian;
 }
@@ -332,8 +340,37 @@ function getTags($tags) {
 }
 
 /*валидация поля с ссылкой*/
-function getLink($link) {
-    if ((strpos($link, 'www') !== 0) && (strrpos($link, '.ru') !== 0) || empty($link)) {
+function validateUrl($name) {
+    if (!filter_input(INPUT_POST, $name, FILTER_VALIDATE_URL)) {
         return 'Введите правильную ссылку! Типа www.htmlacademy.ru';
+    }
+}
+
+/*валидация загрузки фото*/
+function validatePhoto($photo) {
+    $imageFile = $_FILES[$photo]['name'];
+    $tmp_dir = $_FILES[$photo]['tmp_name'];
+    $imageSize = $_FILES[$photo]['size'];
+
+    if (empty($imageFile)) {
+        return 'Пожалуйста, выберите изображение!';
+    } else {
+        $uploadDirectory = 'uploads/';
+        $imageExtension = strtolower(pathinfo($imageFile, PATHINFO_EXTENSION));
+        $validExtensions = ['png', 'jpeg', 'gif'];
+
+        if (in_array($imageExtension, $validExtensions)) {
+            if (file_exists($uploadDirectory.$currentUrl)) {
+                return 'Фйал с таким именем сущуствует!';
+            }
+
+            if ($imageSize < 5000000) {
+                move_uploaded_file($tmp_dir,$uploadDirectory.$currentUrl);
+            } else {
+                return 'Извините, ваш файл слишком велик!';
+            }
+        } else {
+            return 'Выберите допустимый формат файла!(png, jpeg, gif)';
+        }
     }
 }

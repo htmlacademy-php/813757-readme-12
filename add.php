@@ -24,12 +24,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $rules = [
         'heading' => isCorrectLength('heading', 10, 35),
         'tags' => getTags('tags'),
-
-        'cite-text' => isCorrectLength('cite-text', 10, 70),
-        'post-text' => isCorrectLength('post-text', 10, 1000),
-        'post-link' => getLink('post-link'),
-        'video-url' => check_youtube_url(filter_var($_POST['video-url'], FILTER_VALIDATE_URL))
     ];
+
+    if ($formType === 'quote') {
+        $rules['cite-text'] = isCorrectLength('cite-text', 10, 70);
+    } elseif ($formType === 'text') {
+        $rules['post-text'] = isCorrectLength('post-text', 10, 1000);
+    } elseif ($formType === 'link') {
+        $rules['post-link'] = validateUrl('post-link');
+    } elseif ($formType === 'video') {
+        $rules['video-url'] = check_youtube_url(filter_var($_POST['video-url'], FILTER_VALIDATE_URL));
+    } elseif ($formType === 'photo') {
+        $rules['photo-url'] = validateUrl('photo-url');
+    }
 
     foreach ($_POST as $key => $value) {
         if (isset($rules[$key])) {
