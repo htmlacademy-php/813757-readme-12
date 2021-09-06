@@ -347,7 +347,7 @@ function validateUrl($name) {
 }
 
 /*валидация загрузки фото*/
-function validatePhoto($photo) {
+function validateFile($photo) {
     $imageFile = $_FILES[$photo]['name'];
     $tmp_dir = $_FILES[$photo]['tmp_name'];
     $imageSize = $_FILES[$photo]['size'];

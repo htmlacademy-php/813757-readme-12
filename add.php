@@ -21,6 +21,7 @@ $errors = [];
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $post = $_POST;
 
+
     $rules = [
         'heading' => isCorrectLength('heading', 10, 35),
         'tags' => getTags('tags'),
@@ -38,15 +39,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $rules['photo-url'] = validateUrl('photo-url');
     }
 
+    //$rules['userpic-file-photo'] = validateFile('userpic-file-photo');
+
     foreach ($_POST as $key => $value) {
         if (isset($rules[$key])) {
             $rule = $rules[$key];
             $errors[$key] = $rule;
         }
     }
+
+    print_r($_FILES);
+
 }
 
 $errors = array_filter($errors);
+
+
 
 $pageInformation = [
     'userName' => 'Ivan',
