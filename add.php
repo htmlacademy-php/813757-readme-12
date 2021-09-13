@@ -16,11 +16,10 @@ if (!$contentType) {
 }
 
 $contentType = mysqli_fetch_all($contentType, MYSQLI_ASSOC);
+
 $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $post = $_POST;
-
 
     $rules = [
         'heading' => isCorrectLength('heading', 10, 35),
@@ -32,29 +31,86 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } elseif ($formType === 'text') {
         $rules['post-text'] = isCorrectLength('post-text', 10, 1000);
     } elseif ($formType === 'link') {
-        $rules['post-link'] = validateUrl('post-link');
+        $rules['post-link'] = validateUrl($_POST['post-link']);
     } elseif ($formType === 'video') {
-        $rules['video-url'] = check_youtube_url(filter_var($_POST['video-url'], FILTER_VALIDATE_URL));
+        $rules['video-url'] = check_youtube_url($_POST['video-url']);
     } elseif ($formType === 'photo') {
-        $rules['photo-url'] = validateUrl('photo-url');
+        if (!empty($_FILES['userpic-file-photo']['name'])) {
+            $rules['userpic-file-photo'] = validateFile('userpic-file-photo');
+            $errors['error'] = $rules['userpic-file-photo'];
+        } else {
+            $rules['photo-url'] = validateUrl($_POST['photo-url']);
+        }
+
     }
 
-    //$rules['userpic-file-photo'] = validateFile('userpic-file-photo');
-
     foreach ($_POST as $key => $value) {
-        if (isset($rules[$key])) {
+        if (isset($rules[$key]) && is_string($rules[$key])) {
             $rule = $rules[$key];
             $errors[$key] = $rule;
         }
     }
 
-    print_r($_FILES);
 
+
+    $errors = array_filter($errors);
+
+    if (empty($errors)) {
+        $title = $_POST['heading'];
+        $userId = 3;
+        $tags_id = checkAvailability($_POST['tags'], $connect);
+
+        if (isset($_GET['form-type'])) {
+
+            if ($_GET['form-type'] === 'quote') {
+                $post_value = $_POST['cite-text'];
+                $content = " content='$post_value'";
+                $tipe_id = 1;
+            } elseif ($_GET['form-type'] === 'text') {
+                $post_value = $_POST['post-text'];
+                $content = " content='$post_value'";
+                $tipe_id = 2;
+            } elseif ($_GET['form-type'] === 'link') {
+                $post_value = $_POST['post-link'];
+                $content = " website_link='$post_value'";
+                $tipe_id = 4;
+            } elseif ($_GET['form-type'] === 'video') {
+                $post_value = $_POST['video-url'];
+                $content = " video='$post_value'";
+                $tipe_id = 5;
+            } elseif ($_GET['form-type'] === 'photo') {
+                $tipe_id = 3;
+
+                if (!empty($_FILES['userpic-file-photo']['name'])) {
+                    $photo_file = $_FILES['userpic-file-photo']['name'];
+                    $content = " image='uploads/".$photo_file."'";
+                } else {
+                    $post_url = $_POST['photo-url'];
+                    $content = " image='$post_url'";
+                }
+            }
+
+            $query = "INSERT INTO posts SET title='$title',".$content.", type_id=$tipe_id, author_id=$userId";
+
+            $result = mysqli_query($connect, $query);
+
+            if (!$result) {
+                print("Ошибка подготовки запроса: " . mysqli_error($connect));
+                exit();
+            } else {
+                $last_id = mysqli_insert_id($connect);
+
+                foreach ($tags_id as $tag_id) {
+                    $query = "INSERT INTO posts_hashtags SET post_id=$last_id, hashtag_id=$tag_id";
+                    mysqli_query($connect, $query);
+                }
+            }
+
+            header("Location: post.php?post-id=".$last_id);
+
+        }
+    }
 }
-
-$errors = array_filter($errors);
-
-
 
 $pageInformation = [
     'userName' => 'Ivan',

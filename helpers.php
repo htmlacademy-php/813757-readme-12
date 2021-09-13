@@ -156,6 +156,12 @@ function include_template($name, array $data = [])
  */
 function check_youtube_url($url)
 {
+    $videoUrl = filter_var($url, FILTER_VALIDATE_URL);
+
+    if (!$videoUrl) {
+        return 'YOUTUBE ссылка неверна!';
+    }
+
     $id = extract_youtube_id($url);
 
     set_error_handler(function () {}, E_WARNING);
@@ -228,6 +234,7 @@ function extract_youtube_id($youtube_url)
             $id = $vars['v'] ?? null;
         } else {
             if ($parts['host'] == 'youtu.be') {
+                print_r($parts['host']);
                 $id = substr($parts['path'], 1);
             }
         }
@@ -279,7 +286,7 @@ function validateFilled($name) {
 
 /*проверка длины*/
 function isCorrectLength($name, $min, $max) {
-    $len = strlen($_POST[$name]);
+    $len = mb_strlen($_POST[$name]);
 
     if ($len < $min or $len > $max) {
         return "Значение должно быть от $min до $max символов";
@@ -322,8 +329,8 @@ function getTranslate($word) {
             $russian = 'Ссылка YOUTUBE';
             break;
 
-        case 'photo':
-            $russian = 'Перетащите фото сюда';
+        case 'error':
+            $russian = 'Выберите фото';
             break;
     }
 
@@ -341,36 +348,63 @@ function getTags($tags) {
 
 /*валидация поля с ссылкой*/
 function validateUrl($name) {
-    if (!filter_input(INPUT_POST, $name, FILTER_VALIDATE_URL)) {
-        return 'Введите правильную ссылку! Типа www.htmlacademy.ru';
+    if (!filter_var($name, FILTER_VALIDATE_URL)) {
+        return 'Введите правильную ссылку! Типа https://www.htmlacademy.ru';
     }
 }
 
 /*валидация загрузки фото*/
-function validateFile($photo) {
-    $imageFile = $_FILES[$photo]['name'];
-    $tmp_dir = $_FILES[$photo]['tmp_name'];
-    $imageSize = $_FILES[$photo]['size'];
+function validateFile($file) {
+    $file_name = $_FILES[$file]['name'];
+    $file_type = $_FILES[$file]['type'];
+    $tmp_dir = $_FILES[$file]['tmp_name'];
+    $image_size = $_FILES[$file]['size'];
+    $file_path = __DIR__.'/uploads/';
+    $valid_extensions = ['image/png', 'image/jpeg', 'image/gif'];
 
-    if (empty($imageFile)) {
+    if (empty($file_name)) {
         return 'Пожалуйста, выберите изображение!';
     } else {
-        $uploadDirectory = 'uploads/';
-        $imageExtension = strtolower(pathinfo($imageFile, PATHINFO_EXTENSION));
-        $validExtensions = ['png', 'jpeg', 'gif'];
+        if (in_array($file_type, $valid_extensions)) {
 
-        if (in_array($imageExtension, $validExtensions)) {
-            if (file_exists($uploadDirectory.$currentUrl)) {
-                return 'Фйал с таким именем сущуствует!';
+            if (file_exists($file_path.$file_name)) {
+                return 'Фйал с таким именем существует!';
             }
 
-            if ($imageSize < 5000000) {
-                move_uploaded_file($tmp_dir,$uploadDirectory.$currentUrl);
+            if ($image_size < 5000000) {
+                move_uploaded_file($tmp_dir,$file_path.$file_name);
             } else {
                 return 'Извините, ваш файл слишком велик!';
             }
+
         } else {
             return 'Выберите допустимый формат файла!(png, jpeg, gif)';
         }
     }
+}
+
+/*проверяет наличие тега в БД*/
+function checkAvailability($inputTags, $connect) {
+
+    $tags_id = [];
+    $tags = explode(' ', $inputTags);
+
+    foreach ($tags as $tag) {
+        $query = "SELECT * FROM hashtags WHERE hashtag='$tag'";
+        $result = mysqli_query($connect, $query);
+        $db_tags = mysqli_fetch_assoc($result);
+
+        if ($db_tags) {
+            $tags_id[] = $db_tags['id'];
+        } else {
+            $query = "INSERT INTO hashtags SET hashtag='$tag'";
+            mysqli_query($connect, $query);
+            $last_id = mysqli_insert_id($connect);
+
+            $tags_id[] = $last_id;
+        }
+    }
+
+    return $tags_id;
+
 }
