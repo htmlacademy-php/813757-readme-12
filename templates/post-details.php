@@ -7,7 +7,7 @@
         <div class="post-details__main-block post post--details">
           <?php if (isset($_GET) && $post['icon_class'] === $types[2]): ?>
             <div class="post-details__image-wrapper post-photo__image-wrapper">
-                <img src="<?php print($post['image']); ?>" alt="Фото от пользователя" width="760" height="507">
+                <img src="<?= ($post['image']); ?>" alt="Фото от пользователя" width="760" height="507">
             </div>
 
           <?php elseif (isset($_GET) && $post['icon_class'] === $types[0]): ?>

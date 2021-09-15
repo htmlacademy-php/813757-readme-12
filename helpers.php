@@ -234,7 +234,6 @@ function extract_youtube_id($youtube_url)
             $id = $vars['v'] ?? null;
         } else {
             if ($parts['host'] == 'youtu.be') {
-                print_r($parts['host']);
                 $id = substr($parts['path'], 1);
             }
         }
@@ -270,71 +269,13 @@ function generate_random_date($index)
     return $dt;
 }
 
-/*проверка на email*/
-function validateEmail($name) {
-    if (!filter_input(INPUT_POST, $name, FILTER_VALIDATE_EMAIL)) {
-        return "Введите корректный email";
-    }
-}
-
-/*проверка заполненности*/
-function validateFilled($name) {
-    if (empty($_POST[$name])) {
-        return "Это поле должно быть заполнено";
-    }
-}
-
 /*проверка длины*/
 function isCorrectLength($name, $min, $max) {
     $len = mb_strlen($_POST[$name]);
 
-    if ($len < $min or $len > $max) {
+    if ($len < $min || $len > $max) {
         return "Значение должно быть от $min до $max символов";
     }
-}
-
-/*значение полей*/
-function getPostVal($name) {
-    return $_POST[$name] ?? "";
-}
-
-/*перевод слов*/
-function getTranslate($word) {
-    switch ($word) {
-        case 'heading':
-            $russian = 'Заголовок';
-            break;
-
-        case 'cite-text':
-            $russian = 'Текст цитаты';
-            break;
-
-        case 'tags':
-            $russian = 'Теги';
-            break;
-
-        case 'post-link':
-            $russian = 'Ссылка';
-            break;
-
-        case 'photo-url':
-            $russian = 'Ссылка из интернета';
-            break;
-
-        case 'post-text':
-            $russian = 'Текст поста';
-            break;
-
-        case 'video-url':
-            $russian = 'Ссылка YOUTUBE';
-            break;
-
-        case 'error':
-            $russian = 'Выберите фото';
-            break;
-    }
-
-    return $russian;
 }
 
 /*валидация поля с тегами*/
@@ -364,43 +305,42 @@ function validateFile($file) {
 
     if (empty($file_name)) {
         return 'Пожалуйста, выберите изображение!';
-    } else {
-        if (in_array($file_type, $valid_extensions)) {
-
-            if (file_exists($file_path.$file_name)) {
-                return 'Фйал с таким именем существует!';
-            }
-
-            if ($image_size < 5000000) {
-                move_uploaded_file($tmp_dir,$file_path.$file_name);
-            } else {
-                return 'Извините, ваш файл слишком велик!';
-            }
-
-        } else {
-            return 'Выберите допустимый формат файла!(png, jpeg, gif)';
-        }
     }
+
+    if (in_array($file_type, $valid_extensions)) {
+
+        if (file_exists($file_path.$file_name)) {
+            return 'Файл с таким именем существует!';
+        }
+
+        if ($image_size < 5000000) {
+            move_uploaded_file($tmp_dir,$file_path.$file_name);
+        } else {
+            return 'Извините, ваш файл слишком велик!';
+        }
+
+    } else {
+        return 'Выберите допустимый формат файла!(png, jpeg, gif)';
+    }
+
 }
 
 /*проверяет наличие тега в БД*/
 function checkAvailability($inputTags, $connect) {
-
     $tags_id = [];
     $tags = explode(' ', $inputTags);
 
     foreach ($tags as $tag) {
         $query = "SELECT * FROM hashtags WHERE hashtag='$tag'";
         $result = mysqli_query($connect, $query);
-        $db_tags = mysqli_fetch_assoc($result);
+        $dbTags = mysqli_fetch_assoc($result);
 
-        if ($db_tags) {
-            $tags_id[] = $db_tags['id'];
+        if ($dbTags) {
+            $tags_id[] = $dbTags['id'];
         } else {
             $query = "INSERT INTO hashtags SET hashtag='$tag'";
             mysqli_query($connect, $query);
             $last_id = mysqli_insert_id($connect);
-
             $tags_id[] = $last_id;
         }
     }

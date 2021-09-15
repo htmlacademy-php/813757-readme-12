@@ -4,6 +4,16 @@ require("helpers.php");
 require("init.php");
 
 $types = ['quote', 'text', 'photo', 'link', 'video'];
+$russianTranslation = [
+    'heading' => 'Заголовок',
+    'cite-text' => 'Текст цитаты',
+    'tags' => 'Теги',
+    'post-link' => 'Ссылка',
+    'photo-url' => 'Ссылка из интернета',
+    'post-text' => 'Текст поста',
+    'video-url' => 'Ссылка YOUTUBE',
+    'error' => 'Выберите фото'
+];
 
 $formType = $_GET['form-type'] ?? "";
 
@@ -26,22 +36,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         'tags' => getTags('tags'),
     ];
 
-    if ($formType === 'quote') {
-        $rules['cite-text'] = isCorrectLength('cite-text', 10, 70);
-    } elseif ($formType === 'text') {
-        $rules['post-text'] = isCorrectLength('post-text', 10, 1000);
-    } elseif ($formType === 'link') {
-        $rules['post-link'] = validateUrl($_POST['post-link']);
-    } elseif ($formType === 'video') {
-        $rules['video-url'] = check_youtube_url($_POST['video-url']);
-    } elseif ($formType === 'photo') {
-        if (!empty($_FILES['userpic-file-photo']['name'])) {
-            $rules['userpic-file-photo'] = validateFile('userpic-file-photo');
-            $errors['error'] = $rules['userpic-file-photo'];
-        } else {
-            $rules['photo-url'] = validateUrl($_POST['photo-url']);
-        }
+    switch ($formType) {
+        case 'quote';
+            $rules['cite-text'] = isCorrectLength('cite-text', 10, 70);
+            break;
 
+        case 'text':
+            $rules['post-text'] = isCorrectLength('post-text', 10, 1000);
+            break;
+
+        case 'link':
+            $rules['post-link'] = validateUrl($_POST['post-link']);
+            break;
+
+        case 'video':
+            $rules['video-url'] = check_youtube_url($_POST['video-url']);
+            break;
+
+        case 'photo':
+            if (!empty($_FILES['userpic-file-photo']['name'])) {
+                $rules['userpic-file-photo'] = validateFile('userpic-file-photo');
+                $errors['error'] = $rules['userpic-file-photo'];
+            } else {
+                $rules['photo-url'] = validateUrl($_POST['photo-url']);
+            }
+            break;
     }
 
     foreach ($_POST as $key => $value) {
@@ -50,8 +69,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $errors[$key] = $rule;
         }
     }
-
-
 
     $errors = array_filter($errors);
 
@@ -62,32 +79,43 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         if (isset($_GET['form-type'])) {
 
-            if ($_GET['form-type'] === 'quote') {
-                $post_value = $_POST['cite-text'];
-                $content = " content='$post_value'";
-                $tipe_id = 1;
-            } elseif ($_GET['form-type'] === 'text') {
-                $post_value = $_POST['post-text'];
-                $content = " content='$post_value'";
-                $tipe_id = 2;
-            } elseif ($_GET['form-type'] === 'link') {
-                $post_value = $_POST['post-link'];
-                $content = " website_link='$post_value'";
-                $tipe_id = 4;
-            } elseif ($_GET['form-type'] === 'video') {
-                $post_value = $_POST['video-url'];
-                $content = " video='$post_value'";
-                $tipe_id = 5;
-            } elseif ($_GET['form-type'] === 'photo') {
-                $tipe_id = 3;
+            switch ($formType) {
+                case 'quote':
+                    $post_value = $_POST['cite-text'];
+                    $content = " content='$post_value'";
+                    $tipe_id = 1;
+                    break;
 
-                if (!empty($_FILES['userpic-file-photo']['name'])) {
-                    $photo_file = $_FILES['userpic-file-photo']['name'];
-                    $content = " image='uploads/".$photo_file."'";
-                } else {
-                    $post_url = $_POST['photo-url'];
-                    $content = " image='$post_url'";
-                }
+                case 'text':
+                    $post_value = $_POST['post-text'];
+                    $content = " content='$post_value'";
+                    $tipe_id = 2;
+                    break;
+
+                case 'link':
+                    $post_value = $_POST['post-link'];
+                    $content = " website_link='$post_value'";
+                    $tipe_id = 4;
+                    break;
+
+                case 'video':
+                    $post_value = $_POST['video-url'];
+                    $content = " video='$post_value'";
+                    $tipe_id = 5;
+                    break;
+
+                case 'photo':
+                    $tipe_id = 3;
+
+                    if (!empty($_FILES['userpic-file-photo']['name'])) {
+                        $photo_file = $_FILES['userpic-file-photo']['name'];
+                        $content = " image='uploads/".$photo_file."'";
+                    } else {
+                        $post_url = $_POST['photo-url'];
+                        $content = " image='$post_url'";
+                    }
+
+                //default:???
             }
 
             $query = "INSERT INTO posts SET title='$title',".$content.", type_id=$tipe_id, author_id=$userId";
@@ -119,7 +147,8 @@ $pageInformation = [
     'content_type' => $contentType,
     'form_type' => $formType,
     'types' => $types,
-    'errors' => $errors
+    'errors' => $errors,
+    'russianTranslation' => $russianTranslation
 ];
 
 $layout = include_template('adding-post.php', $pageInformation);
