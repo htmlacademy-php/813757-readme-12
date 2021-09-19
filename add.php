@@ -56,7 +56,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         case 'photo':
             if (!empty($_FILES['userpic-file-photo']['name'])) {
                 $rules['userpic-file-photo'] = validateFile('userpic-file-photo');
-                $errors['error'] = $rules['userpic-file-photo'];
+                $tmp_dir = $_FILES['userpic-file-photo']['tmp_name'];
+                $file_path = __DIR__.'/uploads/';
+                $file_name = $_FILES['userpic-file-photo']['name'];
+                move_uploaded_file($tmp_dir,$file_path.$file_name);
             } else {
                 $rules['photo-url'] = validateUrl($_POST['photo-url']);
             }
@@ -75,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($errors)) {
         $title = $_POST['heading'];
         $userId = 3;
-        $tags_id = checkAvailability($_POST['tags'], $connect);
+        $tags_id = upsertTags($_POST['tags'], $connect);
 
         if (isset($_GET['form-type'])) {
 
@@ -114,8 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         $post_url = $_POST['photo-url'];
                         $content = " image='$post_url'";
                     }
-
-                //default:???
+                    break;
             }
 
             $query = "INSERT INTO posts SET title='$title',".$content.", type_id=$tipe_id, author_id=$userId";
@@ -127,7 +129,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 exit();
             } else {
                 $last_id = mysqli_insert_id($connect);
-
                 foreach ($tags_id as $tag_id) {
                     $query = "INSERT INTO posts_hashtags SET post_id=$last_id, hashtag_id=$tag_id";
                     mysqli_query($connect, $query);

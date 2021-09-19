@@ -270,7 +270,7 @@ function generate_random_date($index)
 }
 
 /*проверка длины*/
-function isCorrectLength($name, $min, $max) {
+function isCorrectLength($name, int $min, int $max) {
     $len = mb_strlen($_POST[$name]);
 
     if ($len < $min || $len > $max) {
@@ -313,9 +313,7 @@ function validateFile($file) {
             return 'Файл с таким именем существует!';
         }
 
-        if ($image_size < 5000000) {
-            move_uploaded_file($tmp_dir,$file_path.$file_name);
-        } else {
+        if ($image_size > 5000000) {
             return 'Извините, ваш файл слишком велик!';
         }
 
@@ -325,25 +323,56 @@ function validateFile($file) {
 
 }
 
-/*проверяет наличие тега в БД*/
-function checkAvailability($inputTags, $connect) {
+/*проверяет наличие тега в БД и если он отсутствует добавляет его в БД*/
+function upsertTags($inputTags, $connect) {
     $tags_id = [];
     $tags = explode(' ', $inputTags);
 
-    foreach ($tags as $tag) {
-        $query = "SELECT * FROM hashtags WHERE hashtag='$tag'";
-        $result = mysqli_query($connect, $query);
-        $dbTags = mysqli_fetch_assoc($result);
+    $query = "SELECT id, hashtag FROM hashtags WHERE hashtag IN ('" . implode("', '", $tags) . "')";
 
-        if ($dbTags) {
-            $tags_id[] = $dbTags['id'];
-        } else {
-            $query = "INSERT INTO hashtags SET hashtag='$tag'";
+    $result = mysqli_query($connect, $query);
+
+    if (!$result) {
+        print("Ошибка подготовки запроса: " . mysqli_error($connect));
+        exit();
+    }
+
+    $dbTagsRaw = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+    $newTags = [];
+
+    $dbTags = array_column($dbTagsRaw, 'hashtag');
+
+    foreach ($tags as $tag) {
+        if (!in_array($tag, $dbTags)) {
+            $newTags[] = $tag;
+        }
+    }
+
+    $count = count($newTags);
+
+    if ($count === 0) {
+        foreach ($dbTagsRaw as $dbTag) {
+            $tags_id[] = $dbTag['id'];
+        }
+    } elseif ($count === 1) {
+        $query = "INSERT INTO hashtags SET hashtag='$newTags[0]'";
+        mysqli_query($connect, $query);
+        $last_id = mysqli_insert_id($connect);
+        $tags_id[] = $last_id;
+    } elseif ($count > 1) {
+        foreach ($newTags as $newTag) {
+            $query = "INSERT INTO hashtags (hashtag) VALUES ('" . $newTag . "')";
             mysqli_query($connect, $query);
             $last_id = mysqli_insert_id($connect);
             $tags_id[] = $last_id;
         }
+
+        echo '<pre>';
+        var_dump($tags_id);
+        echo '</pre>';
     }
+
 
     return $tags_id;
 
