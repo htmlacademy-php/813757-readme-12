@@ -77,7 +77,7 @@
 
                         <?php elseif ($card_information['icon_class'] === $types[2]): ?>
                             <div class="post-photo__image-wrapper">
-                                <img src="img/<?= htmlspecialchars($card_information['image']) ?>" alt="Фото от пользователя" width="360" height="240">
+                                <img src="<?= htmlspecialchars($card_information['image']) ?>" alt="Фото от пользователя" width="360" height="240">
                             </div>
 
                         <?php elseif ($card_information['icon_class'] === $types[3]): ?>
