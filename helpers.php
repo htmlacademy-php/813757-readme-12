@@ -367,13 +367,79 @@ function upsertTags($inputTags, $connect) {
             $last_id = mysqli_insert_id($connect);
             $tags_id[] = $last_id;
         }
-
-        echo '<pre>';
-        var_dump($tags_id);
-        echo '</pre>';
     }
-
 
     return $tags_id;
 
+}
+
+/*обрезает строку, если длина больше 300 символов*/
+function getCutString($string, $limit = 300) {
+
+    if (mb_strlen($string, "UTF-8") > $limit) {
+
+        $words = explode(" ", $string);
+        $count = 0;
+        $cutString = "";
+        $newWords = [];
+
+        foreach ($words as $elem) {
+            $count += mb_strlen($elem, "UTF-8");
+
+            if ($count < $limit) {
+                array_push($newWords, $elem);
+            };
+
+        };
+
+        $cutString = implode(" ", $newWords);
+
+        return "<p>{$cutString}...</p><a class=\"post-text__more-link\" href=\"#\">Читать далее</a>";
+
+    }
+
+    return "<p>{$string}</p>";
+
+}
+
+/*возвращает разницу во времени */
+function getRelativeFormat($index) {
+    $currentDate = new DateTime("", new DateTimeZone("Europe/Moscow"));
+    $publicationDate = new DateTime(generate_random_date($index));
+    $difference = $currentDate->diff($publicationDate);
+    $minutes = $difference->i;
+    $hours = $difference->h;
+    $days = $difference->d;
+    $weeks = floor($days / 7);
+    $months = $difference->m;
+
+    $minute = get_noun_plural_form($minutes, 'минуту', 'минуты', 'минут');
+    $hour = get_noun_plural_form($hours, 'час', 'часа', 'часов');
+    $day = get_noun_plural_form($days, 'день', 'дня', 'дней');
+    $week = get_noun_plural_form($weeks, 'неделю', 'недели', 'недель');
+    $month = get_noun_plural_form($months, 'месяц', 'месяца', 'месяцев');
+
+    if ($months > 0) {
+        $timeDifference = "{$months} {$month} назад";
+    } elseif ($weeks > 0) {
+        $timeDifference = "{$weeks} {$week} назад";
+    } elseif ($days > 0) {
+        $timeDifference = "{$days} {$day} назад";
+    } elseif ($hours > 0) {
+        $timeDifference = "{$hours} {$hour} назад";
+    } elseif ($minutes > 0) {
+        $timeDifference = "{$minutes} {$minute} назад";
+    }
+
+    return $timeDifference;
+}
+
+/*возвращает дату публикации */
+function getPublicationTime($key) {
+    return (new DateTime(generate_random_date($key)))->format("c");
+}
+
+/*возвращает формат даты */
+function getFormatTime($key) {
+    return (new DateTime(generate_random_date($key)))->format("d.m.Y H:i");
 }
