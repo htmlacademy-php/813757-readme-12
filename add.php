@@ -73,9 +73,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $errors = array_filter($errors);
 
     if (empty($errors)) {
-        $title = $_POST['heading'];
+        $title = mysqli_real_escape_string($connect, $_POST['heading']);
         $userId = 3;
-        $tagsId = upsertTags($_POST['tags'], $connect);
+        $tagsAntiInjection = mysqli_real_escape_string($connect, $_POST['tags']);
+        $tagsId = upsertTags($tagsAntiInjection, $connect);
 
         if (isset($_GET['form-type'])) {
             switch ($formType) {
