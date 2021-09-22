@@ -270,7 +270,7 @@ function generate_random_date($index)
 }
 
 /*проверка длины*/
-function isCorrectLength($name, int $min, int $max) {
+function isCorrectLength(string $name, int $min, int $max) {
     $len = mb_strlen($_POST[$name]);
 
     if ($len < $min || $len > $max) {
@@ -296,24 +296,23 @@ function validateUrl($name) {
 
 /*валидация загрузки фото*/
 function validateFile($file) {
-    $file_name = $_FILES[$file]['name'];
-    $file_type = $_FILES[$file]['type'];
-    $tmp_dir = $_FILES[$file]['tmp_name'];
-    $image_size = $_FILES[$file]['size'];
-    $file_path = __DIR__.'/uploads/';
-    $valid_extensions = ['image/png', 'image/jpeg', 'image/gif'];
+    $fileName = $_FILES[$file]['name'];
+    $fileType = $_FILES[$file]['type'];
+    $imageSize = $_FILES[$file]['size'];
+    $filePath = __DIR__.'/uploads/';
+    $validExtensions = ['image/png', 'image/jpeg', 'image/gif'];
 
-    if (empty($file_name)) {
+    if (empty($fileName)) {
         return 'Пожалуйста, выберите изображение!';
     }
 
-    if (in_array($file_type, $valid_extensions)) {
+    if (in_array($fileType, $validExtensions)) {
 
-        if (file_exists($file_path.$file_name)) {
+        if (file_exists($filePath.$fileName)) {
             return 'Файл с таким именем существует!';
         }
 
-        if ($image_size > 5000000) {
+        if ($imageSize > 5000000) {
             return 'Извините, ваш файл слишком велик!';
         }
 
@@ -325,7 +324,7 @@ function validateFile($file) {
 
 /*проверяет наличие тега в БД и если он отсутствует добавляет его в БД*/
 function upsertTags($inputTags, $connect) {
-    $tags_id = [];
+    $tagsId = [];
     $tags = explode(' ', $inputTags);
 
     $query = "SELECT id, hashtag FROM hashtags WHERE hashtag IN ('" . implode("', '", $tags) . "')";
@@ -353,31 +352,24 @@ function upsertTags($inputTags, $connect) {
 
     if ($count === 0) {
         foreach ($dbTagsRaw as $dbTag) {
-            $tags_id[] = $dbTag['id'];
+            $tagsId[] = $dbTag['id'];
         }
-    } elseif ($count === 1) {
-        $query = "INSERT INTO hashtags SET hashtag='$newTags[0]'";
-        mysqli_query($connect, $query);
-        $last_id = mysqli_insert_id($connect);
-        $tags_id[] = $last_id;
-    } elseif ($count > 1) {
+    } elseif ($count >= 1) {
         foreach ($newTags as $newTag) {
             $query = "INSERT INTO hashtags (hashtag) VALUES ('" . $newTag . "')";
             mysqli_query($connect, $query);
-            $last_id = mysqli_insert_id($connect);
-            $tags_id[] = $last_id;
+            $lastId = mysqli_insert_id($connect);
+            $tagsId[] = $lastId;
         }
     }
 
-    return $tags_id;
+    return $tagsId;
 
 }
 
 /*обрезает строку, если длина больше 300 символов*/
 function getCutString($string, $limit = 300) {
-
     if (mb_strlen($string, "UTF-8") > $limit) {
-
         $words = explode(" ", $string);
         $count = 0;
         $cutString = "";
@@ -395,7 +387,6 @@ function getCutString($string, $limit = 300) {
         $cutString = implode(" ", $newWords);
 
         return "<p>{$cutString}...</p><a class=\"post-text__more-link\" href=\"#\">Читать далее</a>";
-
     }
 
     return "<p>{$string}</p>";

@@ -16,21 +16,18 @@ $russianTranslation = [
 ];
 
 $formType = $_GET['form-type'] ?? "";
-
-$contentQuery = "SELECT * FROM content_type";
-$contentType = mysqli_query($connect, $contentQuery);
+$contentType = mysqli_query($connect, "SELECT * FROM content_type");
 
 if (!$contentType) {
     print("Ошибка подготовки запроса: " . mysqli_error($connect));
     exit();
 }
 
-$contentType = mysqli_fetch_all($contentType, MYSQLI_ASSOC);
+$contentTypes = mysqli_fetch_all($contentType, MYSQLI_ASSOC);
 
 $errors = [];
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $rules = [
         'heading' => isCorrectLength('heading', 10, 35),
         'tags' => getTags('tags'),
@@ -56,10 +53,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         case 'photo':
             if (!empty($_FILES['userpic-file-photo']['name'])) {
                 $rules['userpic-file-photo'] = validateFile('userpic-file-photo');
-                $tmp_dir = $_FILES['userpic-file-photo']['tmp_name'];
-                $file_path = __DIR__.'/uploads/';
-                $file_name = $_FILES['userpic-file-photo']['name'];
-                move_uploaded_file($tmp_dir,$file_path.$file_name);
+                $tmpDir = $_FILES['userpic-file-photo']['tmp_name'];
+                $filePath = __DIR__.'/uploads/';
+                $fileName = $_FILES['userpic-file-photo']['name'];
+                move_uploaded_file($tmpDir,$filePath.$fileName);
             } else {
                 $rules['photo-url'] = validateUrl($_POST['photo-url']);
             }
@@ -78,49 +75,48 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($errors)) {
         $title = $_POST['heading'];
         $userId = 3;
-        $tags_id = upsertTags($_POST['tags'], $connect);
+        $tagsId = upsertTags($_POST['tags'], $connect);
 
         if (isset($_GET['form-type'])) {
-
             switch ($formType) {
                 case 'quote':
-                    $post_value = $_POST['cite-text'];
-                    $content = " content='$post_value'";
-                    $tipe_id = 1;
+                    $antiInjection = mysqli_real_escape_string($connect, $_POST['cite-text']);
+                    $content = " content='$antiInjection'";
+                    $typeId = 1;
                     break;
 
                 case 'text':
-                    $post_value = $_POST['post-text'];
-                    $content = " content='$post_value'";
-                    $tipe_id = 2;
+                    $antiInjection = mysqli_real_escape_string($connect, $_POST['post-text']);
+                    $content = " content='$antiInjection'";
+                    $typeId = 2;
                     break;
 
                 case 'link':
-                    $post_value = $_POST['post-link'];
-                    $content = " website_link='$post_value'";
-                    $tipe_id = 4;
+                    $antiInjection = mysqli_real_escape_string($connect, $_POST['post-link']);
+                    $content = " website_link='$antiInjection'";
+                    $typeId = 4;
                     break;
 
                 case 'video':
-                    $post_value = $_POST['video-url'];
-                    $content = " video='$post_value'";
-                    $tipe_id = 5;
+                    $antiInjection = mysqli_real_escape_string($connect, $_POST['video-url']);
+                    $content = " video='$antiInjection'";
+                    $typeId = 5;
                     break;
 
                 case 'photo':
-                    $tipe_id = 3;
+                    $typeId = 3;
 
                     if (!empty($_FILES['userpic-file-photo']['name'])) {
-                        $photo_file = $_FILES['userpic-file-photo']['name'];
-                        $content = " image='uploads/".$photo_file."'";
+                        $photoFile = $_FILES['userpic-file-photo']['name'];
+                        $content = " image='uploads/".$photoFile."'";
                     } else {
-                        $post_url = $_POST['photo-url'];
-                        $content = " image='$post_url'";
+                        $antiInjection = mysqli_real_escape_string($connect, $_POST['photo-url']);
+                         $content = " image='$antiInjection'";
                     }
                     break;
             }
 
-            $query = "INSERT INTO posts SET title='$title',".$content.", type_id=$tipe_id, author_id=$userId";
+            $query = "INSERT INTO posts SET title='$title',".$content.", type_id=$typeId, author_id=$userId";
 
             $result = mysqli_query($connect, $query);
 
@@ -128,30 +124,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 print("Ошибка подготовки запроса: " . mysqli_error($connect));
                 exit();
             } else {
-                $last_id = mysqli_insert_id($connect);
-                foreach ($tags_id as $tag_id) {
-                    $query = "INSERT INTO posts_hashtags SET post_id=$last_id, hashtag_id=$tag_id";
+                $lastId = mysqli_insert_id($connect);
+                foreach ($tagsId as $tagId) {
+                    $query = "INSERT INTO posts_hashtags SET post_id=$lastId, hashtag_id=$tagId";
                     mysqli_query($connect, $query);
                 }
             }
 
-            header("Location: post.php?post-id=".$last_id);
+            header("Location: post.php?post-id=".$lastId);
 
         }
     }
 }
 
+$content = include_template('adding-post.php', [
+    'contentTypes' => $contentTypes,
+    'formType' => $formType,
+    'types' => $types,
+    'errors' => $errors,
+    'russianTranslation' => $russianTranslation
+]);
+
 $pageInformation = [
     'userName' => 'Ivan',
     'title' => 'readme: добавление публикации',
     'is_auth' => rand(0, 1),
-    'content_type' => $contentType,
-    'form_type' => $formType,
-    'types' => $types,
-    'errors' => $errors,
-    'russianTranslation' => $russianTranslation
+    'content' => $content
 ];
 
-$layout = include_template('adding-post.php', $pageInformation);
+$layout = include_template('layout.php', $pageInformation);
 
 print($layout);

@@ -15,7 +15,7 @@
                 <div class="post__main">
                     <blockquote>
                     <p>
-                        <?= $post['content']; ?>
+                        <?= $post['content'] ?>
                     </p>
                     <cite>Неизвестный Автор</cite>
                     </blockquote>
@@ -26,7 +26,7 @@
             <div class="post-details__image-wrapper post-text">
               <div class="post__main">
                  <p>
-                 <?= $post['content']; ?>
+                 <?= $post['content'] ?>
                 </p>
               </div>
             </div>
