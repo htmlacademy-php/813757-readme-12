@@ -7,7 +7,7 @@
                 <b class="popular__sorting-caption sorting__caption">Сортировка:</b>
                 <ul class="popular__sorting-list sorting__list">
                     <li class="sorting__item sorting__item--popular">
-                        <a class="sorting__link sorting__link--active" href="?sort=views_number&ord=<?= $ord === 'desc' ? 'asc' : 'desc' ?>">
+                        <a class="sorting__link sorting__link--active" href="?sort=views_number&ord=<?= $order === 'desc' ? 'asc' : 'desc' ?>">
                             <span>Популярность</span>
                             <svg class="sorting__icon" width="10" height="12">
                                 <use xlink:href="#icon-sort"></use>
@@ -77,7 +77,7 @@
 
                         <?php elseif ($card_information['icon_class'] === $types[2]): ?>
                             <div class="post-photo__image-wrapper">
-                                <img src="img/<?= htmlspecialchars($card_information['image']) ?>" alt="Фото от пользователя" width="360" height="240">
+                                <img src="<?= htmlspecialchars($card_information['image']) ?>" alt="Фото от пользователя" width="360" height="240">
                             </div>
 
                         <?php elseif ($card_information['icon_class'] === $types[3]): ?>

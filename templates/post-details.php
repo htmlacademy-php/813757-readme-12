@@ -7,7 +7,7 @@
         <div class="post-details__main-block post post--details">
           <?php if (isset($_GET) && $post['icon_class'] === $types[2]): ?>
             <div class="post-details__image-wrapper post-photo__image-wrapper">
-                <img src="img/<?= $post['image']; ?>" alt="Фото от пользователя" width="760" height="507">
+                <img src="<?= ($post['image']); ?>" alt="Фото от пользователя" width="760" height="507">
             </div>
 
           <?php elseif (isset($_GET) && $post['icon_class'] === $types[0]): ?>
@@ -15,7 +15,7 @@
                 <div class="post__main">
                     <blockquote>
                     <p>
-                        <?= $post['content']; ?>
+                        <?= $post['content'] ?>
                     </p>
                     <cite>Неизвестный Автор</cite>
                     </blockquote>
@@ -26,7 +26,7 @@
             <div class="post-details__image-wrapper post-text">
               <div class="post__main">
                  <p>
-                 <?= $post['content']; ?>
+                 <?= $post['content'] ?>
                 </p>
               </div>
             </div>
@@ -49,7 +49,7 @@
 
           <?php elseif (isset($_GET) && $post['icon_class'] === $types[4]): ?>
             <div class="post-details__image-wrapper post-photo__image-wrapper">
-                <?=embed_youtube_video($post['video']); ?>
+                <?= embed_youtube_video($post['video']); ?>
             </div>
           <?php endif; ?>
           <div class="post__indicators">

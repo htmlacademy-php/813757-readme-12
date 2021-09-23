@@ -10,6 +10,7 @@ if (isset($_GET['post-id'])) {
 
     if (!$result) {
         print("Ошибка подготовки запроса: " . mysqli_error($connect));
+        exit();
     }
 
     mysqli_close($connect);

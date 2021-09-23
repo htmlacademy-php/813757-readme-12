@@ -156,6 +156,12 @@ function include_template($name, array $data = [])
  */
 function check_youtube_url($url)
 {
+    $videoUrl = filter_var($url, FILTER_VALIDATE_URL);
+
+    if (!$videoUrl) {
+        return 'YOUTUBE ссылка неверна!';
+    }
+
     $id = extract_youtube_id($url);
 
     set_error_handler(function () {}, E_WARNING);
@@ -261,4 +267,170 @@ function generate_random_date($index)
     $dt = date('Y-m-d H:i:s', $ts);
 
     return $dt;
+}
+
+/*проверка длины*/
+function isCorrectLength(string $name, int $min, int $max) {
+    $len = mb_strlen($_POST[$name]);
+
+    if ($len < $min || $len > $max) {
+        return "Значение должно быть от $min до $max символов";
+    }
+}
+
+/*валидация поля с тегами*/
+function getTags($tags) {
+    $string = strlen($_POST[$tags]);
+
+    if (empty($string)) {
+        return 'Введите хотя бы один тег!';
+    }
+}
+
+/*валидация поля с ссылкой*/
+function validateUrl($name) {
+    if (!filter_var($name, FILTER_VALIDATE_URL)) {
+        return 'Введите правильную ссылку! Типа https://www.htmlacademy.ru';
+    }
+}
+
+/*валидация загрузки фото*/
+function validateFile($file) {
+    $fileName = $_FILES[$file]['name'];
+    $fileType = $_FILES[$file]['type'];
+    $imageSize = $_FILES[$file]['size'];
+    $filePath = __DIR__.'/uploads/';
+    $validExtensions = ['image/png', 'image/jpeg', 'image/gif'];
+
+    if (empty($fileName)) {
+        return 'Пожалуйста, выберите изображение!';
+    }
+
+    if (in_array($fileType, $validExtensions)) {
+
+        if (file_exists($filePath.$fileName)) {
+            return 'Файл с таким именем существует!';
+        }
+
+        if ($imageSize > 5000000) {
+            return 'Извините, ваш файл слишком велик!';
+        }
+
+    } else {
+        return 'Выберите допустимый формат файла!(png, jpeg, gif)';
+    }
+
+}
+
+/*проверяет наличие тега в БД и если он отсутствует добавляет его в БД*/
+function upsertTags($inputTags, $connect) {
+    $tagsId = [];
+    $tags = explode(' ', $inputTags);
+
+    $query = "SELECT id, hashtag FROM hashtags WHERE hashtag IN ('" . implode("', '", $tags) . "')";
+
+    $result = mysqli_query($connect, $query);
+
+    if (!$result) {
+        print("Ошибка подготовки запроса: " . mysqli_error($connect));
+        exit();
+    }
+
+    $dbTagsRaw = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+    $newTags = [];
+
+    $dbTags = array_column($dbTagsRaw, 'hashtag');
+
+    foreach ($tags as $tag) {
+        if (!in_array($tag, $dbTags)) {
+            $newTags[] = $tag;
+        }
+    }
+
+    $count = count($newTags);
+
+    if ($count === 0) {
+        foreach ($dbTagsRaw as $dbTag) {
+            $tagsId[] = $dbTag['id'];
+        }
+    } elseif ($count >= 1) {
+        foreach ($newTags as $newTag) {
+            $query = "INSERT INTO hashtags (hashtag) VALUES ('" . $newTag . "')";
+            mysqli_query($connect, $query);
+            $lastId = mysqli_insert_id($connect);
+            $tagsId[] = $lastId;
+        }
+    }
+
+    return $tagsId;
+
+}
+
+/*обрезает строку, если длина больше 300 символов*/
+function getCutString($string, $limit = 300) {
+    if (mb_strlen($string, "UTF-8") > $limit) {
+        $words = explode(" ", $string);
+        $count = 0;
+        $cutString = "";
+        $newWords = [];
+
+        foreach ($words as $elem) {
+            $count += mb_strlen($elem, "UTF-8");
+
+            if ($count < $limit) {
+                array_push($newWords, $elem);
+            };
+
+        };
+
+        $cutString = implode(" ", $newWords);
+
+        return "<p>{$cutString}...</p><a class=\"post-text__more-link\" href=\"#\">Читать далее</a>";
+    }
+
+    return "<p>{$string}</p>";
+
+}
+
+/*возвращает разницу во времени */
+function getRelativeFormat($index) {
+    $currentDate = new DateTime("", new DateTimeZone("Europe/Moscow"));
+    $publicationDate = new DateTime(generate_random_date($index));
+    $difference = $currentDate->diff($publicationDate);
+    $minutes = $difference->i;
+    $hours = $difference->h;
+    $days = $difference->d;
+    $weeks = floor($days / 7);
+    $months = $difference->m;
+
+    $minute = get_noun_plural_form($minutes, 'минуту', 'минуты', 'минут');
+    $hour = get_noun_plural_form($hours, 'час', 'часа', 'часов');
+    $day = get_noun_plural_form($days, 'день', 'дня', 'дней');
+    $week = get_noun_plural_form($weeks, 'неделю', 'недели', 'недель');
+    $month = get_noun_plural_form($months, 'месяц', 'месяца', 'месяцев');
+
+    if ($months > 0) {
+        $timeDifference = "{$months} {$month} назад";
+    } elseif ($weeks > 0) {
+        $timeDifference = "{$weeks} {$week} назад";
+    } elseif ($days > 0) {
+        $timeDifference = "{$days} {$day} назад";
+    } elseif ($hours > 0) {
+        $timeDifference = "{$hours} {$hour} назад";
+    } elseif ($minutes > 0) {
+        $timeDifference = "{$minutes} {$minute} назад";
+    }
+
+    return $timeDifference;
+}
+
+/*возвращает дату публикации */
+function getPublicationTime($key) {
+    return (new DateTime(generate_random_date($key)))->format("c");
+}
+
+/*возвращает формат даты */
+function getFormatTime($key) {
+    return (new DateTime(generate_random_date($key)))->format("d.m.Y H:i");
 }
