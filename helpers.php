@@ -434,3 +434,17 @@ function getPublicationTime($key) {
 function getFormatTime($key) {
     return (new DateTime(generate_random_date($key)))->format("d.m.Y H:i");
 }
+
+/*валидация поля email */
+function validateEmail($name) {
+    if (!filter_input(INPUT_POST, $name, FILTER_VALIDATE_EMAIL)) {
+        return "Введите корректный email";
+    }
+}
+
+/*сравнение значений полей */
+function compareValues($firstValue, $secondValue) {
+    if ($firstValue !== $secondValue || empty($secondValue)) {
+        return "Пароли не совпадают!";
+    }
+}

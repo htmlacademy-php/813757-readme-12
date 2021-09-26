@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 $host = '813757-readme-12';
 $login = 'root';
