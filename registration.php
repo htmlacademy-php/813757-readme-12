@@ -35,19 +35,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
 
-    $selectEmails = mysqli_query($connect, "SELECT email FROM users");
-    if (!$selectEmails) {
+    $selectEmail = mysqli_query($connect, "SELECT email FROM users WHERE email = '{$_POST['email']}'");
+
+    if (!$selectEmail) {
         print("Ошибка подготовки запроса: " . mysqli_error($connect));
         exit();
     }
 
-    $selectedEmails = mysqli_fetch_all($selectEmails, MYSQLI_ASSOC);
-    $dbEmails = array_column($selectedEmails, 'email');
+    $selectedEmail = mysqli_fetch_assoc($selectEmail);
 
-    foreach ($dbEmails as $dbEmail) {
-        if ($dbEmail === $_POST['email']) {
-            $errors['email'] = "Пользователь с таким email уже существует!";
-        }
+    if ($selectedEmail) {
+        $errors['email'] = "Пользователь с таким email уже существует!";
     }
 
     $errors = array_filter($errors);
