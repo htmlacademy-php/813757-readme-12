@@ -34,8 +34,9 @@
                 </button>
             </div>
         </form>
+
         <div class="header__nav-wrapper">
-            <?php if ($is_auth === 1): ?>
+            <?php if ($_SERVER['REQUEST_URI'] !== "/registration.php"): ?>
             <nav class="header__nav">
                 <ul class="header__my-nav">
                     <li class="header__my-page header__my-page--popular">
@@ -54,7 +55,6 @@
                         </a>
                     </li>
                 </ul>
-                <!-- здесь должен быть PHP код, который показывает следующий тег по условию -->
                 <ul class="header__user-nav">
                     <li class="header__profile">
                         <a class="header__profile-link" href="#">
@@ -105,6 +105,15 @@
                     </li>
                 </ul>
             </nav>
+            <?php else: ?>
+            <ul class="header__user-nav">
+                <li class="header__authorization">
+                    <a class="header__user-button header__authorization-button button" href="login.html">Вход</a>
+                </li>
+                <li>
+                    <a class="header__user-button header__user-button--active header__register-button button">Регистрация</a>
+                </li>
+            </ul>
             <?php endif; ?>
         </div>
     </div>
@@ -169,7 +178,7 @@
     </div>
 </footer>
 <script src="libs/dropzone.js"></script>
-<script src="js/dropzone-settings.js"></script>
+<!-- <script src="js/dropzone-settings.js"></script> -->
 <script src="js/main.js"></script>
 </body>
 </html>
