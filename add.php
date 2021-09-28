@@ -3,6 +3,12 @@
 require("helpers.php");
 require("init.php");
 
+if (!isset($_SESSION['user'])) {
+    header("Location: /index.php");
+}
+
+$userInformation = $_SESSION['user'];
+
 $types = ['quote', 'text', 'photo', 'link', 'video'];
 $russianTranslation = [
     'heading' => 'Заголовок',
@@ -147,9 +153,9 @@ $content = include_template('adding-post.php', [
 ]);
 
 $pageInformation = [
-    'userName' => 'Ivan',
+    'userName' => $userInformation['login'],
+    'avatar' => $userInformation['avatar'],
     'title' => 'readme: добавление публикации',
-    'is_auth' => rand(0, 1),
     'content' => $content
 ];
 

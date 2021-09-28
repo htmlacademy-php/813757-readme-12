@@ -3,63 +3,28 @@
 require("helpers.php");
 require("init.php");
 
-$types = ['quote', 'text', 'photo', 'link', 'video'];
+$form = $_POST;
+$errors  = [];
 
-if ($connect === false) {
-    print("Ошибка подключения: " . mysqli_connect_error());
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $requiredFields = ['login', 'password'];
+    $errors = check_required_fields($requiredFields);
+
+    $login = mysqli_real_escape_string($connect, $_POST['login']);
+    $result = mysqli_query($connect, "SELECT * FROM users WHERE login = '$login'");
+    $user = $result ? mysqli_fetch_array($result, MYSQLI_ASSOC) : null;
+
+    if (!count($errors) && $user) {
+        if (password_verify($form['password'], $user['password'])) {
+            $_SESSION['user'] = $user;
+            header("Location: feed.php");
+        } else {
+            $errors['password'] = "Неверный пароль";
+         }
+    } elseif (!empty($_POST['login']) && $user['login'] !== $_POST['login']) {
+        $errors['login'] = "Пользователь с логином {$_POST['login']} не найден";
+    }
 }
 
-$contentQuery = "SELECT * FROM content_type";
-$contentResult = mysqli_query($connect, $contentQuery);
-
-if (!$contentResult) {
-    print("Ошибка подготовки запроса: " . mysqli_error($connect));
-    exit();
-}
-
-$contentType = mysqli_fetch_all($contentResult, MYSQLI_ASSOC);
-
-$query = "SELECT p.*, ct.content_title, ct.icon_class, u.login, u.avatar FROM posts AS p JOIN content_type ct ON p.type_id = ct.id JOIN users u ON p.author_id = u.id WHERE 1";
-
-if (isset($_GET['type_id'])) {
-    $type_id = intval(filter_input(INPUT_GET, 'type_id'));
-    $query .= " AND p.type_id = $type_id";
-}
-
-$sort = isset($_GET['sort']) ? filter_input(INPUT_GET, 'sort') : "p.views_number";
-
-$order = isset($_GET['ord']) ? filter_input(INPUT_GET, 'ord') : "DESC";
-
-$query .= " ORDER BY $sort $order";
-$query .= " LIMIT 6";
-
-
-$result = mysqli_query($connect, $query);
-
-if (!$result) {
-    print("Ошибка подготовки запроса: " . mysqli_error($connect));
-    exit();
-}
-
-mysqli_close($connect);
-
-$posts = mysqli_fetch_all($result, MYSQLI_ASSOC);
-
-$content = include_template('main.php', [
-    'cards_information' => $posts,
-    'types' => $types,
-    'content_type' => $contentType,
-    'ord' => $order,
-    'sort' => $sort,
-]);
-
-$pageInformation = [
-    'userName' => 'Ivan',
-    'title' => 'readme: популярное',
-    'content' => $content,
-    'is_auth' => rand(0, 1),
-];
-
-$layout = include_template('layout.php', $pageInformation);
-
-print($layout);
+$layoutContent = include_template('index.php', ['form' => $form, 'errors' => $errors]);
+print($layoutContent);

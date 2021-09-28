@@ -448,3 +448,16 @@ function compareValues($firstValue, $secondValue) {
         return "Пароли не совпадают!";
     }
 }
+
+/*проверяет поля на заполненность */
+function check_required_fields($required_fields) {
+    $errors = [];
+
+    foreach ($required_fields as $field) {
+        if (empty($_POST[$field])) {
+            $errors[$field] = 'Поле не заполнено';
+        }
+    }
+
+    return $errors;
+}

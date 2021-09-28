@@ -36,14 +36,14 @@
                 <b class="popular__filters-caption filters__caption">Тип контента:</b>
                 <ul class="popular__filters-list filters__list">
                     <li class="popular__filters-item popular__filters-item--all filters__item filters__item--all">
-                        <a class="filters__button filters__button--ellipse filters__button--all <?= $activeClass = !isset($_GET['type_id']) ? 'filters__button--active' : ''; ?>" href="/">
+                        <a class="filters__button filters__button--ellipse filters__button--all <?= $activeClass = !isset($_GET['type_id']) ? 'filters__button--active' : ''; ?>" href="popular.php">
                             <span>Все</span>
                         </a>
                     </li>
 
-                    <?php foreach ($content_type as $type): ?>
+                    <?php foreach ($contentType as $type): ?>
                         <li class="popular__filters-item filters__item">
-                            <a class="filters__button filters__button--<?= $type['icon_class']; ?> button <?= $activeClass = isset($_GET['type_id']) && $_GET['type_id'] === $type['id'] ? 'filters__button--active' : ''; ?>" href="index.php?type_id=<?= $type['id']; ?>">
+                            <a class="filters__button filters__button--<?= $type['icon_class']; ?> button <?= $activeClass = isset($_GET['type_id']) && $_GET['type_id'] === $type['id'] ? 'filters__button--active' : ''; ?>" href="popular.php?type_id=<?= $type['id']; ?>">
                                 <span class="visually-hidden">Фото</span>
                                 <svg class="filters__icon" width="22" height="18">
                                     <use xlink:href="#icon-filter-<?= $type['icon_class']; ?>"></use>
@@ -55,32 +55,32 @@
             </div>
         </div>
         <div class="popular__posts">
-            <?php foreach ($cards_information as $key => $card_information): ?>
-                <article class="popular__post post post-<?= $card_information['icon_class'] ?>">
+            <?php foreach ($cardsInformation as $key => $cardInformation): ?>
+                <article class="popular__post post post-<?= $cardInformation['icon_class'] ?>">
                     <header class="post__header">
                         <h2>
-                            <a href="post.php?post-id=<?= $card_information['id']; ?>">
-                                <?= htmlspecialchars($card_information['title']) ?></h2>
+                            <a href="post.php?post-id=<?= $cardInformation['id']; ?>">
+                                <?= htmlspecialchars($cardInformation['title']) ?></h2>
                             </a>
                     </header>
                     <div class="post__main">
-                        <?php if ($card_information['icon_class'] === $types[0]): ?>
+                        <?php if ($cardInformation['icon_class'] === $types[0]): ?>
                         <blockquote>
                             <p>
-                                <?= htmlspecialchars($card_information['content']) ?>
+                                <?= htmlspecialchars($cardInformation['content']) ?>
                             </p>
                             <cite>Неизвестный Автор</cite>
                         </blockquote>
 
-                        <?php elseif ($card_information['icon_class'] === $types[1]): ?>
-                            <p><?= getCutString(htmlspecialchars($card_information['content'])) ?></p>
+                        <?php elseif ($cardInformation['icon_class'] === $types[1]): ?>
+                            <p><?= getCutString(htmlspecialchars($cardInformation['content'])) ?></p>
 
-                        <?php elseif ($card_information['icon_class'] === $types[2]): ?>
+                        <?php elseif ($cardInformation['icon_class'] === $types[2]): ?>
                             <div class="post-photo__image-wrapper">
-                                <img src="<?= htmlspecialchars($card_information['image']) ?>" alt="Фото от пользователя" width="360" height="240">
+                                <img src="<?= htmlspecialchars($cardInformation['image']) ?>" alt="Фото от пользователя" width="360" height="240">
                             </div>
 
-                        <?php elseif ($card_information['icon_class'] === $types[3]): ?>
+                        <?php elseif ($cardInformation['icon_class'] === $types[3]): ?>
                             <div class="post-link__wrapper">
                                 <a class="post-link__external" href="http://" title="Перейти по ссылке">
                                     <div class="post-link__info-wrapper">
@@ -88,20 +88,17 @@
                                             <img src="https://www.google.com/s2/favicons?domain=vitadental.ru" alt="Иконка">
                                         </div>
                                         <div class="post-link__info">
-                                            <h3><?= htmlspecialchars($card_information['title']) ?></h3>
+                                            <h3><?= htmlspecialchars($cardInformation['title']) ?></h3>
                                         </div>
                                     </div>
-                                    <span><?= htmlspecialchars($card_information['website_link']) ?></span>
+                                    <span><?= htmlspecialchars($cardInformation['website_link']) ?></span>
                                 </a>
                             </div>
 
-                        <?php elseif ($card_information['icon_class'] === $types[4]): ?>
+                        <?php elseif ($cardInformation['icon_class'] === $types[4]): ?>
                             <div class="post-video__block">
                                 <div class="post-video__preview">
-                                    <?= embed_youtube_cover($card_information['video']); ?>
-                                    <!--закоментировал превью к видео так как выдает ошибку http://joxi.ru/Y2LP5R9iMONKk2,
-                                     как справится не знаю, но мне кажется, что что-то не то с css-->
-                                    <!--<img src="img/coast-medium.jpg" alt="Превью к видео" width="360" height="188">-->
+                                    <?= embed_youtube_cover($cardInformation['video']); ?>
                                 </div>
                                 <a href="post-details.html" class="post-video__play-big button">
                                     <svg class="post-video__play-big-icon" width="14" height="14">
@@ -116,10 +113,10 @@
                         <div class="post__author">
                             <a class="post__author-link" href="#" title="Автор">
                                 <div class="post__avatar-wrapper">
-                                    <img class="post__author-avatar" src="img/<?= htmlspecialchars($card_information['avatar']) ?>" alt="Аватар пользователя">
+                                    <img class="post__author-avatar" src="img/<?= htmlspecialchars($cardInformation['avatar']) ?>" alt="Аватар пользователя">
                                 </div>
                                 <div class="post__info">
-                                    <b class="post__author-name"><?= htmlspecialchars($card_information['login']) ?></b>
+                                    <b class="post__author-name"><?= htmlspecialchars($cardInformation['login']) ?></b>
                                     <time class="post__time" datetime="<?= getPublicationTime($key) ?>" title="<?= getFormatTime($key); ?>"><?= getRelativeFormat($key); ?></time>
                                 </div>
                             </a>
@@ -133,7 +130,7 @@
                                     <svg class="post__indicator-icon post__indicator-icon--like-active" width="20" height="17">
                                         <use xlink:href="#icon-heart-active"></use>
                                     </svg>
-                                    <span><?= htmlspecialchars($card_information['views_number']) ?></span>
+                                    <span><?= htmlspecialchars($cardInformation['views_number']) ?></span>
                                     <span class="visually-hidden">количество лайков</span>
                                 </a>
                                 <a class="post__indicator post__indicator--comments button" href="#" title="Комментарии">

@@ -57,12 +57,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $email = $_POST['email'];
         $login = $_POST['login'];
         $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-        $avatar = $_FILES['userpic-file']['name'];
+        $avatar = "uploads/{$fileName}";
 
         $query = "INSERT INTO users (email, login, password, avatar) VALUES (?, ?, ?, ?)";
         mysqli_stmt_execute(db_get_prepare_stmt($connect, $query, [$email, $login, $password, $avatar]));
         move_uploaded_file($tmpDir,$filePath.$fileName);
-        header("Location: index.php");
+        header("Location: popular.php");
     }
 
 }
@@ -73,9 +73,7 @@ $content = include_template('registration-page.php', [
 ]);
 
 $pageInformation = [
-    'userName' => 'Ivan',
     'title' => 'readme: регистрация',
-    'is_auth' => rand(0, 1),
     'content' => $content
 ];
 

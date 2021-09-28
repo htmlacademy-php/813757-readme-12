@@ -10,7 +10,7 @@ VALUES
 /*добавляет выдуманных пользователей*/
 INSERT INTO users (registration_date, email, login, password, avatar)
 VALUES
-('2021.01.02 20:17:21', 'danila@mail.ru', 'Лариса', 'dan09', 'userpic-larisa-small.jpg'),
+('2021.01.02 20:17:21', 'danila@mail.ru', 'Лариса', '12345678910', 'userpic-larisa-small.jpg'),
 ('2021.06.22 05:05:05', 'liza@yandex.ru', 'Владик', 'liza06', 'userpic.jpg'),
 ('2021.08.13 17:05:43', 'bety@yandex.ru', 'Виктор', 'bety24', 'userpic-mark.jpg');
 
