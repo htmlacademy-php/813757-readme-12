@@ -36,7 +36,7 @@
         </form>
 
         <div class="header__nav-wrapper">
-            <?php if ($is_auth === 1): ?>
+            <?php if ($_SERVER['REQUEST_URI'] !== "/registration.php"): ?>
             <nav class="header__nav">
                 <ul class="header__my-nav">
                     <li class="header__my-page header__my-page--popular">
