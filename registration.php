@@ -34,8 +34,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors['error'] = validateFile('userpic-file');
     }
 
-
-    $selectEmail = mysqli_query($connect, "SELECT email FROM users WHERE email = '{$_POST['email']}'");
+    $email = mysqli_real_escape_string($connect, $_POST['email']);
+    $selectEmail = mysqli_query($connect, "SELECT email FROM users WHERE email = '$email'");
 
     if (!$selectEmail) {
         print("Ошибка подготовки запроса: " . mysqli_error($connect));
