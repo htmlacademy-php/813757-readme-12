@@ -10,6 +10,7 @@ if (!isset($_SESSION['user'])) {
 $userInformation = $_SESSION['user'];
 
 $types = ['quote', 'text', 'photo', 'link', 'video'];
+$menuElements = ['popular', 'feed', 'messages'];
 $russianTranslation = [
     'heading' => 'Заголовок',
     'cite-text' => 'Текст цитаты',
@@ -156,6 +157,7 @@ $pageInformation = [
     'userName' => $userInformation['login'],
     'avatar' => $userInformation['avatar'],
     'title' => 'readme: добавление публикации',
+    'menuElements' => $menuElements,
     'content' => $content
 ];
 

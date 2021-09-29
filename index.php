@@ -8,7 +8,7 @@ $errors  = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $requiredFields = ['login', 'password'];
-    $errors = check_required_fields($requiredFields);
+    $errors = checkRequiredFields($requiredFields);
 
     $login = mysqli_real_escape_string($connect, $_POST['login']);
     $result = mysqli_query($connect, "SELECT * FROM users WHERE login = '$login'");

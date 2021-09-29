@@ -10,9 +10,9 @@ if (!isset($_SESSION['user'])) {
 $userInformation = $_SESSION['user'];
 
 $types = ['quote', 'text', 'photo', 'link', 'video'];
-$myNavs = ['popular', 'feed', 'messages'];
+$menuElements = ['popular', 'feed', 'messages'];
 
-if ($connect === false) {
+if (!$connect) {
     print("Ошибка подключения: " . mysqli_connect_error());
 }
 
@@ -37,9 +37,7 @@ $sort = isset($_GET['sort']) ? filter_input(INPUT_GET, 'sort') : "p.views_number
 
 $order = isset($_GET['ord']) ? filter_input(INPUT_GET, 'ord') : "DESC";
 
-$query .= " ORDER BY $sort $order";
-$query .= " LIMIT 6";
-
+$query .= " ORDER BY $sort $order LIMIT 6";
 
 $result = mysqli_query($connect, $query);
 
@@ -65,7 +63,7 @@ $pageInformation = [
     'avatar' => $userInformation['avatar'],
     'title' => 'readme: популярное',
     'content' => $content,
-    'myNavs' => $myNavs
+    'menuElements' => $menuElements
 ];
 
 $layout = include_template('layout.php', $pageInformation);

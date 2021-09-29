@@ -40,9 +40,9 @@
             <nav class="header__nav">
                 <ul class="header__my-nav">
 
-                <?php foreach ($myNavs as $myNav): ?>
-                    <li class="header__my-page header__my-page--<?= $myNav ?>">
-                        <a class="header__page-link <?= $activeClass =  $_SERVER['REQUEST_URI'] === ('/' . $myNav . '.php') ? 'header__page-link--active' : ''; ?>" href="<?= $myNav ?>.php" title="Моя лента">
+                <?php foreach ($menuElements as $menuElement): ?>
+                    <li class="header__my-page header__my-page--<?= $menuElement ?>">
+                        <a class="header__page-link <?= $activeClass =  $_SERVER['REQUEST_URI'] === ('/' . $menuElement . '.php') ? 'header__page-link--active' : ''; ?>" href="<?= $menuElement ?>.php" title="Моя лента">
                             <span class="visually-hidden">Моя лента</span>
                         </a>
                     </li>

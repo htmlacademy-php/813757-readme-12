@@ -450,10 +450,10 @@ function compareValues($firstValue, $secondValue) {
 }
 
 /*проверяет поля на заполненность */
-function check_required_fields($required_fields) {
+function checkRequiredFields($requiredFields) {
     $errors = [];
 
-    foreach ($required_fields as $field) {
+    foreach ($requiredFields as $field) {
         if (empty($_POST[$field])) {
             $errors[$field] = 'Поле не заполнено';
         }

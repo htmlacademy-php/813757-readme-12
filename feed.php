@@ -9,7 +9,7 @@ if (!isset($_SESSION['user'])) {
 
 $userInformation = $_SESSION['user'];
 
-$myNavs = ['popular', 'feed', 'messages'];
+$menuElements = ['popular', 'feed', 'messages'];
 
 $content = include_template('feed.php', [
 ]);
@@ -18,7 +18,7 @@ $pageInformation = [
     'userName' => $userInformation['login'],
     'avatar' => $userInformation['avatar'],
     'title' => 'readme: моя лента',
-    'myNavs' => $myNavs,
+    'menuElements' => $menuElements,
     'content' => $content
 ];
 

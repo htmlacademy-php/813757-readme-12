@@ -8,7 +8,7 @@ if (!isset($_SESSION['user'])) {
 }
 
 $userInformation = $_SESSION['user'];
-$myNavs = ['popular', 'feed', 'messages'];
+$menuElements = ['popular', 'feed', 'messages'];
 
 if (isset($_GET['post-id'])) {
     $postId = intval(filter_input(INPUT_GET, 'post-id'));
@@ -37,7 +37,7 @@ $pageInformation = [
     'avatar' => $userInformation['avatar'],
     'title' => 'readme: популярное',
     'content' => $content,
-    'myNavs' => $myNavs,
+    'menuElements' => $menuElements,
 ];
 
 $layout = include_template('layout.php', $pageInformation);
