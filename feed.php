@@ -11,6 +11,12 @@ $userInformation = $_SESSION['user'];
 
 $menuElements = ['popular', 'feed', 'messages'];
 
+$russianValues = [
+    'popular' => 'Популярный контент',
+    'feed' => 'Моя лента',
+    'messages' => 'Личные сообщения',
+];
+
 $content = include_template('feed.php', [
 ]);
 
@@ -19,7 +25,8 @@ $pageInformation = [
     'avatar' => $userInformation['avatar'],
     'title' => 'readme: моя лента',
     'menuElements' => $menuElements,
-    'content' => $content
+    'content' => $content,
+    'russianValues'=> $russianValues
 ];
 
 $layout = include_template('layout.php', $pageInformation);

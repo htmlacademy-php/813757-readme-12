@@ -40,10 +40,10 @@
             <nav class="header__nav">
                 <ul class="header__my-nav">
 
-                <?php foreach ($menuElements as $menuElement): ?>
+                <?php foreach ($menuElements as $key => $menuElement): ?>
                     <li class="header__my-page header__my-page--<?= $menuElement ?>">
-                        <a class="header__page-link <?= $activeClass =  $_SERVER['REQUEST_URI'] === ('/' . $menuElement . '.php') ? 'header__page-link--active' : ''; ?>" href="<?= $menuElement ?>.php" title="Моя лента">
-                            <span class="visually-hidden">Моя лента</span>
+                        <a class="header__page-link <?= $activeClass =  $_SERVER['REQUEST_URI'] === ('/' . $menuElement . '.php') ? 'header__page-link--active' : ''; ?>" href="<?= $menuElement ?>.php" title="<?= $russianValues[$menuElement] ?>">
+                            <span class="visually-hidden"><?= $russianValues[$menuElement] ?></span>
                         </a>
                     </li>
                 <?php endforeach; ?>
