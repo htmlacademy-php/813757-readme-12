@@ -11,6 +11,12 @@ $userInformation = $_SESSION['user'];
 
 $types = ['quote', 'text', 'photo', 'link', 'video'];
 $menuElements = ['popular', 'feed', 'messages'];
+$russianValues = [
+    'popular' => 'Популярный контент',
+    'feed' => 'Моя лента',
+    'messages' => 'Личные сообщения',
+];
+
 $russianTranslation = [
     'heading' => 'Заголовок',
     'cite-text' => 'Текст цитаты',
@@ -158,7 +164,8 @@ $pageInformation = [
     'avatar' => $userInformation['avatar'],
     'title' => 'readme: добавление публикации',
     'menuElements' => $menuElements,
-    'content' => $content
+    'content' => $content,
+    'russianValues'=> $russianValues
 ];
 
 $layout = include_template('layout.php', $pageInformation);

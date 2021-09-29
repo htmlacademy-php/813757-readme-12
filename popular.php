@@ -11,6 +11,11 @@ $userInformation = $_SESSION['user'];
 
 $types = ['quote', 'text', 'photo', 'link', 'video'];
 $menuElements = ['popular', 'feed', 'messages'];
+$russianValues = [
+    'popular' => 'Популярный контент',
+    'feed' => 'Моя лента',
+    'messages' => 'Личные сообщения',
+];
 
 if (!$connect) {
     print("Ошибка подключения: " . mysqli_connect_error());
@@ -63,7 +68,8 @@ $pageInformation = [
     'avatar' => $userInformation['avatar'],
     'title' => 'readme: популярное',
     'content' => $content,
-    'menuElements' => $menuElements
+    'menuElements' => $menuElements,
+    'russianValues'=> $russianValues
 ];
 
 $layout = include_template('layout.php', $pageInformation);

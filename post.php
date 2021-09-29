@@ -9,6 +9,11 @@ if (!isset($_SESSION['user'])) {
 
 $userInformation = $_SESSION['user'];
 $menuElements = ['popular', 'feed', 'messages'];
+$russianValues = [
+    'popular' => 'Популярный контент',
+    'feed' => 'Моя лента',
+    'messages' => 'Личные сообщения',
+];
 
 if (isset($_GET['post-id'])) {
     $postId = intval(filter_input(INPUT_GET, 'post-id'));
@@ -38,6 +43,7 @@ $pageInformation = [
     'title' => 'readme: популярное',
     'content' => $content,
     'menuElements' => $menuElements,
+    'russianValues'=> $russianValues
 ];
 
 $layout = include_template('layout.php', $pageInformation);
