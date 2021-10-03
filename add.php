@@ -2,20 +2,22 @@
 
 require("helpers.php");
 require("init.php");
+require("constants.php");
 
 if (!isset($_SESSION['user'])) {
     header("Location: /index.php");
 }
 
-$userInformation = $_SESSION['user'];
+$user = $_SESSION['user'];
+$result = mysqli_query($connect, "SELECT login, avatar FROM users WHERE id = '$user'");
+$userInformation = mysqli_fetch_array($result, MYSQLI_ASSOC);
+
+if (empty($userInformation['avatar'])) {
+    $userInformation['avatar'] = "icon-input-user.svg";
+}
 
 $types = ['quote', 'text', 'photo', 'link', 'video'];
 $menuElements = ['popular', 'feed', 'messages'];
-$russianValues = [
-    'popular' => 'Популярный контент',
-    'feed' => 'Моя лента',
-    'messages' => 'Личные сообщения',
-];
 
 $russianTranslation = [
     'heading' => 'Заголовок',
@@ -122,13 +124,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     if (!empty($_FILES['userpic-file-photo']['name'])) {
                         $photoFile = $_FILES['userpic-file-photo']['name'];
-                        $content = " image='uploads/".$photoFile."'";
+                        $content = " image='$photoFile";
                     } else {
-                        $antiInjection = mysqli_real_escape_string($connect, $_POST['photo-url']);
-                         $content = " image='$antiInjection'";
+                        $link = mysqli_real_escape_string($connect, $_POST['photo-url']);
+
+                        if (file_get_contents($link) === false || empty(file_get_contents($link))) {
+                            $errors['photo-url'] = "По введенной вами ссылке файл не найден";
+                        }
+
+                        $baseName = pathinfo($link, PATHINFO_BASENAME);
+                        copy($link,  $_SERVER['DOCUMENT_ROOT'].'/uploads/'. $baseName);
+
+                        $content = " image='$baseName'";
                     }
                     break;
             }
+            // позже удалю, нужен для тестирования
+            // https://funart.pro/uploads/posts/2021-07/1625630616_29-funart-pro-p-ptitsa-sekretar-zhivotnie-krasivo-foto-36.jpg
 
             $query = "INSERT INTO posts SET title='$title',".$content.", type_id=$typeId, author_id=$userId";
 
@@ -165,7 +177,7 @@ $pageInformation = [
     'title' => 'readme: добавление публикации',
     'menuElements' => $menuElements,
     'content' => $content,
-    'russianValues'=> $russianValues
+    'RUSSIAN_VALUES'=> RUSSIAN_VALUES
 ];
 
 $layout = include_template('layout.php', $pageInformation);

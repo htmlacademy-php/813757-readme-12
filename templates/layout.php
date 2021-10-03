@@ -42,8 +42,8 @@
 
                 <?php foreach ($menuElements as $key => $menuElement): ?>
                     <li class="header__my-page header__my-page--<?= $menuElement ?>">
-                        <a class="header__page-link <?= $activeClass =  $_SERVER['REQUEST_URI'] === ('/' . $menuElement . '.php') ? 'header__page-link--active' : ''; ?>" href="<?= $menuElement ?>.php" title="<?= $russianValues[$menuElement] ?>">
-                            <span class="visually-hidden"><?= $russianValues[$menuElement] ?></span>
+                        <a class="header__page-link <?= $activeClass =  $_SERVER['REQUEST_URI'] === ('/' . $menuElement . '.php') ? 'header__page-link--active' : ''; ?>" href="<?= $menuElement ?>.php" title="<?= RUSSIAN_VALUES[$menuElement] ?>">
+                            <span class="visually-hidden"><?= RUSSIAN_VALUES[$menuElement] ?></span>
                         </a>
                     </li>
                 <?php endforeach; ?>
@@ -52,7 +52,7 @@
                     <li class="header__profile">
                         <a class="header__profile-link" href="#">
                             <div class="header__avatar-wrapper">
-                                <img class="header__profile-avatar" src="<?= $avatar ?>" alt="Аватар профиля">
+                                <img class="header__profile-avatar" src="uploads/<?= $avatar ?>" alt="Аватар профиля">
                             </div>
                             <div class="header__profile-name">
                                 <span>

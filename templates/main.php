@@ -60,8 +60,9 @@
                     <header class="post__header">
                         <h2>
                             <a href="post.php?post-id=<?= $cardInformation['id']; ?>">
-                                <?= htmlspecialchars($cardInformation['title']) ?></h2>
+                                <?= htmlspecialchars($cardInformation['title']) ?>
                             </a>
+                        </h2>
                     </header>
                     <div class="post__main">
                         <?php if ($cardInformation['icon_class'] === $types[0]): ?>
@@ -77,7 +78,7 @@
 
                         <?php elseif ($cardInformation['icon_class'] === $types[2]): ?>
                             <div class="post-photo__image-wrapper">
-                                <img src="<?= htmlspecialchars($cardInformation['image']) ?>" alt="Фото от пользователя" width="360" height="240">
+                                <img src="uploads/<?= htmlspecialchars($cardInformation['image']) ?>" alt="Фото от пользователя" width="360" height="240">
                             </div>
 
                         <?php elseif ($cardInformation['icon_class'] === $types[3]): ?>

@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $rules = [
         'email' => validateEmail('email'),
         'login' => isCorrectLength('login', 3, 10),
-        'password' => isCorrectLength('password', 10, 20),
+        'password' => isCorrectLength('password', 3, 20),
         'password-repeat' => compareValues($_POST['password'], $_POST['password-repeat'])
     ];
 
@@ -28,10 +28,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $rule = $rules[$key];
             $errors[$key] = $rule;
         }
-    }
-
-    if (isset($_FILES['userpic-file'])) {
-        $errors['error'] = validateFile('userpic-file');
     }
 
     $email = mysqli_real_escape_string($connect, $_POST['email']);
@@ -54,14 +50,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $tmpDir = $_FILES['userpic-file']['tmp_name'];
         $filePath = __DIR__.'/uploads/';
         $fileName = $_FILES['userpic-file']['name'];
-        $email = $_POST['email'];
+        $email = trim($_POST['email']);
         $login = $_POST['login'];
         $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-        $avatar = "uploads/{$fileName}";
+        $avatar = $fileName;
+
+        if (isset($_FILES['userpic-file'])) {
+            $errors['error'] = validateFile('userpic-file');
+        }
+
+        move_uploaded_file($tmpDir,$filePath.$fileName);
 
         $query = "INSERT INTO users (email, login, password, avatar) VALUES (?, ?, ?, ?)";
         mysqli_stmt_execute(db_get_prepare_stmt($connect, $query, [$email, $login, $password, $avatar]));
-        move_uploaded_file($tmpDir,$filePath.$fileName);
         header("Location: popular.php");
     }
 

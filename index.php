@@ -3,28 +3,27 @@
 require("helpers.php");
 require("init.php");
 
-$form = $_POST;
 $errors  = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $requiredFields = ['login', 'password'];
-    $errors = checkRequiredFields($requiredFields);
+    $errors = checkRequiredFields(['login', 'password']);
 
-    $login = mysqli_real_escape_string($connect, $_POST['login']);
-    $result = mysqli_query($connect, "SELECT * FROM users WHERE login = '$login'");
+    $userLogin = htmlspecialchars(trim($_POST['login']));
+    $userPassword = htmlspecialchars(trim($_POST['password']));
+    $result = mysqli_query($connect, "SELECT email, password, id FROM users WHERE email = '$userLogin'");
     $user = $result ? mysqli_fetch_array($result, MYSQLI_ASSOC) : null;
 
-    if (!count($errors) && $user) {
-        if (password_verify($form['password'], $user['password'])) {
-            $_SESSION['user'] = $user;
+    if ($user && !count($errors)) {
+        if (password_verify($userPassword, $user['password'])) {
+            $_SESSION['user'] = $user['id'];
             header("Location: feed.php");
         } else {
-            $errors['password'] = "Неверный пароль";
+            $errors['password'] = "Вы ввели неверный пароль";
          }
-    } elseif (!empty($_POST['login']) && $user['login'] !== $_POST['login']) {
-        $errors['login'] = "Пользователь с логином {$_POST['login']} не найден";
+    } elseif (!empty($userLogin) && $user['email'] !== $userLogin) {
+        $errors['login'] = "Вы ввели неверный email";
     }
 }
 
-$layoutContent = include_template('index.php', ['form' => $form, 'errors' => $errors]);
+$layoutContent = include_template('index.php', ['form' => $_POST, 'errors' => $errors]);
 print($layoutContent);

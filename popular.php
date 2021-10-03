@@ -2,20 +2,23 @@
 
 require("helpers.php");
 require("init.php");
+require("constants.php");
+
 
 if (!isset($_SESSION['user'])) {
     header("Location: /index.php");
 }
 
-$userInformation = $_SESSION['user'];
+$user = $_SESSION['user'];
+$result = mysqli_query($connect, "SELECT login, avatar FROM users WHERE id = '$user'");
+$userInformation = mysqli_fetch_array($result, MYSQLI_ASSOC);
+
+if (empty($userInformation['avatar'])) {
+    $userInformation['avatar'] = "icon-input-user.svg";
+}
 
 $types = ['quote', 'text', 'photo', 'link', 'video'];
 $menuElements = ['popular', 'feed', 'messages'];
-$russianValues = [
-    'popular' => 'Популярный контент',
-    'feed' => 'Моя лента',
-    'messages' => 'Личные сообщения',
-];
 
 if (!$connect) {
     print("Ошибка подключения: " . mysqli_connect_error());
@@ -69,7 +72,7 @@ $pageInformation = [
     'title' => 'readme: популярное',
     'content' => $content,
     'menuElements' => $menuElements,
-    'russianValues'=> $russianValues
+    'RUSSIAN_VALUES'=> RUSSIAN_VALUES
 ];
 
 $layout = include_template('layout.php', $pageInformation);
