@@ -304,10 +304,11 @@ function getTags(string $tags): string {
 * @param string $name
 * @return string
 */
-function validateUrl(string $name): string {
-    if (!filter_var($name, FILTER_VALIDATE_URL)) {
+function validateUrl(string $link): string {
+    if (!filter_var($link, FILTER_VALIDATE_URL)) {
         return 'Введите правильную ссылку! Типа https://www.htmlacademy.ru';
     }
+
     return "";
 }
 

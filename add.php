@@ -68,10 +68,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         case 'photo':
             if (!empty($_FILES['userpic-file-photo']['name'])) {
                 $rules['userpic-file-photo'] = validateFile('userpic-file-photo');
-                $tmpDir = $_FILES['userpic-file-photo']['tmp_name'];
-                $filePath = __DIR__.'/uploads/';
-                $fileName = $_FILES['userpic-file-photo']['name'];
-                move_uploaded_file($tmpDir,$filePath.$fileName);
             } else {
                 $rules['photo-url'] = validateUrl($_POST['photo-url']);
             }
@@ -89,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($errors)) {
         $title = mysqli_real_escape_string($connect, $_POST['heading']);
-        $userId = 3;
+        $userId = $user;
         $tagsAntiInjection = mysqli_real_escape_string($connect, $_POST['tags']);
         $tagsId = upsertTags($tagsAntiInjection, $connect);
 
@@ -123,16 +119,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $typeId = 3;
 
                     if (!empty($_FILES['userpic-file-photo']['name'])) {
-                        $photoFile = $_FILES['userpic-file-photo']['name'];
-                        $content = " image='$photoFile";
+                        $filePath = __DIR__.'/uploads/';
+                        $fileName = $_FILES['userpic-file-photo']['name'];
+                        move_uploaded_file($tmpDir,$filePath.$fileName);
+                        $content = " image='$fileName";
                     } else {
                         $link = mysqli_real_escape_string($connect, $_POST['photo-url']);
 
-                        if (file_get_contents($link) === false || empty(file_get_contents($link))) {
+                        if (!file_get_contents($link)) {
                             $errors['photo-url'] = "По введенной вами ссылке файл не найден";
                         }
 
                         $baseName = pathinfo($link, PATHINFO_BASENAME);
+
                         copy($link,  $_SERVER['DOCUMENT_ROOT'].'/uploads/'. $baseName);
 
                         $content = " image='$baseName'";
