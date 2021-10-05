@@ -30,7 +30,7 @@ function is_date_valid(string $date): bool
  *
  * @return mysqli_stmt Подготовленное выражение
  */
-function db_get_prepare_stmt($link, $sql, $data = [])
+function db_get_prepare_stmt($link, $sql, $data = []): object
 {
     $stmt = mysqli_prepare($link, $sql);
 
@@ -74,7 +74,6 @@ function db_get_prepare_stmt($link, $sql, $data = [])
             die($errorMsg);
         }
     }
-
     return $stmt;
 }
 
@@ -130,7 +129,7 @@ function get_noun_plural_form(int $number, string $one, string $two, string $man
  * @param array $data Ассоциативный массив с данными для шаблона
  * @return string Итоговый HTML
  */
-function include_template($name, array $data = [])
+function include_template(string $name, array $data = []): string
 {
     $name = 'templates/' . $name;
     $result = '';
@@ -154,7 +153,7 @@ function include_template($name, array $data = [])
  *
  * @return string Ошибку если валидация не прошла
  */
-function check_youtube_url($url)
+function check_youtube_url(string $url): bool
 {
     $videoUrl = filter_var($url, FILTER_VALIDATE_URL);
 
@@ -186,7 +185,7 @@ function check_youtube_url($url)
  * @param string $youtube_url Ссылка на youtube видео
  * @return string
  */
-function embed_youtube_video($youtube_url)
+function embed_youtube_video(string $youtube_url): string
 {
     $res = "";
     $id = extract_youtube_id($youtube_url);
@@ -204,7 +203,7 @@ function embed_youtube_video($youtube_url)
  * @param string $youtube_url Ссылка на youtube видео
  * @return string
  */
-function embed_youtube_cover($youtube_url)
+function embed_youtube_cover(string $youtube_url): string
 {
     $res = "";
     $id = extract_youtube_id($youtube_url);
@@ -213,16 +212,15 @@ function embed_youtube_cover($youtube_url)
         $src = sprintf("https://img.youtube.com/vi/%s/mqdefault.jpg", $id);
         $res = '<img alt="youtube cover" width="320" height="120" src="' . $src . '" />';
     }
-
     return $res;
 }
 
 /**
  * Извлекает из ссылки на youtube видео его уникальный ID
  * @param string $youtube_url Ссылка на youtube видео
- * @return array
+ * @return string
  */
-function extract_youtube_id($youtube_url)
+function extract_youtube_id(string $youtube_url): string
 {
     $id = false;
 
@@ -238,15 +236,15 @@ function extract_youtube_id($youtube_url)
             }
         }
     }
-
     return $id;
 }
 
-/**
+/** генерирует случайную дату
+ *
  * @param $index
  * @return false|string
  */
-function generate_random_date($index)
+function generate_random_date(int $index): string
 {
     $deltas = [['minutes' => 59], ['hours' => 23], ['days' => 6], ['weeks' => 4], ['months' => 11]];
     $dcnt = count($deltas);
@@ -269,33 +267,57 @@ function generate_random_date($index)
     return $dt;
 }
 
-/*проверка длины*/
-function isCorrectLength(string $name, int $min, int $max) {
-    $len = mb_strlen($_POST[$name]);
+/**
+ * проверяет длину строки в input
+ *
+ * @param string $name
+ * @param int $min
+ * @param int $max
+ * @return string
+*/
+function isCorrectLength(string $name, int $min, int $max): string {
+    $len = mb_strlen(trim($_POST[$name]));
 
     if ($len < $min || $len > $max) {
-        return "Значение должно быть от $min до $max символов";
+        return "Значение должно быть от {$min} до {$max} символов";
     }
+    return "";
 }
 
-/*валидация поля с тегами*/
-function getTags($tags) {
+/**
+ * валидация поля с тегами
+ *
+ * @param string $tags
+ * @return string
+ */
+function getTags(string $tags): string {
     $string = strlen($_POST[$tags]);
 
     if (empty($string)) {
         return 'Введите хотя бы один тег!';
     }
+    return "";
 }
 
-/*валидация поля с ссылкой*/
-function validateUrl($name) {
-    if (!filter_var($name, FILTER_VALIDATE_URL)) {
+/**
+* валидация поля с ссылкой
+* @param string $name
+* @return string
+*/
+function validateUrl(string $link): string {
+    if (!filter_var($link, FILTER_VALIDATE_URL)) {
         return 'Введите правильную ссылку! Типа https://www.htmlacademy.ru';
     }
+
+    return "";
 }
 
-/*валидация загрузки фото*/
-function validateFile($file) {
+/**
+* валидация загрузки файла
+* @param string $file
+* @return string
+*/
+function validateFile(string $file): string {
     $fileName = $_FILES[$file]['name'];
     $fileType = $_FILES[$file]['type'];
     $imageSize = $_FILES[$file]['size'];
@@ -319,11 +341,17 @@ function validateFile($file) {
     } else {
         return 'Выберите допустимый формат файла!(png, jpeg, gif)';
     }
-
+    return "";
 }
 
-/*проверяет наличие тега в БД и если он отсутствует добавляет его в БД*/
-function upsertTags($inputTags, $connect) {
+/**
+ * проверяет наличие тега в БД и если он отсутствует добавляет его в БД
+ *
+ * @param array $inputTags
+ * @param mysqli_connect $connect
+ * @return array
+ */
+function upsertTags(string $inputTags, $connect): array {
     $tagsId = [];
     $tags = explode(' ', $inputTags);
 
@@ -367,8 +395,14 @@ function upsertTags($inputTags, $connect) {
 
 }
 
-/*обрезает строку, если длина больше 300 символов*/
-function getCutString($string, $limit = 300) {
+/**
+ * обрезает строку, если длина больше 300 символов
+ *
+ * @param string $string
+ * @param int $limit
+ * @return string Итоговый HTML
+ */
+function getCutString(string $string, int $limit = 300): string {
     if (mb_strlen($string, "UTF-8") > $limit) {
         $words = explode(" ", $string);
         $count = 0;
@@ -393,8 +427,13 @@ function getCutString($string, $limit = 300) {
 
 }
 
-/*возвращает разницу во времени */
-function getRelativeFormat($index) {
+/**
+ * возвращает разницу во времени
+ *
+ * @param int $index
+ * @return string
+ */
+function getRelativeFormat(int $index): string {
     $currentDate = new DateTime("", new DateTimeZone("Europe/Moscow"));
     $publicationDate = new DateTime(generate_random_date($index));
     $difference = $currentDate->diff($publicationDate);
@@ -425,26 +464,67 @@ function getRelativeFormat($index) {
     return $timeDifference;
 }
 
-/*возвращает дату публикации */
-function getPublicationTime($key) {
+/**
+ * возвращает дату публикации
+ *
+ * @param int $key
+ * @return date
+ */
+function getPublicationTime(int $key): string {
     return (new DateTime(generate_random_date($key)))->format("c");
 }
 
-/*возвращает формат даты */
-function getFormatTime($key) {
+/**
+ * возвращает формат даты
+ *
+ * @param int $key
+ * @return format date
+ */
+function getFormatTime(int $key): string {
     return (new DateTime(generate_random_date($key)))->format("d.m.Y H:i");
 }
 
-/*валидация поля email */
-function validateEmail($name) {
+/**
+ * валидация поля email
+ *
+ * @param string $name
+ * @return string
+ */
+function validateEmail(string $name): string {
     if (!filter_input(INPUT_POST, $name, FILTER_VALIDATE_EMAIL)) {
         return "Введите корректный email";
     }
+    return "";
 }
 
-/*сравнение значений полей */
-function compareValues($firstValue, $secondValue) {
+/**
+ * сравнение значений полей
+ *
+ * @param string $firstValue
+ * @param string $secondValue
+ * @return string
+ */
+function compareValues(string $firstValue, string $secondValue): string {
     if ($firstValue !== $secondValue || empty($secondValue)) {
         return "Пароли не совпадают!";
     }
+    return "";
+}
+
+/**
+ * Проверяет поля на заполненность
+ *
+ * @param array $requiredFields
+ * @return array
+ */
+function checkRequiredFields(array $requiredFields): array {
+    $errors = [];
+
+    foreach ($requiredFields as $field) {
+        if (empty($_POST[$field])) {
+            $errors[$field] = 'Поле не заполнено';
+        }
+    }
+
+    return $errors;
 }

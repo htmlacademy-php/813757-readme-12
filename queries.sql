@@ -10,7 +10,7 @@ VALUES
 /*добавляет выдуманных пользователей*/
 INSERT INTO users (registration_date, email, login, password, avatar)
 VALUES
-('2021.01.02 20:17:21', 'danila@mail.ru', 'Лариса', 'dan09', 'userpic-larisa-small.jpg'),
+('2021.01.02 20:17:21', 'danila@mail.ru', 'Лариса', '12345678910', 'userpic-larisa-small.jpg'),
 ('2021.06.22 05:05:05', 'liza@yandex.ru', 'Владик', 'liza06', 'userpic.jpg'),
 ('2021.08.13 17:05:43', 'bety@yandex.ru', 'Виктор', 'bety24', 'userpic-mark.jpg');
 
@@ -22,8 +22,8 @@ VALUES
 
 INSERT INTO posts (title, type_id, image, views_number, author_id)
 VALUES
-('Наконец, обработал фотки!', 3, 'uploads/rock-medium.jpg', 150, 3),
-('Моя мечта', 3, 'uploads/coast-medium.jpg', 10000, 1);
+('Наконец, обработал фотки!', 3, 'rock-medium.jpg', 150, 3),
+('Моя мечта', 3, 'coast-medium.jpg', 10000, 1);
 
 INSERT INTO posts (title, type_id, website_link, views_number, author_id)
 VALUES

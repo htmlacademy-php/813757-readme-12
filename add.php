@@ -2,8 +2,23 @@
 
 require("helpers.php");
 require("init.php");
+require("constants.php");
+
+if (!isset($_SESSION['user'])) {
+    header("Location: /index.php");
+}
+
+$user = $_SESSION['user'];
+$result = mysqli_query($connect, "SELECT login, avatar FROM users WHERE id = '$user'");
+$userInformation = mysqli_fetch_array($result, MYSQLI_ASSOC);
+
+if (empty($userInformation['avatar'])) {
+    $userInformation['avatar'] = "icon-input-user.svg";
+}
 
 $types = ['quote', 'text', 'photo', 'link', 'video'];
+$menuElements = ['popular', 'feed', 'messages'];
+
 $russianTranslation = [
     'heading' => 'Заголовок',
     'cite-text' => 'Текст цитаты',
@@ -53,10 +68,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         case 'photo':
             if (!empty($_FILES['userpic-file-photo']['name'])) {
                 $rules['userpic-file-photo'] = validateFile('userpic-file-photo');
-                $tmpDir = $_FILES['userpic-file-photo']['tmp_name'];
-                $filePath = __DIR__.'/uploads/';
-                $fileName = $_FILES['userpic-file-photo']['name'];
-                move_uploaded_file($tmpDir,$filePath.$fileName);
             } else {
                 $rules['photo-url'] = validateUrl($_POST['photo-url']);
             }
@@ -74,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($errors)) {
         $title = mysqli_real_escape_string($connect, $_POST['heading']);
-        $userId = 3;
+        $userId = $user;
         $tagsAntiInjection = mysqli_real_escape_string($connect, $_POST['tags']);
         $tagsId = upsertTags($tagsAntiInjection, $connect);
 
@@ -108,14 +119,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $typeId = 3;
 
                     if (!empty($_FILES['userpic-file-photo']['name'])) {
-                        $photoFile = $_FILES['userpic-file-photo']['name'];
-                        $content = " image='uploads/".$photoFile."'";
+                        $filePath = __DIR__.'/uploads/';
+                        $fileName = $_FILES['userpic-file-photo']['name'];
+                        move_uploaded_file($tmpDir,$filePath.$fileName);
+                        $content = " image='$fileName";
                     } else {
-                        $antiInjection = mysqli_real_escape_string($connect, $_POST['photo-url']);
-                         $content = " image='$antiInjection'";
+                        $link = mysqli_real_escape_string($connect, $_POST['photo-url']);
+
+                        if (!file_get_contents($link)) {
+                            $errors['photo-url'] = "По введенной вами ссылке файл не найден";
+                        }
+
+                        $baseName = pathinfo($link, PATHINFO_BASENAME);
+
+                        copy($link,  $_SERVER['DOCUMENT_ROOT'].'/uploads/'. $baseName);
+
+                        $content = " image='$baseName'";
                     }
                     break;
             }
+            // позже удалю, нужен для тестирования
+            // https://funart.pro/uploads/posts/2021-07/1625630616_29-funart-pro-p-ptitsa-sekretar-zhivotnie-krasivo-foto-36.jpg
 
             $query = "INSERT INTO posts SET title='$title',".$content.", type_id=$typeId, author_id=$userId";
 
@@ -147,10 +171,12 @@ $content = include_template('adding-post.php', [
 ]);
 
 $pageInformation = [
-    'userName' => 'Ivan',
+    'userName' => $userInformation['login'],
+    'avatar' => $userInformation['avatar'],
     'title' => 'readme: добавление публикации',
-    'is_auth' => rand(0, 1),
-    'content' => $content
+    'menuElements' => $menuElements,
+    'content' => $content,
+    'RUSSIAN_VALUES'=> RUSSIAN_VALUES
 ];
 
 $layout = include_template('layout.php', $pageInformation);

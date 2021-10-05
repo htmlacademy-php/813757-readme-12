@@ -2,6 +2,21 @@
 
 require("helpers.php");
 require("init.php");
+require("constants.php");
+
+if (!isset($_SESSION['user'])) {
+    header("Location: /index.php");
+}
+
+$user = $_SESSION['user'];
+$result = mysqli_query($connect, "SELECT login, avatar FROM users WHERE id = '$user'");
+$userInformation = mysqli_fetch_array($result, MYSQLI_ASSOC);
+
+if (empty($userInformation['avatar'])) {
+    $userInformation['avatar'] = "icon-input-user.svg";
+}
+
+$menuElements = ['popular', 'feed', 'messages'];
 
 if (isset($_GET['post-id'])) {
     $postId = intval(filter_input(INPUT_GET, 'post-id'));
@@ -26,10 +41,12 @@ $content = include_template('post-details.php', [
 ]);
 
 $pageInformation = [
-    'userName' => 'Ivan',
+    'userName' => $userInformation['login'],
+    'avatar' => $userInformation['avatar'],
     'title' => 'readme: популярное',
     'content' => $content,
-    'is_auth' => rand(0, 1),
+    'menuElements' => $menuElements,
+    'RUSSIAN_VALUES'=> RUSSIAN_VALUES
 ];
 
 $layout = include_template('layout.php', $pageInformation);
