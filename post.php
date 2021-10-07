@@ -16,8 +16,6 @@ if (empty($userInformation['avatar'])) {
     $userInformation['avatar'] = "icon-input-user.svg";
 }
 
-$menuElements = ['popular', 'feed', 'messages'];
-
 if (isset($_GET['post-id'])) {
     $postId = intval(filter_input(INPUT_GET, 'post-id'));
     $query = "SELECT p.*, ct.content_title, ct.icon_class, u.login, u.avatar FROM posts AS p JOIN content_type ct ON p.type_id = ct.id JOIN users u ON p.author_id = u.id WHERE p.id = $postId";
@@ -33,11 +31,9 @@ if (isset($_GET['post-id'])) {
     $post = mysqli_fetch_assoc($result);
 }
 
-$types = ['quote', 'text', 'photo', 'link', 'video'];
-
 $content = include_template('post-details.php', [
     'post' => $post,
-    'types' => $types
+    'types' => TYPES
 ]);
 
 $pageInformation = [
@@ -45,8 +41,8 @@ $pageInformation = [
     'avatar' => $userInformation['avatar'],
     'title' => 'readme: популярное',
     'content' => $content,
-    'menuElements' => $menuElements,
-    'RUSSIAN_VALUES'=> RUSSIAN_VALUES
+    'menuElements' => MENU_ELEMENTS,
+    'russianValues'=> RUSSIAN_VALUES
 ];
 
 $layout = include_template('layout.php', $pageInformation);

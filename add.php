@@ -16,9 +16,6 @@ if (empty($userInformation['avatar'])) {
     $userInformation['avatar'] = "icon-input-user.svg";
 }
 
-$types = ['quote', 'text', 'photo', 'link', 'video'];
-$menuElements = ['popular', 'feed', 'messages'];
-
 $russianTranslation = [
     'heading' => 'Заголовок',
     'cite-text' => 'Текст цитаты',
@@ -31,14 +28,7 @@ $russianTranslation = [
 ];
 
 $formType = $_GET['form-type'] ?? "";
-$contentType = mysqli_query($connect, "SELECT * FROM content_type");
-
-if (!$contentType) {
-    print("Ошибка подготовки запроса: " . mysqli_error($connect));
-    exit();
-}
-
-$contentTypes = mysqli_fetch_all($contentType, MYSQLI_ASSOC);
+$contentTypes = mysqli_fetch_all(getContent($connect, "content_type"), MYSQLI_ASSOC);
 
 $errors = [];
 
@@ -165,7 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $content = include_template('adding-post.php', [
     'contentTypes' => $contentTypes,
     'formType' => $formType,
-    'types' => $types,
+    'types' => TYPES,
     'errors' => $errors,
     'russianTranslation' => $russianTranslation
 ]);
@@ -174,9 +164,9 @@ $pageInformation = [
     'userName' => $userInformation['login'],
     'avatar' => $userInformation['avatar'],
     'title' => 'readme: добавление публикации',
-    'menuElements' => $menuElements,
+    'menuElements' => MENU_ELEMENTS,
     'content' => $content,
-    'RUSSIAN_VALUES'=> RUSSIAN_VALUES
+    'russianValues'=> RUSSIAN_VALUES
 ];
 
 $layout = include_template('layout.php', $pageInformation);

@@ -528,3 +528,19 @@ function checkRequiredFields(array $requiredFields): array {
 
     return $errors;
 }
+
+/**
+ * получает данные из БД, в случае ошибки подготовки запроса предупреждает об этом
+ * @param mysqli_connect $connect
+ * @param таблица в которой делается выборка из БД
+ */
+function getContent($connect, string $table) {
+    $contentType = mysqli_query($connect, "SELECT * FROM $table");
+
+    if (!$contentType) {
+        print("Ошибка подготовки запроса: " . mysqli_error($connect));
+        exit();
+    }
+
+    return $contentType;
+}

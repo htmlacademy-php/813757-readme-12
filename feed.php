@@ -27,7 +27,7 @@ $pageInformation = [
     'title' => 'readme: моя лента',
     'menuElements' => $menuElements,
     'content' => $content,
-    'RUSSIAN_VALUES'=> RUSSIAN_VALUES
+    'russianValues'=> RUSSIAN_VALUES
 ];
 
 $layout = include_template('layout.php', $pageInformation);

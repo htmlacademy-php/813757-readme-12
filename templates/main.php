@@ -7,7 +7,7 @@
                 <b class="popular__sorting-caption sorting__caption">Сортировка:</b>
                 <ul class="popular__sorting-list sorting__list">
                     <li class="sorting__item sorting__item--popular">
-                        <a class="sorting__link sorting__link--active" href="?sort=views_number&ord=<?= $order === 'desc' ? 'asc' : 'desc' ?>">
+                        <a class="sorting__link sorting__link--active" href="?sort=views_number&order=<?= $order === 'desc' ? 'asc' : 'desc' ?>">
                             <span>Популярность</span>
                             <svg class="sorting__icon" width="10" height="12">
                                 <use xlink:href="#icon-sort"></use>
@@ -41,7 +41,7 @@
                         </a>
                     </li>
 
-                    <?php foreach ($contentType as $type): ?>
+                    <?php foreach ($contentTypes as $type): ?>
                         <li class="popular__filters-item filters__item">
                             <a class="filters__button filters__button--<?= $type['icon_class']; ?> button <?= $activeClass = isset($_GET['type_id']) && $_GET['type_id'] === $type['id'] ? 'filters__button--active' : ''; ?>" href="popular.php?type_id=<?= $type['id']; ?>">
                                 <span class="visually-hidden">Фото</span>

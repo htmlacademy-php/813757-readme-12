@@ -8,8 +8,8 @@ $errors  = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $errors = checkRequiredFields(['login', 'password']);
 
-    $userLogin = htmlspecialchars(trim($_POST['login']));
-    $userPassword = htmlspecialchars(trim($_POST['password']));
+    $userLogin = mysqli_real_escape_string($connect, trim($_POST['login']));
+    $userPassword = mysqli_real_escape_string($connect, trim($_POST['password']));
     $result = mysqli_query($connect, "SELECT email, password, id FROM users WHERE email = '$userLogin'");
     $user = $result ? mysqli_fetch_array($result, MYSQLI_ASSOC) : null;
 

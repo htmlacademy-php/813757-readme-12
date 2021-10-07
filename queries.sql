@@ -1,3 +1,5 @@
+SET NAMES utf8;
+
 /*добавляет список типов контента для поста*/
 INSERT INTO content_type (content_title, icon_class)
 VALUES
