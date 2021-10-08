@@ -24,7 +24,7 @@ $russianTranslation = [
     'photo-url' => 'Ссылка из интернета',
     'post-text' => 'Текст поста',
     'video-url' => 'Ссылка YOUTUBE',
-    'error' => 'Выберите фото'
+    'userpic-file-photo' => 'Выберите фото'
 ];
 
 $formType = $_GET['form-type'] ?? "";
@@ -57,10 +57,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         case 'photo':
             if (!empty($_FILES['userpic-file-photo']['name'])) {
-                $rules['userpic-file-photo'] = validateFile('userpic-file-photo');
+                $errors['userpic-file-photo'] = validateFile('userpic-file-photo');
             } else {
                 $rules['photo-url'] = validateUrl($_POST['photo-url']);
-            }
+                $validExtensions = ['image/png', 'image/jpeg', 'image/gif'];
+                $link = mysqli_real_escape_string($connect, $_POST['photo-url']);
+                $baseName = pathinfo($link, PATHINFO_BASENAME);
+
+                if (empty($rules['photo-url'])) {
+                    copy($link,  $_SERVER['DOCUMENT_ROOT'].'/uploads/'. $baseName);
+
+                    if (!in_array(mime_content_type("uploads/" . $baseName), $validExtensions)) {
+                        $rules['photo-url'] = "По введенной вами ссылке файл не найден";
+                        unlink("uploads/".$baseName);
+                    }
+                }
+           }
             break;
     }
 
@@ -108,21 +120,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $typeId = 3;
 
                     if (!empty($_FILES['userpic-file-photo']['name'])) {
-                        $filePath = __DIR__.'/uploads/';
                         $fileName = $_FILES['userpic-file-photo']['name'];
-                        move_uploaded_file($tmpDir,$filePath.$fileName);
-                        $content = " image='$fileName";
+                        $tmpDir = $_FILES["userpic-file-photo"]["tmp_name"];
+                        $filePath = __DIR__.'/uploads/';
+                        move_uploaded_file($tmpDir, $filePath.$fileName);
+                        $content = " image='$fileName'";
                     } else {
                         $link = mysqli_real_escape_string($connect, $_POST['photo-url']);
-
-                        if (!file_get_contents($link)) {
-                            $errors['photo-url'] = "По введенной вами ссылке файл не найден";
-                        }
-
                         $baseName = pathinfo($link, PATHINFO_BASENAME);
-
-                        copy($link,  $_SERVER['DOCUMENT_ROOT'].'/uploads/'. $baseName);
-
                         $content = " image='$baseName'";
                     }
                     break;
@@ -130,8 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // позже удалю, нужен для тестирования
             // https://funart.pro/uploads/posts/2021-07/1625630616_29-funart-pro-p-ptitsa-sekretar-zhivotnie-krasivo-foto-36.jpg
 
-            $query = "INSERT INTO posts SET title='$title',".$content.", type_id=$typeId, author_id=$user";
-
+            $query = "INSERT INTO posts SET title='$title',".$content.", type_id=$typeId, author_id='$user'";
             $result = mysqli_query($connect, $query);
 
             if (!$result) {
