@@ -35,7 +35,7 @@ $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $rules = [
         'heading' => isCorrectLength('heading', 10, 35),
-        'tags' => getTags('tags'),
+        'tags' => getTags($_POST['tags']),
     ];
 
     switch ($formType) {
@@ -75,7 +75,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($errors)) {
         $title = mysqli_real_escape_string($connect, $_POST['heading']);
-        $userId = $user;
         $tagsAntiInjection = mysqli_real_escape_string($connect, $_POST['tags']);
         $tagsId = upsertTags($tagsAntiInjection, $connect);
 
@@ -131,7 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // позже удалю, нужен для тестирования
             // https://funart.pro/uploads/posts/2021-07/1625630616_29-funart-pro-p-ptitsa-sekretar-zhivotnie-krasivo-foto-36.jpg
 
-            $query = "INSERT INTO posts SET title='$title',".$content.", type_id=$typeId, author_id=$userId";
+            $query = "INSERT INTO posts SET title='$title',".$content.", type_id=$typeId, author_id=$user";
 
             $result = mysqli_query($connect, $query);
 

@@ -291,11 +291,13 @@ function isCorrectLength(string $name, int $min, int $max): string {
  * @return string
  */
 function getTags(string $tags): string {
-    $string = strlen($_POST[$tags]);
-
-    if (empty($string)) {
-        return 'Введите хотя бы один тег!';
+    $tagsArray = explode(" ", $tags);
+    foreach ($tagsArray as $tag) {
+        if (mb_strlen($tag) > 16) {
+            return "Каждый тег должен состоять не более чем из 15 символов";
+        }
     }
+
     return "";
 }
 
