@@ -26,7 +26,7 @@ if (empty(trim($_GET['search']))) {
     $pageInformation = [
         'userName' => $userInformation['login'],
         'avatar' => $userInformation['avatar'],
-        'title' => 'readme: результаты поиска',
+        'title' => 'readme: ничего не найдено',
         'menuElements' => MENU_ELEMENTS,
         'content' => $content,
         'russianValues'=> RUSSIAN_VALUES
@@ -60,7 +60,7 @@ if (empty($posts)) {
     $pageInformation = [
         'userName' => $userInformation['login'],
         'avatar' => $userInformation['avatar'],
-        'title' => 'readme: результаты поиска',
+        'title' => 'readme: ничего не найдено',
         'menuElements' => MENU_ELEMENTS,
         'content' => $content,
         'russianValues'=> RUSSIAN_VALUES
@@ -79,7 +79,7 @@ $content = include_template('search-results.php', [
 $pageInformation = [
     'userName' => $userInformation['login'],
     'avatar' => $userInformation['avatar'],
-    'title' => 'readme: результаты поиска',
+    'title' => 'readme: '.$search ,
     'menuElements' => MENU_ELEMENTS,
     'content' => $content,
     'russianValues'=> RUSSIAN_VALUES
