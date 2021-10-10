@@ -18,22 +18,27 @@ if (empty($userInformation['avatar'])) {
 
 if (isset($_GET['post-id'])) {
     $postId = intval(filter_input(INPUT_GET, 'post-id'));
-    $query = "SELECT p.*, ct.content_title, ct.icon_class, u.login, u.avatar FROM posts AS p JOIN content_type ct ON p.type_id = ct.id JOIN users u ON p.author_id = u.id WHERE p.id = $postId";
-    $result = mysqli_query($connect, $query);
+    $query = "SELECT p.*, ct.content_title, ct.icon_class, u.login, u.avatar, ph.post_id, h.hashtag FROM posts AS p JOIN content_type ct ON p.type_id = ct.id JOIN users u ON p.author_id = u.id JOIN posts_hashtags ph ON ph.post_id = p.id JOIN hashtags h ON h.id = ph.hashtag_id WHERE p.id = $postId";
+    $results = mysqli_query($connect, $query);
 
-    if (!$result) {
+    if (!$results) {
         print("Ошибка подготовки запроса: " . mysqli_error($connect));
         exit();
     }
 
     mysqli_close($connect);
 
-    $post = mysqli_fetch_assoc($result);
+    $dbPosts = mysqli_fetch_all($results, MYSQLI_ASSOC);
+    $tags = array_column($dbPosts, 'hashtag');
+    $post = $dbPosts[0];
 }
 
 $content = include_template('post-details.php', [
     'post' => $post,
-    'types' => TYPES
+    'types' => TYPES,
+    'tags' => $tags,
+    'userName' => $userInformation['login'],
+    'avatar' => $userInformation['avatar'],
 ]);
 
 $pageInformation = [

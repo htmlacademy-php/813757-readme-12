@@ -1,4 +1,5 @@
-<div class="container">
+<section class="page__main page__main--popular">
+    <div class="container">
         <h1 class="page__title page__title--popular">Популярное</h1>
     </div>
     <div class="popular container">
@@ -99,7 +100,7 @@
                         <?php elseif ($cardInformation['icon_class'] === $types[4]): ?>
                             <div class="post-video__block">
                                 <div class="post-video__preview">
-                                    <?= embed_youtube_cover($cardInformation['video']); ?>
+                                    <?= embed_youtube_cover($cardInformation['video']) ?>
                                 </div>
                                 <a href="post-details.html" class="post-video__play-big button">
                                     <svg class="post-video__play-big-icon" width="14" height="14">
@@ -148,3 +149,4 @@
             <?php endforeach; ?>
         </div>
     </div>
+</section>

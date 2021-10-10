@@ -81,14 +81,14 @@
             </div>
             <span class="post__view"><?= $post['views_number'] ?> просмотров</span>
           </div>
+
+          <?php if (!empty($tags)): ?>
           <ul class="post__tags">
-            <li><a href="#">#nature</a></li>
-            <li><a href="#">#globe</a></li>
-            <li><a href="#">#photooftheday</a></li>
-            <li><a href="#">#canon</a></li>
-            <li><a href="#">#landscape</a></li>
-            <li><a href="#">#щикарныйвид</a></li>
+            <?php foreach ($tags as $tag): ?>
+                <li><a href="search.php?search=%23<?= $tag ?>">#<?= $tag ?></a></li>
+            <?php endforeach; ?>
           </ul>
+          <?php endif; ?>
           <div class="comments">
             <form class="comments__form form" action="#" method="post">
               <div class="comments__my-avatar">
@@ -155,12 +155,12 @@
           <div class="post-details__user-info user__info">
             <div class="post-details__avatar user__avatar">
               <a class="post-details__avatar-link user__avatar-link" href="#">
-                <img class="post-details__picture user__picture" src="img/<?= $post['avatar']; ?>" alt="Аватар пользователя">
+                <img class="post-details__picture user__picture" src="img/<?= $avatar ?>" alt="Аватар пользователя">
               </a>
             </div>
             <div class="post-details__name-wrapper user__name-wrapper">
               <a class="post-details__name user__name" href="#">
-                <span><?= $post['login']; ?></span>
+                <span><?= $userName ?></span>
               </a>
               <time class="post-details__time user__time" datetime="2014-03-20">5 лет на сайте</time>
             </div>

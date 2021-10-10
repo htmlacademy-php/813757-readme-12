@@ -203,14 +203,14 @@ function embed_youtube_video(string $youtube_url): string
  * @param string $youtube_url Ссылка на youtube видео
  * @return string
  */
-function embed_youtube_cover(string $youtube_url): string
+function embed_youtube_cover(string $youtube_url, int $width=320, int $height=120): string
 {
     $res = "";
     $id = extract_youtube_id($youtube_url);
 
     if ($id) {
         $src = sprintf("https://img.youtube.com/vi/%s/mqdefault.jpg", $id);
-        $res = '<img alt="youtube cover" width="320" height="120" src="' . $src . '" />';
+        $res = '<img alt="youtube cover" width="'.$width.'" height="'.$height.'" src="' . $src . '" />';
     }
     return $res;
 }
