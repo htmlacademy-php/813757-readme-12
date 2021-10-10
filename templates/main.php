@@ -8,7 +8,7 @@
                 <b class="popular__sorting-caption sorting__caption">Сортировка:</b>
                 <ul class="popular__sorting-list sorting__list">
                     <li class="sorting__item sorting__item--popular">
-                        <a class="sorting__link sorting__link--active" href="?sort=views_number&order=<?= $order === 'desc' ? 'asc' : 'desc' ?>">
+                        <a class="sorting__link sorting__link--active" href="?<?= isset($_GET['type_id']) ? 'type_id='.$_GET['type_id'] : '' ?>&sort=views_number&order=<?= $order === 'desc' ? 'asc' : 'desc' ?>">
                             <span>Популярность</span>
                             <svg class="sorting__icon" width="10" height="12">
                                 <use xlink:href="#icon-sort"></use>
