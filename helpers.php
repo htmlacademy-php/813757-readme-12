@@ -293,7 +293,7 @@ function isCorrectLength(string $name, int $min, int $max): string {
 function getTags(string $tags): string {
     $tagsArray = explode(" ", $tags);
     foreach ($tagsArray as $tag) {
-        if (mb_strlen($tag) > 16) {
+        if (mb_strlen($tag) > 15) {
             return "Каждый тег должен состоять не более чем из 15 символов";
         }
     }
