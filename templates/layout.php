@@ -22,10 +22,10 @@
                 micro blogging
             </p>
         </div>
-        <form class="header__search-form form" action="#" method="get">
+        <form class="header__search-form form" action="search.php" method="get">
             <div class="header__search">
                 <label class="visually-hidden">Поиск</label>
-                <input class="header__search-input form__input" type="search">
+                <input class="header__search-input form__input" name="search" type="search">
                 <button class="header__search-button button" type="submit">
                     <svg class="header__search-icon" width="18" height="18">
                         <use xlink:href="#icon-search"></use>
@@ -42,8 +42,8 @@
 
                 <?php foreach ($menuElements as $key => $menuElement): ?>
                     <li class="header__my-page header__my-page--<?= $menuElement ?>">
-                        <a class="header__page-link <?= $activeClass =  $_SERVER['REQUEST_URI'] === ('/' . $menuElement . '.php') ? 'header__page-link--active' : ''; ?>" href="<?= $menuElement ?>.php" title="<?= RUSSIAN_VALUES[$menuElement] ?>">
-                            <span class="visually-hidden"><?= RUSSIAN_VALUES[$menuElement] ?></span>
+                        <a class="header__page-link <?= $activeClass =  $_SERVER['REQUEST_URI'] === ('/' . $menuElement . '.php') ? 'header__page-link--active' : ''; ?>" href="<?= $menuElement ?>.php" title="<?= $russianValues[$menuElement] ?>">
+                            <span class="visually-hidden"><?= $russianValues[$menuElement] ?></span>
                         </a>
                     </li>
                 <?php endforeach; ?>
@@ -112,9 +112,7 @@
     </div>
 </header>
 
-<section class="page__main page__main--popular">
-    <?= $content ?>
-</section>
+<?= $content ?>
 
 <footer class="footer">
     <div class="footer__wrapper">

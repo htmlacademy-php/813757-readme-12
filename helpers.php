@@ -203,14 +203,14 @@ function embed_youtube_video(string $youtube_url): string
  * @param string $youtube_url Ссылка на youtube видео
  * @return string
  */
-function embed_youtube_cover(string $youtube_url): string
+function embed_youtube_cover(string $youtube_url, int $width=320, int $height=120): string
 {
     $res = "";
     $id = extract_youtube_id($youtube_url);
 
     if ($id) {
         $src = sprintf("https://img.youtube.com/vi/%s/mqdefault.jpg", $id);
-        $res = '<img alt="youtube cover" width="320" height="120" src="' . $src . '" />';
+        $res = '<img alt="youtube cover" width="'.$width.'" height="'.$height.'" src="' . $src . '" />';
     }
     return $res;
 }
@@ -291,11 +291,13 @@ function isCorrectLength(string $name, int $min, int $max): string {
  * @return string
  */
 function getTags(string $tags): string {
-    $string = strlen($_POST[$tags]);
-
-    if (empty($string)) {
-        return 'Введите хотя бы один тег!';
+    $tagsArray = explode(" ", $tags);
+    foreach ($tagsArray as $tag) {
+        if (mb_strlen($tag) > 16) {
+            return "Каждый тег должен состоять не более чем из 15 символов";
+        }
     }
+
     return "";
 }
 
@@ -527,4 +529,20 @@ function checkRequiredFields(array $requiredFields): array {
     }
 
     return $errors;
+}
+
+/**
+ * получает данные из БД, в случае ошибки подготовки запроса предупреждает об этом
+ * @param mysqli_connect $connect
+ * @param таблица в которой делается выборка из БД
+ */
+function getContent($connect, string $table) {
+    $contentType = mysqli_query($connect, "SELECT * FROM $table");
+
+    if (!$contentType) {
+        print("Ошибка подготовки запроса: " . mysqli_error($connect));
+        exit();
+    }
+
+    return $contentType;
 }

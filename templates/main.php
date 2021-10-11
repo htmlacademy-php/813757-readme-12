@@ -1,4 +1,5 @@
-<div class="container">
+<section class="page__main page__main--popular">
+    <div class="container">
         <h1 class="page__title page__title--popular">Популярное</h1>
     </div>
     <div class="popular container">
@@ -7,7 +8,7 @@
                 <b class="popular__sorting-caption sorting__caption">Сортировка:</b>
                 <ul class="popular__sorting-list sorting__list">
                     <li class="sorting__item sorting__item--popular">
-                        <a class="sorting__link sorting__link--active" href="?sort=views_number&ord=<?= $order === 'desc' ? 'asc' : 'desc' ?>">
+                        <a class="sorting__link sorting__link--active" href="?<?= isset($_GET['type_id']) ? 'type_id='.$_GET['type_id'] : '' ?>&sort=views_number&order=<?= $order === 'desc' ? 'asc' : 'desc' ?>">
                             <span>Популярность</span>
                             <svg class="sorting__icon" width="10" height="12">
                                 <use xlink:href="#icon-sort"></use>
@@ -41,7 +42,7 @@
                         </a>
                     </li>
 
-                    <?php foreach ($contentType as $type): ?>
+                    <?php foreach ($contentTypes as $type): ?>
                         <li class="popular__filters-item filters__item">
                             <a class="filters__button filters__button--<?= $type['icon_class']; ?> button <?= $activeClass = isset($_GET['type_id']) && $_GET['type_id'] === $type['id'] ? 'filters__button--active' : ''; ?>" href="popular.php?type_id=<?= $type['id']; ?>">
                                 <span class="visually-hidden">Фото</span>
@@ -99,7 +100,7 @@
                         <?php elseif ($cardInformation['icon_class'] === $types[4]): ?>
                             <div class="post-video__block">
                                 <div class="post-video__preview">
-                                    <?= embed_youtube_cover($cardInformation['video']); ?>
+                                    <?= embed_youtube_cover($cardInformation['video']) ?>
                                 </div>
                                 <a href="post-details.html" class="post-video__play-big button">
                                     <svg class="post-video__play-big-icon" width="14" height="14">
@@ -148,3 +149,4 @@
             <?php endforeach; ?>
         </div>
     </div>
+</section>

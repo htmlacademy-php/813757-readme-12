@@ -17,33 +17,23 @@ if (empty($userInformation['avatar'])) {
     $userInformation['avatar'] = "icon-input-user.svg";
 }
 
-$types = ['quote', 'text', 'photo', 'link', 'video'];
-$menuElements = ['popular', 'feed', 'messages'];
-
 if (!$connect) {
     print("Ошибка подключения: " . mysqli_connect_error());
-}
-
-$contentQuery = "SELECT * FROM content_type";
-$contentResult = mysqli_query($connect, $contentQuery);
-
-if (!$contentResult) {
-    print("Ошибка подготовки запроса: " . mysqli_error($connect));
     exit();
 }
 
-$contentType = mysqli_fetch_all($contentResult, MYSQLI_ASSOC);
+$contentTypes = mysqli_fetch_all(getContent($connect, "content_type"), MYSQLI_ASSOC);
 
 $query = "SELECT p.*, ct.content_title, ct.icon_class, u.login, u.avatar FROM posts AS p JOIN content_type ct ON p.type_id = ct.id JOIN users u ON p.author_id = u.id WHERE 1";
 
 if (isset($_GET['type_id'])) {
-    $type_id = intval(filter_input(INPUT_GET, 'type_id'));
-    $query .= " AND p.type_id = $type_id";
+    $typeId = (int) filter_input(INPUT_GET, 'type_id');
+    $query .= " AND p.type_id = $typeId";
 }
 
 $sort = isset($_GET['sort']) ? filter_input(INPUT_GET, 'sort') : "p.views_number";
 
-$order = isset($_GET['ord']) ? filter_input(INPUT_GET, 'ord') : "DESC";
+$order = isset($_GET['order']) ? filter_input(INPUT_GET, 'order') : "DESC";
 
 $query .= " ORDER BY $sort $order LIMIT 6";
 
@@ -60,9 +50,9 @@ $posts = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
 $content = include_template('main.php', [
     'cardsInformation' => $posts,
-    'types' => $types,
-    'contentType' => $contentType,
-    'ord' => $order,
+    'types' => TYPES,
+    'contentTypes' => $contentTypes,
+    'order' => $order,
     'sort' => $sort,
 ]);
 
@@ -71,8 +61,8 @@ $pageInformation = [
     'avatar' => $userInformation['avatar'],
     'title' => 'readme: популярное',
     'content' => $content,
-    'menuElements' => $menuElements,
-    'RUSSIAN_VALUES'=> RUSSIAN_VALUES
+    'menuElements' => MENU_ELEMENTS,
+    'russianValues'=> RUSSIAN_VALUES
 ];
 
 $layout = include_template('layout.php', $pageInformation);

@@ -1,3 +1,5 @@
+SET NAMES utf8;
+
 /*добавляет список типов контента для поста*/
 INSERT INTO content_type (content_title, icon_class)
 VALUES
@@ -40,11 +42,19 @@ VALUES
 ('2021.05.02 12:00:00', 'Просто берет за душу!', 2, 1),
 ('2021.08.08 17:02:23', 'Лучше курсов не стречал!', 3, 5);
 
-/*получает список постов с сортировкой по популярности и вместе с именами авторов и типом контента;*/
-SELECT p.*, ct.content_title, u.login, u.avatar
-FROM posts AS p
+/*добавляет тэги*/
+INSERT INTO hashtags (hashtag) VALUES ('nature'), ('globe'), ('photooftheday'), ('canon'), ('landscape'), ('щикарныйвид');
+
+/*добавляет теги к постам*/
+INSERT INTO posts_hashtags (post_id, hashtag_id) VALUES (1, 1), (1, 2), (1, 3), (1, 4), (1,5), (1, 6), (2, 1), (2, 2), (2, 3), (3, 4), (3,5), (3, 6), (4, 1), (4, 2), (4, 3), (4, 4), (4,5), (5, 6), (6, 6);
+
+/*получает список постов с сортировкой по популярности и вместе с именами авторов и типом контента и хэштегами*/
+SELECT p.*, ct.content_title, u.login, u.avatar, ph.post_id, ph.hashtag_id
+FROM posts AS P
 JOIN content_type ct ON p.type_id = ct.id
 JOIN users u ON p.author_id = u.id
+JOIN posts_hashtags ph ON ph.post_id = p.id
+JOIN hashtags h ON h.id = ph.hashtag_id
 ORDER BY p.views_number DESC;
 
 /*получает список постов для конкретного пользователя*/

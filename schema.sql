@@ -36,11 +36,9 @@ CREATE TABLE posts (
   views_number INT DEFAULT 0,
   author_id INT UNSIGNED,
   type_id INT UNSIGNED,
-  hashtag_id INT UNSIGNED,
 
   FOREIGN KEY (author_id) REFERENCES users (id),
-  FOREIGN KEY (type_id) REFERENCES content_type (id),
-  FOREIGN KEY (hashtag_id) REFERENCES hashtags (id)
+  FOREIGN KEY (type_id) REFERENCES content_type (id)
 );
 
 CREATE TABLE comments (
@@ -92,3 +90,5 @@ CREATE TABLE posts_hashtags (
   FOREIGN KEY (post_id) REFERENCES posts (id),
   FOREIGN KEY (hashtag_id) REFERENCES hashtags (id)
 );
+
+CREATE FULLTEXT INDEX text_search ON posts(title, content);

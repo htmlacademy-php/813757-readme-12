@@ -5,3 +5,6 @@ const RUSSIAN_VALUES = [
     'feed' => 'Моя лента',
     'messages' => 'Личные сообщения',
 ];
+
+const TYPES = ['quote', 'text', 'photo', 'link', 'video'];
+const MENU_ELEMENTS = ['popular', 'feed', 'messages'];
