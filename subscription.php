@@ -16,8 +16,7 @@ if (isset($_GET['author_id'])) {
     $followerInformation = mysqli_fetch_array($follower, MYSQLI_ASSOC);
 
     if (!$dbQuery) {
-        print("Ошибка подготовки запроса: " . mysqli_error($connect));
-        exit();
+        exit("Ошибка подготовки запроса: " . mysqli_error($connect));
     }
 
     if (mysqli_num_rows($dbQuery) > 0 && $followerInformation['follower'] !== $user) {

@@ -30,11 +30,27 @@ $dbAuthorPosts = mysqli_query($connect, $queryAuthorPosts);
 $authorPosts = mysqli_fetch_all($dbAuthorPosts, MYSQLI_ASSOC);
 $postsCount = mysqli_num_rows($dbAuthorPosts);
 
+
 $follower = mysqli_query($connect, "SELECT follower FROM subscription WHERE follower = $user AND user_id = " . $_GET['author_id']);
 $followerInformation = mysqli_fetch_array($follower, MYSQLI_ASSOC);
 
+$dbUserFollowers = mysqli_query($connect, "SELECT * FROM subscription AS s LEFT JOIN users u ON u.id = s.user_id WHERE follower = " . $_GET['author_id']);
+$userFollowers = mysqli_fetch_all($dbUserFollowers, MYSQLI_ASSOC);
+
+foreach ($userFollowers as &$userFollower) {
+    $dbFollowerPostsCount = "SELECT COUNT(*) as count FROM posts AS p WHERE author_id = " . $userFollower['id'];
+    $dbFollowerPosts =  mysqli_query($connect, $dbFollowerPostsCount);
+    $dbPosts = mysqli_fetch_array($dbFollowerPosts, MYSQLI_ASSOC);
+    $userFollower['count-posts'] = $dbPosts['count'];
+
+    $dbFollowerCount = mysqli_query($connect, "SELECT COUNT(*) as count FROM subscription WHERE user_id = " . $userFollower['id']);
+    $dbFollowers = mysqli_fetch_array($dbFollowerCount, MYSQLI_ASSOC);
+    $userFollower['count-followers'] = $dbFollowers['count'];
+}
+
 $dbFollowers = mysqli_query($connect, "SELECT COUNT(*) as count FROM subscription WHERE user_id = " . $_GET['author_id']);
 $followerCounts = mysqli_fetch_array($dbFollowers, MYSQLI_ASSOC);
+
 
 $postId = (int) filter_input(INPUT_GET, 'post-id');
 $dbCommentsLink = "SELECT c.post_id, c.creation_date, c.content, u.avatar, u.login FROM comments AS c JOIN users u ON c.author_id = u.id WHERE post_id = $postId";
@@ -77,6 +93,19 @@ if (isset($_POST['comment']) && mysqli_num_rows($isExists) > 0) {
     }
 }
 
+$dbLikesLink = "SELECT p.id, p.image, p.video, u.avatar, u.login, ct.icon_class
+                FROM posts AS p
+                LEFT JOIN likes AS l ON l.liked_post = p.id
+                LEFT JOIN users AS u ON u.id = l.user_id
+                LEFT JOIN content_type ct ON p.type_id = ct.id
+                WHERE p.author_id = " . $_GET['author_id'];
+$dbLikes = mysqli_query($connect, $dbLikesLink);
+$likedPosts = mysqli_fetch_all($dbLikes, MYSQLI_ASSOC);
+
+foreach ($userFollowers as $userFollower) {
+    print_r($userFollower['follower']);
+}
+
 $hashtags = [];
 
 foreach($authorPosts as $authorPost) {
@@ -86,21 +115,37 @@ foreach($authorPosts as $authorPost) {
     $hashtags[$authorPost['id']] = $hashtagsArray;
 }
 
-$content = include_template('profile-posts.php', [
+$mainProfileContent = "profile-posts.php";
+
+if (isset($_GET['profile-content']) && $_GET['profile-content'] === "likes") {
+    $mainProfileContent = "profile-likes.php";
+} elseif (isset($_GET['profile-content']) && $_GET['profile-content'] === "subscriptions") {
+    $mainProfileContent = "profile-subscriptions.php";
+}
+
+$profileContent = include_template($mainProfileContent, [
     'avatar' => $userInformation['avatar'],
-    'authorData' => $authorData,
     'authorPosts' => $authorPosts,
     'types' => TYPES,
     'hashtags' => $hashtags,
     'user' => $user,
-    'followerInformation' => $followerInformation,
-    'followerCounts' => $followerCounts,
-    'postsCount' => $postsCount,
     'comments' => $comments,
     'commentsId' => $commentsId,
     'commentsCount' => $commentsCount,
-    'error' => $error
+    'error' => $error,
+    'likedPosts' => $likedPosts,
+    'userFollowers' => $userFollowers
+]);
 
+$content = include_template('profile.php', [
+    'avatar' => $userInformation['avatar'],
+    'authorData' => $authorData,
+    'authorPosts' => $authorPosts,
+    'user' => $user,
+    'followerInformation' => $followerInformation,
+    'followerCounts' => $followerCounts,
+    'postsCount' => $postsCount,
+    'profileContent' => $profileContent
 ]);
 
 $pageInformation = [

@@ -10,7 +10,7 @@ if (!isset($_SESSION['user'])) {
 $user = $_SESSION['user'];
 
 if (isset($_GET['post-id'])) {
-    $postId = intval(filter_input(INPUT_GET, 'post-id'));
+    $postId = (int) filter_input(INPUT_GET, 'post-id');
     $dbPost = mysqli_query($connect, "SELECT * FROM posts WHERE id = $postId");
     $post = mysqli_fetch_array($dbPost, MYSQLI_ASSOC);
 
