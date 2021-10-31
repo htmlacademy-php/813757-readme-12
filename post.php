@@ -23,15 +23,16 @@ if (isset($_GET['post-id'])) {
     $results = mysqli_query($connect, $queryPost);
 
     if (!$results) {
-        print("Ошибка подготовки запроса: " . mysqli_error($connect));
-        exit();
+        exit("Ошибка подготовки запроса: " . mysqli_error($connect));
     }
 
     $post = mysqli_fetch_array($results, MYSQLI_ASSOC);
 
+    $dbCommentsCount = mysqli_query($connect, "SELECT COUNT(*) as count FROM comments WHERE post_id = " . $post['id']);
+    $commentsCount = mysqli_fetch_array($dbCommentsCount, MYSQLI_ASSOC);
+
     $dbCommentsLink = "SELECT c.creation_date, c.content, u.avatar, u.login FROM comments AS c JOIN users u ON c.author_id = u.id WHERE post_id = " . $post['id'];
     $dbComments = mysqli_query($connect, $dbCommentsLink);
-    $commentsCount = mysqli_num_rows($dbComments);
 
     if (!isset($_GET['show_all_comments'])) {
         $dbCommentsLink .= " LIMIT 3";
@@ -57,8 +58,7 @@ if (isset($_GET['post-id'])) {
     $isExists = mysqli_query($connect, "SELECT * FROM posts WHERE id = $postId");
 
     if (!$isExists) {
-        print("Ошибка подготовки запроса: " . mysqli_error($connect));
-        exit();
+        exit("Ошибка подготовки запроса: " . mysqli_error($connect));
     }
 
     $error = "";

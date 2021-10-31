@@ -19,11 +19,16 @@ if (empty($userInformation['avatar'])) {
 $author = mysqli_query($connect, "SELECT * FROM users WHERE id = '".$_GET['author_id']."'");
 $authorData = mysqli_fetch_array($author, MYSQLI_ASSOC);
 
-$queryAuthorPosts = "SELECT p.*, ct.icon_class, (SELECT COUNT(*) as count FROM likes WHERE liked_post = p.id) as likes, (SELECT COUNT(*) as count FROM posts WHERE original_id = p.id) as reposts FROM posts AS p JOIN content_type ct ON p.type_id = ct.id JOIN users u ON p.author_id = u.id WHERE author_id = " . $_GET['author_id'];
+$queryAuthorPosts = "SELECT p.*, ct.icon_class,
+                    (SELECT COUNT(*) as count FROM likes WHERE liked_post = p.id) as likes,
+                    (SELECT COUNT(*) as count FROM posts WHERE original_id = p.id) as reposts
+                    FROM posts AS p
+                    JOIN content_type ct ON p.type_id = ct.id
+                    JOIN users u ON p.author_id = u.id
+                    WHERE author_id = " . $_GET['author_id'];
 $dbAuthorPosts = mysqli_query($connect, $queryAuthorPosts);
 $authorPosts = mysqli_fetch_all($dbAuthorPosts, MYSQLI_ASSOC);
 $postsCount = mysqli_num_rows($dbAuthorPosts);
-
 
 $follower = mysqli_query($connect, "SELECT follower FROM subscription WHERE follower = $user AND user_id = " . $_GET['author_id']);
 $followerInformation = mysqli_fetch_array($follower, MYSQLI_ASSOC);
@@ -31,9 +36,8 @@ $followerInformation = mysqli_fetch_array($follower, MYSQLI_ASSOC);
 $dbFollowers = mysqli_query($connect, "SELECT COUNT(*) as count FROM subscription WHERE user_id = " . $_GET['author_id']);
 $followerCounts = mysqli_fetch_array($dbFollowers, MYSQLI_ASSOC);
 
-$postsId = array_column($authorPosts, 'id');
-
-$dbCommentsLink = "SELECT c.post_id, c.creation_date, c.content, u.avatar, u.login FROM comments AS c JOIN users u ON c.author_id = u.id WHERE post_id IN ('" . implode("', '", $postsId) . "')";
+$postId = (int) filter_input(INPUT_GET, 'post-id');
+$dbCommentsLink = "SELECT c.post_id, c.creation_date, c.content, u.avatar, u.login FROM comments AS c JOIN users u ON c.author_id = u.id WHERE post_id = $postId";
 $dbComments = mysqli_query($connect, $dbCommentsLink);
 $commentsCount = mysqli_num_rows($dbComments);
 
@@ -45,17 +49,17 @@ $dbComments = mysqli_query($connect, $dbCommentsLink);
 $comments = mysqli_fetch_all($dbComments, MYSQLI_ASSOC);
 $commentsId = array_column($comments, 'post_id');
 
-$isExists = mysqli_query($connect, "SELECT * FROM posts WHERE id IN ('" . implode("', '", $postsId) . "')");
+$isExists = mysqli_query($connect, "SELECT * FROM posts WHERE id = $postId");
 
 if (!$isExists) {
-    print("Ошибка подготовки запроса: " . mysqli_error($connect));
-    exit();
+    exit("Ошибка подготовки запроса: " . mysqli_error($connect));
 }
 
 $error = "";
 
 if (isset($_POST['comment']) && mysqli_num_rows($isExists) > 0) {
     $comment = trim($_POST['comment']);
+    $authorId = (int) filter_input(INPUT_GET, 'author_id');
 
     if (mb_strlen($comment) < 4) {
         $error = "Это поле обязательно к заполнению!!!";
@@ -69,13 +73,9 @@ if (isset($_POST['comment']) && mysqli_num_rows($isExists) > 0) {
 
         mysqli_stmt_execute(db_get_prepare_stmt($connect, $insertComment, [$formatCurrentDate, $comment, $user, $postId]));
 
-        header("Location: profile.php?author_id=".$post['author_id']);
+        header("Location: profile.php?author_id=" . $authorId);
     }
 }
-
-//echo '<pre>';
-//var_dump($authorPosts);
-//echo '</pre>';
 
 $hashtags = [];
 
@@ -89,7 +89,7 @@ foreach($authorPosts as $authorPost) {
 $content = include_template('profile-posts.php', [
     'avatar' => $userInformation['avatar'],
     'authorData' => $authorData,
-    'autorPosts' => $authorPosts,
+    'authorPosts' => $authorPosts,
     'types' => TYPES,
     'hashtags' => $hashtags,
     'user' => $user,

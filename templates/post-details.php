@@ -68,7 +68,7 @@
                 <svg class="post__indicator-icon" width="19" height="17">
                   <use xlink:href="#icon-comment"></use>
                 </svg>
-                <span><?= htmlspecialchars($commentsCount) ?></span>
+                <span><?= htmlspecialchars($commentsCount['count']) ?></span>
                 <span class="visually-hidden">количество комментариев</span>
               </a>
               <a class="post__indicator post__indicator--repost button" href="repost.php?post-id=<?= $_GET['post-id']?>" title="Репост">
@@ -92,7 +92,7 @@
           <div class="comments">
             <form class="comments__form form" action="#" method="post">
               <div class="comments__my-avatar">
-                <img class="comments__picture" src="uploads/<?= empty($comment['avatar']) ? $avatar : $comment['avatar'] ?>" alt="Аватар пользователя">
+                <img class="comments__picture" src="uploads/<?= empty($comment['avatar']) ? $avatar : htmlspecialchars($comment['avatar']) ?>" alt="Аватар пользователя">
               </div>
               <div class="form__input-section <?= !empty($error) ? 'form__input-section--error' : '' ?>">
                 <textarea class="comments__textarea form__textarea form__input" name="comment" placeholder="Ваш комментарий"></textarea>
@@ -112,7 +112,7 @@
                 <li class="comments__item user">
                     <div class="comments__avatar">
                         <a class="user__avatar-link" href="#">
-                            <img class="comments__picture" src="uploads/<?= empty($comment['avatar']) ? "icon-input-user.svg" : $comment['avatar'] ?>" alt="Аватар пользователя">
+                            <img class="comments__picture" src="uploads/<?= empty($comment['avatar']) ? "icon-input-user.svg" : htmlspecialchars($comment['avatar']) ?>" alt="Аватар пользователя">
                         </a>
                     </div>
                     <div class="comments__info">
@@ -120,7 +120,7 @@
                         <a class="comments__user-name" href="#">
                             <span><?= $comment['login'] ?></span>
                         </a>
-                        <time class="comments__time" datetime="<?= $comment['creation_date'] ?>"><?= getRelativeFormat($comment['creation_date']) ?></time>
+                        <time class="comments__time" datetime="<?= htmlspecialchars($comment['creation_date']) ?>"><?= getRelativeFormat(htmlspecialchars($comment['creation_date'])) ?></time>
                         </div>
                         <p class="comments__text">
                         <?= $comment['content'] ?>
@@ -129,15 +129,15 @@
                 </li>
                 <?php endforeach ?>
               </ul>
-              <?php if ($commentsCount > 2 && !isset($_GET['show_all_comments'])): ?>
+              <?php if ($commentsCount['count'] > 2 && !isset($_GET['show_all_comments'])): ?>
                 <a class="comments__more-link" href="post.php?post-id=<?= $_GET['post-id'] ?>&show_all_comments">
                     <span>Показать все комментарии</span>
-                    <sup class="comments__amount"><?= $commentsCount ?></sup>
+                    <sup class="comments__amount"><?= htmlspecialchars($commentsCount['count']) ?></sup>
                 </a>
               <?php elseif ($commentsCount > 2 && isset($_GET['show_all_comments'])): ?>
-                <a class="comments__more-link" href="post.php?post-id=<?= $_GET['post-id'] ?>">
+                <a class="comments__more-link" href="post.php?post-id=<?= htmlspecialchars($_GET['post-id']) ?>">
                     <span>Скрыть комментарии</span>
-                    <sup class="comments__amount"><?= htmlspecialchars($commentsCount - 3) ?></sup>
+                    <sup class="comments__amount"><?= htmlspecialchars($commentsCount['count'] - 3) ?></sup>
                 </a>
               <?php endif ?>
             </div>
@@ -147,14 +147,14 @@
           <div class="post-details__user-info user__info">
             <div class="post-details__avatar user__avatar">
               <a class="post-details__avatar-link user__avatar-link" href="profile.php?author_id=<?= htmlspecialchars($post['author_id']) ?>">
-                <img class="post-details__picture user__picture" src="uploads/<?= htmlspecialchars(empty($post['avatar'])) ? "icon-input-user.svg" : $post['avatar'] ?>" alt="Аватар пользователя">
+                <img class="post-details__picture user__picture" src="uploads/<?= empty($post['avatar']) ? "icon-input-user.svg" : htmlspecialchars($post['avatar']) ?>" alt="Аватар пользователя">
               </a>
             </div>
             <div class="post-details__name-wrapper user__name-wrapper">
               <a class="post-details__name user__name" href="profile.php?author_id=<?= htmlspecialchars($post['author_id']) ?>">
                 <span><?= htmlspecialchars($post['login']) ?></span>
               </a>
-              <time class="post-details__time user__time" datetime="<?= htmlspecialchars($post['date_creation']) ?>"><?= htmlspecialchars(getRelativeFormat($post['date_creation'])) ?></time>
+              <time class="post-details__time user__time" datetime="<?= htmlspecialchars($post['date_creation']) ?>"><?= getRelativeFormat(htmlspecialchars($post['date_creation'])) ?></time>
             </div>
           </div>
           <div class="post-details__rating user__rating">

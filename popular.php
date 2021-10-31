@@ -18,13 +18,17 @@ if (empty($userData['avatar'])) {
 }
 
 if (!$connect) {
-    print("Ошибка подключения: " . mysqli_connect_error());
-    exit();
+    exit("Ошибка подключения: " . mysqli_connect_error());
 }
 
 $contentTypes = mysqli_fetch_all(getContent($connect, "content_type"), MYSQLI_ASSOC);
 
-$query = "SELECT p.*, ct.content_title, ct.icon_class, u.login, u.avatar, (SELECT COUNT(*) as count FROM likes WHERE liked_post = p.id)  as likes, (SELECT COUNT(*) as count FROM comments WHERE post_id = p.id) as comments FROM posts AS p JOIN content_type ct ON p.type_id = ct.id JOIN users u ON p.author_id = u.id WHERE 1";
+$query = "SELECT p.*, ct.content_title, ct.icon_class, u.login, u.avatar,
+          (SELECT COUNT(*) as count FROM likes WHERE liked_post = p.id)  as likes,
+          (SELECT COUNT(*) as count FROM comments WHERE post_id = p.id) as comments
+          FROM posts AS p
+          JOIN content_type ct ON p.type_id = ct.id
+          JOIN users u ON p.author_id = u.id WHERE 1";
 
 if (isset($_GET['type_id'])) {
     $typeId = (int) filter_input(INPUT_GET, 'type_id');
@@ -67,8 +71,7 @@ if ($page > 1) {
 }
 
 if (!$result) {
-    print("Ошибка подготовки запроса: " . mysqli_error($connect));
-    exit();
+    exit("Ошибка подготовки запроса: " . mysqli_error($connect));
 }
 
 mysqli_close($connect);
