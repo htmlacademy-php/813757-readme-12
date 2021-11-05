@@ -92,7 +92,7 @@
           <div class="comments">
             <form class="comments__form form" action="#" method="post">
               <div class="comments__my-avatar">
-                <img class="comments__picture" src="uploads/<?= empty($comment['avatar']) ? $avatar : htmlspecialchars($comment['avatar']) ?>" alt="Аватар пользователя">
+                <img class="comments__picture" src="uploads/<?= empty($comment['avatar']) && !file_exists('uploads/' . $comment['avatar']) ? $avatar : htmlspecialchars($comment['avatar']) ?>" alt="Аватар пользователя">
               </div>
               <div class="form__input-section <?= !empty($error) ? 'form__input-section--error' : '' ?>">
                 <textarea class="comments__textarea form__textarea form__input" name="comment" placeholder="Ваш комментарий"></textarea>
@@ -112,7 +112,7 @@
                 <li class="comments__item user">
                     <div class="comments__avatar">
                         <a class="user__avatar-link" href="#">
-                            <img class="comments__picture" src="uploads/<?= empty($comment['avatar']) ? "icon-input-user.svg" : htmlspecialchars($comment['avatar']) ?>" alt="Аватар пользователя">
+                            <img class="comments__picture" src="uploads/<?= !empty($comment['avatar'])  && file_exists('uploads/' . $comment['avatar']) ? htmlspecialchars($comment['avatar']) : 'icon-input-user.svg' ?>" alt="Аватар пользователя">
                         </a>
                     </div>
                     <div class="comments__info">
@@ -147,7 +147,7 @@
           <div class="post-details__user-info user__info">
             <div class="post-details__avatar user__avatar">
               <a class="post-details__avatar-link user__avatar-link" href="profile.php?author_id=<?= htmlspecialchars($post['author_id']) ?>">
-                <img class="post-details__picture user__picture" src="uploads/<?= empty($post['avatar']) ? "icon-input-user.svg" : htmlspecialchars($post['avatar']) ?>" alt="Аватар пользователя">
+                <img class="post-details__picture user__picture" src="uploads/<?= !empty($post['avatar']) && file_exists('uploads/' . $post['avatar']) ? htmlspecialchars($post['avatar']) : 'icon-input-user.svg' ?>" alt="Аватар пользователя">
               </a>
             </div>
             <div class="post-details__name-wrapper user__name-wrapper">

@@ -93,54 +93,54 @@
         </footer>
         <?php if (!isset($_GET['show_comments']) || (isset($_GET['show_comments']) && isset($_GET['post-id']) && $_GET['post-id'] !== $authorPost['id'])): ?>
         <div class="comments">
-        <a class="comments__button button" href="profile.php?author_id=<?= $authorPost['author_id'] ?>&post-id=<?= htmlspecialchars($authorPost['id']) ?>&show_comments">Показать комментарии</a>
+            <a class="comments__button button" href="profile.php?author_id=<?= $authorPost['author_id'] ?>&post-id=<?= htmlspecialchars($authorPost['id']) ?>&show_comments">Показать комментарии</a>
         </div>
         <?php endif ?>
         <?php if (isset($_GET['show_comments']) && isset($_GET['post-id']) && $_GET['post-id'] === $authorPost['id']):?>
         <div class="comments">
-        <div class="comments__list-wrapper">
-            <ul class="comments__list">
-            <?php foreach ($comments as $comment): ?>
-                <?php if ($comment['post_id'] === $authorPost['id']): ?>
-                <li class="comments__item user">
-                <div class="comments__avatar">
-                    <a class="user__avatar-link" href="#">
-                    <img class="comments__picture" src="uploads/<?= !empty($comment['avatar']) ? htmlspecialchars($comment['avatar']) : "icon-input-user.svg" ?>" alt="Аватар пользователя">
-                    </a>
-                </div>
-                <div class="comments__info">
-                    <div class="comments__name-wrapper">
-                    <a class="comments__user-name" href="#">
-                        <span><?= htmlspecialchars($comment['login']) ?></span>
-                    </a>
-                    <time class="comments__time" datetime="<?= htmlspecialchars($comment['creation_date']) ?>"><?= getRelativeFormat(htmlspecialchars($comment['creation_date']))?></time>
+            <div class="comments__list-wrapper">
+                <ul class="comments__list">
+                <?php foreach ($comments as $comment): ?>
+                    <?php if ($comment['post_id'] === $authorPost['id']): ?>
+                    <li class="comments__item user">
+                    <div class="comments__avatar">
+                        <a class="user__avatar-link" href="#">
+                        <img class="comments__picture" src="uploads/<?= !empty($comment['avatar']) && file_exists($comment['avatar']) ? htmlspecialchars($comment['avatar']) : "icon-input-user.svg" ?>" alt="Аватар пользователя">
+                        </a>
                     </div>
-                    <p class="comments__text">
-                    <?= htmlspecialchars($comment['content']) ?>
-                    </p>
-                </div>
-                </li>
+                    <div class="comments__info">
+                        <div class="comments__name-wrapper">
+                        <a class="comments__user-name" href="#">
+                            <span><?= htmlspecialchars($comment['login']) ?></span>
+                        </a>
+                        <time class="comments__time" datetime="<?= htmlspecialchars($comment['creation_date']) ?>"><?= getRelativeFormat(htmlspecialchars($comment['creation_date']))?></time>
+                        </div>
+                        <p class="comments__text">
+                        <?= htmlspecialchars($comment['content']) ?>
+                        </p>
+                    </div>
+                    </li>
+                    <?php endif ?>
+                <?php endforeach ?>
+                </ul>
+                <?php if ($commentsCount > 2 && !isset($_GET['show_all_comments']) && in_array($authorPost['id'], $commentsId)): ?>
+                <a class="comments__more-link" href="profile.php?author_id=<?= $authorPost['author_id'] ?>&post-id=<?= $authorPost['id'] ?>&show_comments&show_all_comments"">
+                <span>Показать все комментарии</span>
+                <sup class="comments__amount"><?= $commentsCount ?></sup>
+                </a>
+                <?php elseif ($commentsCount > 2 && isset($_GET['show_all_comments']) && in_array($authorPost['id'], $commentsId)): ?>
+                <a class="comments__more-link" href="profile.php?author_id=<?= $authorPost['author_id'] ?>">
+                <span>Скрыть комментарии</span>
+                <sup class="comments__amount"><?= htmlspecialchars($commentsCount) ?></sup>
+                </a>
                 <?php endif ?>
-            <?php endforeach ?>
-            </ul>
-            <?php if ($commentsCount > 2 && !isset($_GET['show_all_comments']) && in_array($authorPost['id'], $commentsId)): ?>
-            <a class="comments__more-link" href="profile.php?author_id=<?= $authorPost['author_id'] ?>&post-id=<?= $authorPost['id'] ?>&show_comments&show_all_comments"">
-            <span>Показать все комментарии</span>
-            <sup class="comments__amount"><?= $commentsCount ?></sup>
-            </a>
-            <?php elseif ($commentsCount > 2 && isset($_GET['show_all_comments']) && in_array($authorPost['id'], $commentsId)): ?>
-            <a class="comments__more-link" href="profile.php?author_id=<?= $authorPost['author_id'] ?>">
-            <span>Скрыть комментарии</span>
-            <sup class="comments__amount"><?= htmlspecialchars($commentsCount) ?></sup>
-            </a>
-            <?php endif ?>
-        </div>
+            </div>
         </div>
         <?php endif ?>
         <?php if (isset($_GET['show_comments']) && isset($_GET['post-id']) && $_GET['post-id'] === $authorPost['id']): ?>
         <form class="comments__form form" action="#" method="post">
         <div class="comments__my-avatar">
-            <img class="comments__picture" src="uploads/<?= empty($comment['avatar']) ? $avatar : htmlspecialchars($comment['avatar']) ?>" alt="Аватар пользователя">
+            <img class="comments__picture" src="uploads/<?= empty($comment['avatar']) && !file_exists($comment['avatar']) ? $avatar : htmlspecialchars($comment['avatar']) ?>" alt="Аватар пользователя">
         </div>
         <div class="form__input-section <?= !empty($error) ? 'form__input-section--error' : '' ?>">
             <textarea class="comments__textarea form__textarea form__input" name="comment" placeholder="Ваш комментарий"></textarea>

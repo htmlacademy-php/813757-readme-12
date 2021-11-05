@@ -5,7 +5,7 @@
       <div class="profile__user user container">
         <div class="profile__user-info user__info">
           <div class="profile__avatar user__avatar">
-            <img class="profile__picture user__picture" src="uploads/<?= !empty($authorData['avatar']) ? htmlspecialchars($authorData['avatar']) : "icon-input-user.svg" ?>" alt="Аватар пользователя">
+            <img class="profile__picture user__picture" src="uploads/<?= !empty($authorData['avatar']) && file_exists('uploads/' . $authorData['avatar']) ? htmlspecialchars($authorData['avatar']) : "icon-input-user.svg" ?>" alt="Аватар пользователя">
           </div>
           <div class="profile__name-wrapper user__name-wrapper">
             <span class="profile__name user__name"><?= htmlspecialchars($authorData['login']) ?></span>

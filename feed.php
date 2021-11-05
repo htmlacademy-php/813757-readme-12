@@ -12,14 +12,11 @@ $user = $_SESSION['user'];
 $result = mysqli_query($connect, "SELECT login, avatar FROM users WHERE id = '$user'");
 $userInformation = mysqli_fetch_array($result, MYSQLI_ASSOC);
 
-if (empty($userInformation['avatar'])) {
+if (empty($userInformation['avatar']) || !file_exists('uploads/' . $post['avatar'])) {
     $userInformation['avatar'] = "icon-input-user.svg";
 }
 
 $contentTypes = mysqli_fetch_all(getContent($connect, "content_type"), MYSQLI_ASSOC);
-
-$dbAuthorsRow = mysqli_query($connect, "SELECT user_id FROM subscription WHERE follower = $user");
-$authors = array_column(mysqli_fetch_all($dbAuthorsRow, MYSQLI_ASSOC), 'user_id');
 
 $dbPosts = "SELECT p.*, ct.content_title, ct.icon_class, u.login, u.avatar,
             (SELECT COUNT(*) as count FROM likes WHERE liked_post = p.id)  as likes,
@@ -28,7 +25,7 @@ $dbPosts = "SELECT p.*, ct.content_title, ct.icon_class, u.login, u.avatar,
             FROM posts AS p
             JOIN content_type ct ON p.type_id = ct.id
             JOIN users u ON p.author_id = u.id
-            WHERE p.author_id IN ('" . implode("', '", $authors) . "')";
+            WHERE p.author_id IN (SELECT user_id FROM subscription WHERE follower = $user)";
 
 if (isset($_GET['type_id'])) {
     $typeId = (int) filter_input(INPUT_GET, 'type_id');

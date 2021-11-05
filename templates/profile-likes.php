@@ -6,7 +6,7 @@
       <div class="post-mini__user-info user__info">
         <div class="post-mini__avatar user__avatar">
           <a class="user__avatar-link" href="#">
-            <img class="post-mini__picture user__picture" src="uploads/<?= empty($likedPost['avatar']) ? $avatar : htmlspecialchars($likedPost['avatar']) ?>" alt="Аватар пользователя">
+            <img class="post-mini__picture user__picture" src="uploads/<?= !empty($likedPost['avatar']) && file_exists('uploads/' . $likedPost['avatar']) ? htmlspecialchars($likedPost['avatar']) : 'icon-input-user.svg' ?>" alt="Аватар пользователя">
           </a>
         </div>
         <div class="post-mini__name-wrapper user__name-wrapper">

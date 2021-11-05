@@ -67,7 +67,7 @@
                             <div class="header__profile-tooltip">
                                 <ul class="header__profile-nav">
                                     <li class="header__profile-nav-item">
-                                        <a class="header__profile-nav-link" href="feed.php">
+                                        <a class="header__profile-nav-link" href="profile.php?author_id=4">
                                             <span class="header__profile-nav-text">
                                                 Мой профиль
                                             </span>

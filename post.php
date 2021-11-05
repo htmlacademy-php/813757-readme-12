@@ -12,7 +12,7 @@ $user = $_SESSION['user'];
 $result = mysqli_query($connect, "SELECT login, avatar FROM users WHERE id = '$user'");
 $userInformation = mysqli_fetch_array($result, MYSQLI_ASSOC);
 
-if (empty($userInformation['avatar'])) {
+if (empty($userInformation['avatar']) || !file_exists('uploads/' . $post['avatar'])) {
     $userInformation['avatar'] = "icon-input-user.svg";
 }
 
