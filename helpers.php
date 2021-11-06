@@ -293,7 +293,7 @@ function isCorrectLength(string $name, int $min, int $max): string {
 function getTags(string $tags): string {
     $tagsArray = explode(" ", $tags);
     foreach ($tagsArray as $tag) {
-        if (mb_strlen($tag) > 16) {
+        if (mb_strlen($tag) > 15) {
             return "Каждый тег должен состоять не более чем из 15 символов";
         }
     }
@@ -432,12 +432,12 @@ function getCutString(string $string, int $limit = 300): string {
 /**
  * возвращает разницу во времени
  *
- * @param int $index
+ * @param string $date
  * @return string
  */
-function getRelativeFormat(int $index): string {
+function getRelativeFormat(string $date, string $value="назад"): string {
     $currentDate = new DateTime("", new DateTimeZone("Europe/Moscow"));
-    $publicationDate = new DateTime(generate_random_date($index));
+    $publicationDate = new DateTime($date);
     $difference = $currentDate->diff($publicationDate);
     $minutes = $difference->i;
     $hours = $difference->h;
@@ -452,15 +452,17 @@ function getRelativeFormat(int $index): string {
     $month = get_noun_plural_form($months, 'месяц', 'месяца', 'месяцев');
 
     if ($months > 0) {
-        $timeDifference = "{$months} {$month} назад";
+        $timeDifference = "{$months} {$month} {$value}";
     } elseif ($weeks > 0) {
-        $timeDifference = "{$weeks} {$week} назад";
+        $timeDifference = "{$weeks} {$week} {$value}";
     } elseif ($days > 0) {
-        $timeDifference = "{$days} {$day} назад";
+        $timeDifference = "{$days} {$day} {$value}";
     } elseif ($hours > 0) {
-        $timeDifference = "{$hours} {$hour} назад";
+        $timeDifference = "{$hours} {$hour} {$value}";
     } elseif ($minutes > 0) {
-        $timeDifference = "{$minutes} {$minute} назад";
+        $timeDifference = "{$minutes} {$minute} {$value}";
+    } else {
+        $timeDifference = "только что";
     }
 
     return $timeDifference;

@@ -12,7 +12,7 @@ $user = $_SESSION['user'];
 $result = mysqli_query($connect, "SELECT login, avatar FROM users WHERE id = '$user'");
 $userInformation = mysqli_fetch_array($result, MYSQLI_ASSOC);
 
-if (empty($userInformation['avatar'])) {
+if (empty($userInformation['avatar'])  || !file_exists('uploads/' . $post['avatar'])) {
     $userInformation['avatar'] = "icon-input-user.svg";
 }
 
@@ -132,8 +132,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                     break;
             }
-            // позже удалю, нужен для тестирования
-            // https://funart.pro/uploads/posts/2021-07/1625630616_29-funart-pro-p-ptitsa-sekretar-zhivotnie-krasivo-foto-36.jpg
 
             $query = "INSERT INTO posts SET title='$title',".$content.", type_id=$typeId, author_id='$user'";
             $result = mysqli_query($connect, $query);

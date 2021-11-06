@@ -11,37 +11,67 @@ if (!isset($_SESSION['user'])) {
 
 $user = $_SESSION['user'];
 $result = mysqli_query($connect, "SELECT login, avatar FROM users WHERE id = '$user'");
-$userInformation = mysqli_fetch_array($result, MYSQLI_ASSOC);
+$userData = mysqli_fetch_array($result, MYSQLI_ASSOC);
 
-if (empty($userInformation['avatar'])) {
-    $userInformation['avatar'] = "icon-input-user.svg";
+if (empty($userData['avatar'])  || !file_exists('uploads/' . $post['avatar'])) {
+    $userData['avatar'] = "icon-input-user.svg";
 }
 
 if (!$connect) {
-    print("Ошибка подключения: " . mysqli_connect_error());
-    exit();
+    exit("Ошибка подключения: " . mysqli_connect_error());
 }
 
 $contentTypes = mysqli_fetch_all(getContent($connect, "content_type"), MYSQLI_ASSOC);
 
-$query = "SELECT p.*, ct.content_title, ct.icon_class, u.login, u.avatar FROM posts AS p JOIN content_type ct ON p.type_id = ct.id JOIN users u ON p.author_id = u.id WHERE 1";
+$query = "SELECT p.*, ct.content_title, ct.icon_class, u.login, u.avatar,
+          (SELECT COUNT(*) as count FROM likes WHERE liked_post = p.id)  as likes,
+          (SELECT COUNT(*) as count FROM comments WHERE post_id = p.id) as comments
+          FROM posts AS p
+          JOIN content_type ct ON p.type_id = ct.id
+          JOIN users u ON p.author_id = u.id WHERE 1";
 
 if (isset($_GET['type_id'])) {
     $typeId = (int) filter_input(INPUT_GET, 'type_id');
     $query .= " AND p.type_id = $typeId";
 }
 
+$postCounts = mysqli_query($connect, $query);
+$postCount = count(mysqli_fetch_all($postCounts, MYSQLI_ASSOC));
+
 $sort = isset($_GET['sort']) ? filter_input(INPUT_GET, 'sort') : "p.views_number";
 
 $order = isset($_GET['order']) ? filter_input(INPUT_GET, 'order') : "DESC";
+$notesOnPage = 6;
+$query .= " ORDER BY $sort $order LIMIT $notesOnPage";
 
-$query .= " ORDER BY $sort $order LIMIT 6";
+if (isset($_GET['page'])) {
+    $page = $_GET['page'];
+} else {
+    $page = 1;
+}
+
+$from = ($page - 1) * $notesOnPage;
+
+$query .= " OFFSET $from";
 
 $result = mysqli_query($connect, $query);
 
+$pageCount = ceil($postCount / $notesOnPage);
+
+$next = $page;
+
+if ($page < $pageCount) {
+    $next = $page + 1;
+}
+
+$previous = 1;
+
+if ($page > 1) {
+    $previous = $page - 1;
+}
+
 if (!$result) {
-    print("Ошибка подготовки запроса: " . mysqli_error($connect));
-    exit();
+    exit("Ошибка подготовки запроса: " . mysqli_error($connect));
 }
 
 mysqli_close($connect);
@@ -49,16 +79,19 @@ mysqli_close($connect);
 $posts = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
 $content = include_template('main.php', [
-    'cardsInformation' => $posts,
+    'posts' => $posts,
     'types' => TYPES,
     'contentTypes' => $contentTypes,
     'order' => $order,
     'sort' => $sort,
+    'postCount' => $postCount,
+    'next' => $next,
+    'previous' => $previous
 ]);
 
 $pageInformation = [
-    'userName' => $userInformation['login'],
-    'avatar' => $userInformation['avatar'],
+    'userName' => $userData['login'],
+    'avatar' => $userData['avatar'],
     'title' => 'readme: популярное',
     'content' => $content,
     'menuElements' => MENU_ELEMENTS,

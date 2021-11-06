@@ -36,15 +36,20 @@ CREATE TABLE posts (
   views_number INT DEFAULT 0,
   author_id INT UNSIGNED,
   type_id INT UNSIGNED,
+  original_recoding_author INT UNSIGNED,
+  original_id INT UNSIGNED,
+  repost BOOLEAN DEFAULT NULL,
 
   FOREIGN KEY (author_id) REFERENCES users (id),
-  FOREIGN KEY (type_id) REFERENCES content_type (id)
+  FOREIGN KEY (type_id) REFERENCES content_type (id),
+  FOREIGN KEY (original_recoding_author) REFERENCES users (id),
+  FOREIGN KEY (original_id) REFERENCES posts (id)
 );
 
 CREATE TABLE comments (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   creation_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  content VARCHAR(255) NOT NULL,
+  content VARCHAR(2000) NOT NULL,
   author_id INT UNSIGNED,
   post_id INT UNSIGNED,
 

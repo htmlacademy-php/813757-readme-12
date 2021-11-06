@@ -12,28 +12,28 @@ VALUES
 /*добавляет выдуманных пользователей*/
 INSERT INTO users (registration_date, email, login, password, avatar)
 VALUES
-('2021.01.02 20:17:21', 'danila@mail.ru', 'Лариса', '12345678910', 'userpic-larisa-small.jpg'),
+('2021.01.02 20:17:21', 'danila@mail.ru', 'Лариса', '12345678910', 'userpic-larisa.jpg'),
 ('2021.06.22 05:05:05', 'liza@yandex.ru', 'Владик', 'liza06', 'userpic.jpg'),
 ('2021.08.13 17:05:43', 'bety@yandex.ru', 'Виктор', 'bety24', 'userpic-mark.jpg');
 
 /*добавляет существующий список постов*/
-INSERT INTO posts (title, type_id, content, views_number, author_id)
+INSERT INTO posts (date_creation, title, type_id, content, views_number, author_id)
 VALUES
-('Цитата', 1, 'Мы в жизни любим только раз, а после ищем лишь похожих', 200, 1),
-('Игра престолов', 2, 'Не могу дождаться начала финального сезона своего любимого сериала!', 3000, 2);
+('2021.01.02 20:17:21', 'Цитата', 1, 'Мы в жизни любим только раз, а после ищем лишь похожих', 200, 1),
+('2021.06.02 20:17:21', 'Игра престолов', 2, 'Не могу дождаться начала финального сезона своего любимого сериала!', 3000, 2);
 
-INSERT INTO posts (title, type_id, image, views_number, author_id)
+INSERT INTO posts (date_creation, title, type_id, image, views_number, author_id)
 VALUES
-('Наконец, обработал фотки!', 3, 'rock-medium.jpg', 150, 3),
-('Моя мечта', 3, 'coast-medium.jpg', 10000, 1);
+('2021.10.21 20:17:21', 'Наконец, обработал фотки!', 3, 'rock-medium.jpg', 150, 3),
+('2021.10.14 20:17:21', 'Моя мечта', 3, 'coast-medium.jpg', 10000, 1);
 
-INSERT INTO posts (title, type_id, website_link, views_number, author_id)
+INSERT INTO posts (date_creation, title, type_id, website_link, views_number, author_id)
 VALUES
-('Лучшие курсы', 4, 'www.htmlacademy.ru', 400, 2);
+('2021.10.10 20:17:21', 'Лучшие курсы', 4, 'www.htmlacademy.ru', 400, 2);
 
-INSERT INTO posts (title, type_id, video, views_number, author_id)
+INSERT INTO posts (date_creation, title, type_id, video, views_number, author_id)
 VALUES
-('Что такое flexbox', 5, 'https://www.youtube.com/watch?v=8Gu40PFzOHI', 2000, 3);
+('2021.10.18 20:17:21', 'Что такое flexbox', 5, 'https://www.youtube.com/watch?v=8Gu40PFzOHI', 2000, 3);
 
 /*комментарии к разным постам*/
 INSERT INTO comments (creation_date, content, author_id, post_id)
@@ -70,7 +70,12 @@ LEFT JOIN users AS u ON c.id=u.id
 WHERE c.post_id=1;
 
 /*добавляет лайк посту*/
-INSERT INTO likes (user_id, liked_post) VALUES (2, 4);
+INSERT INTO likes (user_id, liked_post) VALUES (2, 4), (1, 2), (3, 1), (2, 3), (3, 4), (1, 4), (3, 2), (1, 5), (3, 5), (2, 5), (3, 3);
 
 /*подписаться на пользователя*/
 INSERT INTO subscription (follower, user_id) VALUES (3, 1);
+
+INSERT INTO comments (creation_date, content, author_id, post_id)
+VALUES
+('2021.08.08 17:02:23', 'Красота!!!1!', 1, 4),
+('2021.10.22 13:02:23', 'Озеро Байкал – огромное древнее озеро в горах Сибири к северу от монгольской границы. Байкал считается самым глубоким озером в мире. Он окружен сетью пешеходных маршрутов, называемых Большой байкальской тропой. Деревня Листвянка, расположенная на западном берегу озера, – популярная отправная точка для летних экскурсий. Зимой здесь можно кататься на коньках и собачьих упряжках.', 1, 4);
