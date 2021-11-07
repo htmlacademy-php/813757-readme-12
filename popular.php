@@ -10,12 +10,9 @@ if (!isset($_SESSION['user'])) {
 }
 
 $user = $_SESSION['user'];
+$userAvatar = $_SESSION['avatar'];
 $result = mysqli_query($connect, "SELECT login, avatar FROM users WHERE id = '$user'");
 $userData = mysqli_fetch_array($result, MYSQLI_ASSOC);
-
-if (empty($userData['avatar'])  || !file_exists('uploads/' . $post['avatar'])) {
-    $userData['avatar'] = "icon-input-user.svg";
-}
 
 if (!$connect) {
     exit("Ошибка подключения: " . mysqli_connect_error());
@@ -95,7 +92,8 @@ $pageInformation = [
     'title' => 'readme: популярное',
     'content' => $content,
     'menuElements' => MENU_ELEMENTS,
-    'russianValues'=> RUSSIAN_VALUES
+    'russianValues'=> RUSSIAN_VALUES,
+    'userAvatar' => $userAvatar
 ];
 
 $layout = include_template('layout.php', $pageInformation);

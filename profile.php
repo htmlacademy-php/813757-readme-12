@@ -9,13 +9,9 @@ if (!isset($_SESSION['user'])) {
 }
 
 $user = $_SESSION['user'];
+$userAvatar = $_SESSION['avatar'];
 $result = mysqli_query($connect, "SELECT login, avatar FROM users WHERE id = '$user'");
 $userInformation = mysqli_fetch_array($result, MYSQLI_ASSOC);
-
-if (empty($userInformation['avatar']) || !file_exists('uploads/' . $post['avatar'])) {
-    $userInformation['avatar'] = "icon-input-user.svg";
-}
-
 $author = mysqli_query($connect, "SELECT * FROM users WHERE id = '".$_GET['author_id']."'");
 $authorData = mysqli_fetch_array($author, MYSQLI_ASSOC);
 
@@ -133,7 +129,8 @@ $profileContent = include_template($mainProfileContent, [
     'likedPosts' => $likedPosts,
     'userFollowers' => $userFollowers,
     'countPosts' => $countPosts,
-    'countFollowers' => $countFollowers
+    'countFollowers' => $countFollowers,
+    'userAvatar' => $userAvatar
 ]);
 
 $content = include_template('profile.php', [
@@ -154,7 +151,8 @@ $pageInformation = [
     'menuElements' => MENU_ELEMENTS,
     'content' => $content,
     'russianValues'=> RUSSIAN_VALUES,
-    'user' => $user
+    'user' => $user,
+    'userAvatar' => $userAvatar
 ];
 
 $layout = include_template('layout.php', $pageInformation);

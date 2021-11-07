@@ -92,7 +92,7 @@
           <div class="comments">
             <form class="comments__form form" action="#" method="post">
               <div class="comments__my-avatar">
-                <img class="comments__picture" src="uploads/<?= empty($comment['avatar']) && !file_exists('uploads/' . $comment['avatar']) ? $avatar : htmlspecialchars($comment['avatar']) ?>" alt="Аватар пользователя">
+                <img class="comments__picture" src="uploads/<?= htmlspecialchars($userAvatar) ?>" alt="Аватар пользователя">
               </div>
               <div class="form__input-section <?= !empty($error) ? 'form__input-section--error' : '' ?>">
                 <textarea class="comments__textarea form__textarea form__input" name="comment" placeholder="Ваш комментарий"></textarea>

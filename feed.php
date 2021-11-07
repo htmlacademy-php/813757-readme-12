@@ -9,12 +9,9 @@ if (!isset($_SESSION['user'])) {
 }
 
 $user = $_SESSION['user'];
+$userAvatar = $_SESSION['avatar'];
 $result = mysqli_query($connect, "SELECT login, avatar FROM users WHERE id = '$user'");
 $userInformation = mysqli_fetch_array($result, MYSQLI_ASSOC);
-
-if (empty($userInformation['avatar']) || !file_exists('uploads/' . $post['avatar'])) {
-    $userInformation['avatar'] = "icon-input-user.svg";
-}
 
 $contentTypes = mysqli_fetch_all(getContent($connect, "content_type"), MYSQLI_ASSOC);
 
@@ -43,11 +40,12 @@ $content = include_template('feed.php', [
 
 $pageInformation = [
     'userName' => $userInformation['login'],
-    'avatar' => $userInformation['avatar'],
     'title' => 'readme: моя лента',
     'menuElements' => MENU_ELEMENTS,
     'content' => $content,
-    'russianValues'=> RUSSIAN_VALUES
+    'russianValues'=> RUSSIAN_VALUES,
+    'user' => $user,
+    'userAvatar' => $userAvatar
 ];
 
 $layout = include_template('layout.php', $pageInformation);

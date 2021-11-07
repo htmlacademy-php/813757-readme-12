@@ -9,12 +9,10 @@ if (!isset($_SESSION['user'])) {
 }
 
 $user = $_SESSION['user'];
+$userAvatar = $_SESSION['avatar'];
+
 $result = mysqli_query($connect, "SELECT login, avatar FROM users WHERE id = '$user'");
 $userInformation = mysqli_fetch_array($result, MYSQLI_ASSOC);
-
-if (empty($userInformation['avatar'])  || !file_exists('uploads/' . $post['avatar'])) {
-    $userInformation['avatar'] = "icon-input-user.svg";
-}
 
 $russianTranslation = [
     'heading' => 'Заголовок',
@@ -167,7 +165,8 @@ $pageInformation = [
     'title' => 'readme: добавление публикации',
     'menuElements' => MENU_ELEMENTS,
     'content' => $content,
-    'russianValues'=> RUSSIAN_VALUES
+    'russianValues'=> RUSSIAN_VALUES,
+    'userAvatar' => $userAvatar
 ];
 
 $layout = include_template('layout.php', $pageInformation);

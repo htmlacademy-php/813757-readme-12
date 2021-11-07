@@ -9,12 +9,10 @@ if (!isset($_SESSION['user'])) {
 }
 
 $user = $_SESSION['user'];
+$userAvatar = $_SESSION['avatar'];
+
 $result = mysqli_query($connect, "SELECT login, avatar FROM users WHERE id = '$user'");
 $userInformation = mysqli_fetch_array($result, MYSQLI_ASSOC);
-
-if (empty($userInformation['avatar']) || !file_exists('uploads/' . $post['avatar'])) {
-    $userInformation['avatar'] = "icon-input-user.svg";
-}
 
 if (isset($_GET['post-id'])) {
     $postId = (int) filter_input(INPUT_GET, 'post-id');
@@ -98,7 +96,8 @@ $content = include_template('post-details.php', [
     'hashtags' => $hashtags,
     'commentsCount' => $commentsCount,
     'error' => $error,
-    'repostsCount' => $repostsCount
+    'repostsCount' => $repostsCount,
+    'userAvatar' => $userAvatar
 ]);
 
 $pageInformation = [
@@ -107,7 +106,8 @@ $pageInformation = [
     'title' => 'readme: популярное',
     'content' => $content,
     'menuElements' => MENU_ELEMENTS,
-    'russianValues'=> RUSSIAN_VALUES
+    'russianValues'=> RUSSIAN_VALUES,
+    'userAvatar' => $userAvatar
 ];
 
 $layout = include_template('layout.php', $pageInformation);

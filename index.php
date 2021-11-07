@@ -13,12 +13,13 @@ if (isset($_SESSION['user'])) {
 
         $userLogin = mysqli_real_escape_string($connect, trim($_POST['login']));
         $userPassword = mysqli_real_escape_string($connect, trim($_POST['password']));
-        $result = mysqli_query($connect, "SELECT email, password, id FROM users WHERE email = '$userLogin'");
+        $result = mysqli_query($connect, "SELECT email, password, id, avatar FROM users WHERE email = '$userLogin'");
         $user = $result ? mysqli_fetch_array($result, MYSQLI_ASSOC) : null;
-
         if ($user && !count($errors)) {
             if (password_verify($userPassword, $user['password'])) {
                 $_SESSION['user'] = $user['id'];
+                $_SESSION['avatar'] = !empty($user['avatar']) && file_exists('uploads/' . $user['avatar']) ? $user['avatar'] : 'icon-input-user.svg';
+
                 header("Location: feed.php");
             } else {
                 $errors['password'] = "Вы ввели неверный email/пароль";

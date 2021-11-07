@@ -52,11 +52,11 @@
                     <li class="header__profile">
                         <a class="header__profile-link" href="#">
                             <div class="header__avatar-wrapper">
-                                <img class="header__profile-avatar" src="uploads/<?= $avatar ?>" alt="Аватар профиля">
+                                <img class="header__profile-avatar" src="uploads/<?= htmlspecialchars($userAvatar) ?>" alt="Аватар профиля">
                             </div>
                             <div class="header__profile-name">
                                 <span>
-                                    <?= $userName ?>
+                                    <?= htmlspecialchars($userName) ?>
                                 </span>
                                 <svg class="header__link-arrow" width="10" height="6">
                                     <use xlink:href="#icon-arrow-right-ad"></use>
@@ -67,7 +67,7 @@
                             <div class="header__profile-tooltip">
                                 <ul class="header__profile-nav">
                                     <li class="header__profile-nav-item">
-                                        <a class="header__profile-nav-link" href="profile.php?author_id=4">
+                                        <a class="header__profile-nav-link" href="profile.php?author_id=<?= $user ?>">
                                             <span class="header__profile-nav-text">
                                                 Мой профиль
                                             </span>
