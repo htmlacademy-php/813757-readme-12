@@ -3,7 +3,7 @@
 require("helpers.php");
 require("init.php");
 require("constants.php");
-require_once("send-messages.php");
+require_once("send-mail.php");
 
 if (!isset($_SESSION['user'])) {
     header("Location: /index.php");

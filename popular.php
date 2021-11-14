@@ -93,7 +93,8 @@ $pageInformation = [
     'content' => $content,
     'menuElements' => MENU_ELEMENTS,
     'russianValues'=> RUSSIAN_VALUES,
-    'userAvatar' => $userAvatar
+    'userAvatar' => $userAvatar,
+    'user' => $user
 ];
 
 $layout = include_template('layout.php', $pageInformation);

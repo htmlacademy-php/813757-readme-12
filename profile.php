@@ -26,7 +26,6 @@ $dbAuthorPosts = mysqli_query($connect, $queryAuthorPosts);
 $authorPosts = mysqli_fetch_all($dbAuthorPosts, MYSQLI_ASSOC);
 $postsCount = mysqli_num_rows($dbAuthorPosts);
 
-
 $follower = mysqli_query($connect, "SELECT follower FROM subscription WHERE follower = $user AND user_id = " . $_GET['author_id']);
 $followerInformation = mysqli_fetch_array($follower, MYSQLI_ASSOC);
 

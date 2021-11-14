@@ -94,7 +94,7 @@
               <div class="comments__my-avatar">
                 <img class="comments__picture" src="uploads/<?= htmlspecialchars($userAvatar) ?>" alt="Аватар пользователя">
               </div>
-              <div class="form__input-section <?= !empty($error) ? 'form__input-section--error' : '' ?>">
+              <div class="form__input-section<?= !empty($error) ? ' form__input-section--error' : '' ?>">
                 <textarea class="comments__textarea form__textarea form__input" name="comment" placeholder="Ваш комментарий"></textarea>
                 <label class="visually-hidden">Ваш комментарий</label>
                 <button class="form__error-button button" type="button">!</button>
@@ -173,7 +173,7 @@
             <?php  else: ?>
             <a class="user__button user__button--subscription button button--main" href="subscription.php?author_id=<?= htmlspecialchars($post['author_id']) ?>">Отписаться</a>
             <?php endif ?>
-            <a class="user__button user__button--writing button button--green" href="#">Сообщение</a>
+            <a class="user__button user__button--writing button button--green" href="<?= htmlspecialchars($post['author_id']) !== $user ? 'messages.php?interlocutor_id=' . htmlspecialchars($post['author_id']) : '' ?>">Сообщение</a>
           </div>
         </div>
       </div>

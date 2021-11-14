@@ -75,13 +75,13 @@ CREATE TABLE likes (
   FOREIGN KEY (liked_post) REFERENCES posts (id)
 );
 
-
 CREATE TABLE messages (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   message_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   content VARCHAR(255),
   sender INT UNSIGNED ,
   recipient INT UNSIGNED,
+  flag INT UNSIGNED,
 
   FOREIGN KEY (sender) REFERENCES users (id),
   FOREIGN KEY (recipient) REFERENCES users (id)

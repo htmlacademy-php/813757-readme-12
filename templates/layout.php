@@ -73,15 +73,16 @@
                                             </span>
                                         </a>
                                     </li>
+                                    <?php if ($newMessages): ?>
                                     <li class="header__profile-nav-item">
-                                        <a class="header__profile-nav-link" href="#">
+                                        <a class="header__profile-nav-link" href="messages.php">
                                             <span class="header__profile-nav-text">
                                                 Сообщения
-                                                <i class="header__profile-indicator">2</i>
+                                                <i class="header__profile-indicator"><?= $newMessages['new_messages'] ?></i>
                                             </span>
                                         </a>
                                     </li>
-
+                                    <?php endif ?>
                                     <li class="header__profile-nav-item">
                                         <a class="header__profile-nav-link" href="logout.php">
                                             <span class="header__profile-nav-text">

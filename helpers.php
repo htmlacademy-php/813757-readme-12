@@ -292,6 +292,7 @@ function isCorrectLength(string $name, int $min, int $max): string {
  */
 function getTags(string $tags): string {
     $tagsArray = explode(" ", $tags);
+
     foreach ($tagsArray as $tag) {
         if (mb_strlen($tag) > 15) {
             return "Каждый тег должен состоять не более чем из 15 символов";
@@ -430,6 +431,37 @@ function getCutString(string $string, int $limit = 300): string {
 }
 
 /**
+ * обрезает строку, если длина больше 9 символов
+ *
+ * @param string $string
+ * @param int $limit
+ * @return string итоговый текст
+ */
+
+function getPreviewText(string $string, int $limit = 9): string {
+    if (mb_strlen($string, "UTF-8") > $limit) {
+        $words = explode(" ", $string);
+        $count = 0;
+        $cutString = "";
+        $newWords = [];
+
+        foreach ($words as $elem) {
+            $count += mb_strlen($elem, "UTF-8");
+
+            if ($count < $limit) {
+                array_push($newWords, $elem);
+            };
+
+        };
+
+        $cutString = implode(" ", $newWords);
+
+        return $cutString . "...";
+    }
+    return $string . "...";
+}
+
+/**
  * возвращает разницу во времени
  *
  * @param string $date
@@ -466,6 +498,26 @@ function getRelativeFormat(string $date, string $value="назад"): string {
     }
 
     return $timeDifference;
+}
+
+/**
+ * функция выводит формат времени в зависимости от прошедшего времени
+ * @param string время
+ * @return string возвращает строку с необходимым форматом
+*/
+function formatTime($time): string
+{
+  $monthes = [1 => 'янв', 2 => 'фев', 3 => 'мар', 4 => 'апр', 5 => 'мая', 6 => 'июн', 7 => 'июл', 8 => 'авг', 9 => 'сен', 10 => 'окт', 11 => 'ноя', 12 => 'дек'];
+
+  $date1 = new DateTime($time);
+  $date2 = new DateTime();
+  $difference = $date2->diff($date1);
+
+  if ($difference->days > 1) {
+    return $date1->format("j {$monthes[$date1->format('n')]}");
+  }
+
+  return $date1->format('H:i');
 }
 
 /**
@@ -547,4 +599,18 @@ function getContent($connect, string $table) {
     }
 
     return $contentType;
+}
+
+/**
+ * получает подсчет количества записей в таблице по условию
+ * @param mysqli_connect $connect
+ * @param $table таблица в которой делается выборка из БД
+ * @return array массив с результатом
+ */
+function getAllNewMessages($connect, string $table): array
+{
+    $dbNewMessages = mysqli_query($connect, "SELECT COUNT(flag) AS new_messages FROM $table WHERE flag = 1");
+    $newMessages = mysqli_fetch_array($dbNewMessages, MYSQLI_ASSOC);
+
+    return $newMessages;
 }
