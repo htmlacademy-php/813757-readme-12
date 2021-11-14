@@ -71,7 +71,7 @@ if (!$isExists) {
 $error = "";
 
 if (isset($_POST['comment']) && mysqli_num_rows($isExists) > 0) {
-    $comment = trim($_POST['comment']);
+    $comment = mysqli_real_escape_string($connect, trim($_POST['comment']));
     $authorId = (int) filter_input(INPUT_GET, 'author_id');
 
     if (mb_strlen($comment) < 4) {
@@ -151,7 +151,8 @@ $pageInformation = [
     'content' => $content,
     'russianValues'=> RUSSIAN_VALUES,
     'user' => $user,
-    'userAvatar' => $userAvatar
+    'userAvatar' => $userAvatar,
+    'newMessages' => getAllNewMessages($connect, 'messages')
 ];
 
 $layout = include_template('layout.php', $pageInformation);

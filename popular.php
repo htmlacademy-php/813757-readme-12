@@ -71,6 +71,8 @@ if (!$result) {
     exit("Ошибка подготовки запроса: " . mysqli_error($connect));
 }
 
+$newMessages = getAllNewMessages($connect, 'messages');
+
 mysqli_close($connect);
 
 $posts = mysqli_fetch_all($result, MYSQLI_ASSOC);
@@ -94,7 +96,8 @@ $pageInformation = [
     'menuElements' => MENU_ELEMENTS,
     'russianValues'=> RUSSIAN_VALUES,
     'userAvatar' => $userAvatar,
-    'user' => $user
+    'user' => $user,
+    'newMessages' => $newMessages
 ];
 
 $layout = include_template('layout.php', $pageInformation);

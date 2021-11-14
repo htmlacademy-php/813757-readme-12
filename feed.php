@@ -31,6 +31,7 @@ if (isset($_GET['type_id'])) {
 
 $dbPostsRow = mysqli_query($connect, $dbPosts);
 $posts = mysqli_fetch_all($dbPostsRow, MYSQLI_ASSOC);
+$newMessages = getAllNewMessages($connect, 'messages');
 
 $content = include_template('feed.php', [
     'posts' => $posts,
@@ -45,7 +46,8 @@ $pageInformation = [
     'content' => $content,
     'russianValues'=> RUSSIAN_VALUES,
     'user' => $user,
-    'userAvatar' => $userAvatar
+    'userAvatar' => $userAvatar,
+    'newMessages' => $newMessages
 ];
 
 $layout = include_template('layout.php', $pageInformation);

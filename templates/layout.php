@@ -39,8 +39,7 @@
             <?php if ($_SERVER['REQUEST_URI'] !== "/registration.php"): ?>
             <nav class="header__nav">
                 <ul class="header__my-nav">
-
-                <?php foreach ($menuElements as $key => $menuElement): ?>
+                <?php foreach ($menuElements as $menuElement): ?>
                     <li class="header__my-page header__my-page--<?= $menuElement ?>">
                         <a class="header__page-link <?= $activeClass =  $_SERVER['REQUEST_URI'] === ('/' . $menuElement . '.php') ? 'header__page-link--active' : ''; ?>" href="<?= $menuElement ?>.php" title="<?= $russianValues[$menuElement] ?>">
                             <span class="visually-hidden"><?= $russianValues[$menuElement] ?></span>
@@ -73,16 +72,16 @@
                                             </span>
                                         </a>
                                     </li>
-                                    <?php if ($newMessages): ?>
                                     <li class="header__profile-nav-item">
                                         <a class="header__profile-nav-link" href="messages.php">
                                             <span class="header__profile-nav-text">
                                                 Сообщения
+                                                <?php if ($newMessages['new_messages'] !== '0'): ?>
                                                 <i class="header__profile-indicator"><?= $newMessages['new_messages'] ?></i>
+                                                <?php endif ?>
                                             </span>
                                         </a>
                                     </li>
-                                    <?php endif ?>
                                     <li class="header__profile-nav-item">
                                         <a class="header__profile-nav-link" href="logout.php">
                                             <span class="header__profile-nav-text">
@@ -147,15 +146,11 @@
             </div>
             <div class="footer__my-info">
                 <ul class="footer__my-pages">
-                    <li class="footer__my-page footer__my-page--feed">
-                        <a class="footer__page-link" href="feed.html">Моя лента</a>
+                <?php foreach ($menuElements as $menuElement): ?>
+                    <li class="footer__my-page footer__my-page--<?= $menuElement ?>">
+                        <a class="footer__page-link" href="<?= $menuElement ?>.php"><?= $russianValues[$menuElement] ?></a>
                     </li>
-                    <li class="footer__my-page footer__my-page--popular">
-                        <a class="footer__page-link" href="popular.html">Популярный контент</a>
-                    </li>
-                    <li class="footer__my-page footer__my-page--messages">
-                        <a class="footer__page-link" href="messages.html">Личные сообщения</a>
-                    </li>
+                <?php endforeach; ?>
                 </ul>
                 <div class="footer__copyright">
                     <a class="footer__copyright-link" href="#">

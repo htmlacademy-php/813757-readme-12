@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $query = "INSERT INTO users (email, login, password, avatar) VALUES (?, ?, ?, ?)";
         mysqli_stmt_execute(db_get_prepare_stmt($connect, $query, [$email, $login, $password, $avatar]));
-        header("Location: popular.php");
+        header("Location: index.php");
     }
 
 }

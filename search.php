@@ -9,13 +9,12 @@ if (!isset($_SESSION['user'])) {
 }
 
 $user = $_SESSION['user'];
+$userAvatar = $_SESSION['avatar'];
 $back = $_SERVER['HTTP_REFERER'];
 $result = mysqli_query($connect, "SELECT login, avatar FROM users WHERE id = '$user'");
 $userInformation = mysqli_fetch_array($result, MYSQLI_ASSOC);
 
-if (empty($userInformation['avatar']) || !file_exists('uploads/' . $post['avatar'])) {
-    $userInformation['avatar'] = "icon-input-user.svg";
-}
+$newMessages = getAllNewMessages($connect, 'messages');
 
 if (empty(trim($_GET['search']))) {
     $content = include_template('no-results.php', [
@@ -29,7 +28,8 @@ if (empty(trim($_GET['search']))) {
         'title' => 'readme: ничего не найдено',
         'menuElements' => MENU_ELEMENTS,
         'content' => $content,
-        'russianValues'=> RUSSIAN_VALUES
+        'russianValues'=> RUSSIAN_VALUES,
+        'userAvatar' => $userAvatar
     ];
 
     $layout = include_template('layout.php', $pageInformation);
@@ -62,7 +62,8 @@ if (empty($posts)) {
         'title' => 'readme: ничего не найдено',
         'menuElements' => MENU_ELEMENTS,
         'content' => $content,
-        'russianValues'=> RUSSIAN_VALUES
+        'russianValues'=> RUSSIAN_VALUES,
+        'newMessages' => $newMessages
     ];
 
     $layout = include_template('layout.php', $pageInformation);
@@ -81,7 +82,9 @@ $pageInformation = [
     'title' => 'readme: '.$search ,
     'menuElements' => MENU_ELEMENTS,
     'content' => $content,
-    'russianValues'=> RUSSIAN_VALUES
+    'russianValues'=> RUSSIAN_VALUES,
+    'newMessages' => $newMessages,
+    'userAvatar' => $userAvatar
 ];
 
 $layout = include_template('layout.php', $pageInformation);

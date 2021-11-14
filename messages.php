@@ -80,7 +80,7 @@ if (isset($_GET['interlocutor_id'])) {
     $error = "";
 
     if (isset($_POST['message']) && mysqli_num_rows($isExists) > 0) {
-        $message = trim($_POST['message']);
+        $message = mysqli_real_escape_string($connect, trim($_POST['message']));
 
         if (mb_strlen($message) < 2) {
             $error = "Это поле обязательно к заполнению!!!";

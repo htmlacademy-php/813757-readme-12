@@ -110,13 +110,13 @@
                     </div>
                     <div class="comments__info">
                         <div class="comments__name-wrapper">
-                        <a class="comments__user-name" href="#">
-                            <span><?= htmlspecialchars($comment['login']) ?></span>
-                        </a>
-                        <time class="comments__time" datetime="<?= htmlspecialchars($comment['creation_date']) ?>"><?= getRelativeFormat(htmlspecialchars($comment['creation_date']))?></time>
+                            <a class="comments__user-name" href="#">
+                                <span><?= htmlspecialchars($comment['login']) ?></span>
+                            </a>
+                            <time class="comments__time" datetime="<?= htmlspecialchars($comment['creation_date']) ?>"><?= getRelativeFormat(htmlspecialchars($comment['creation_date']))?></time>
                         </div>
                         <p class="comments__text">
-                        <?= htmlspecialchars($comment['content']) ?>
+                            <?= htmlspecialchars($comment['content']) ?>
                         </p>
                     </div>
                     </li>

@@ -13,6 +13,7 @@ $userAvatar = $_SESSION['avatar'];
 
 $result = mysqli_query($connect, "SELECT login, avatar FROM users WHERE id = '$user'");
 $userInformation = mysqli_fetch_array($result, MYSQLI_ASSOC);
+$newMessages = getAllNewMessages($connect, 'messages');
 
 if (isset($_GET['post-id'])) {
     $postId = (int) filter_input(INPUT_GET, 'post-id');
@@ -62,7 +63,7 @@ if (isset($_GET['post-id'])) {
     $error = "";
 
     if (isset($_POST['comment']) && mysqli_num_rows($isExists) > 0) {
-        $comment = trim($_POST['comment']);
+        $comment = mysqli_real_escape_string($connect, trim($_POST['comment']));
 
         if (mb_strlen($comment) < 4) {
             $error = "Это поле обязательно к заполнению!!!";
@@ -107,7 +108,8 @@ $pageInformation = [
     'content' => $content,
     'menuElements' => MENU_ELEMENTS,
     'russianValues'=> RUSSIAN_VALUES,
-    'userAvatar' => $userAvatar
+    'userAvatar' => $userAvatar,
+    'newMessages' => $newMessages
 ];
 
 $layout = include_template('layout.php', $pageInformation);

@@ -15,6 +15,7 @@ $userLogin = $_SESSION['login'];
 
 $result = mysqli_query($connect, "SELECT login, avatar FROM users WHERE id = '$user'");
 $userInformation = mysqli_fetch_array($result, MYSQLI_ASSOC);
+$newMessages = getAllNewMessages($connect, 'messages');
 
 $russianTranslation = [
     'heading' => 'Заголовок',
@@ -184,7 +185,8 @@ $pageInformation = [
     'menuElements' => MENU_ELEMENTS,
     'content' => $content,
     'russianValues'=> RUSSIAN_VALUES,
-    'userAvatar' => $userAvatar
+    'userAvatar' => $userAvatar,
+    'newMessages' => $newMessages
 ];
 
 $layout = include_template('layout.php', $pageInformation);
