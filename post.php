@@ -17,6 +17,7 @@ $newMessages = getAllNewMessages($connect);
 
 if (isset($_GET['post-id'])) {
     $postId = (int) filter_input(INPUT_GET, 'post-id');
+
     $queryPost = "SELECT p.*, ct.content_title, ct.icon_class, u.login, u.avatar, (SELECT COUNT(*) as count FROM likes WHERE liked_post = p.id)  as likes FROM posts AS p JOIN content_type ct ON p.type_id = ct.id JOIN users u ON p.author_id = u.id WHERE p.id = " . $postId;
 
     $results = mysqli_query($connect, $queryPost);
@@ -26,6 +27,11 @@ if (isset($_GET['post-id'])) {
     }
 
     $post = mysqli_fetch_array($results, MYSQLI_ASSOC);
+
+    $count = $post['views_number'];
+    $count++;
+    $viewsNumber = "UPDATE posts SET views_number = $count WHERE id = $postId";
+    mysqli_query($connect, $viewsNumber);
 
     $dbCommentsCount = mysqli_query($connect, "SELECT COUNT(*) as count FROM comments WHERE post_id = " . $post['id']);
     $commentsCount = mysqli_fetch_array($dbCommentsCount, MYSQLI_ASSOC);
