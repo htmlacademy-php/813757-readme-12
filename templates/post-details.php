@@ -130,7 +130,7 @@
                 <?php endforeach ?>
               </ul>
               <?php if ($commentsCount['count'] > 2 && !isset($_GET['show_all_comments'])): ?>
-                <a class="comments__more-link" href="post.php?post-id=<?= $_GET['post-id'] ?>&show_all_comments">
+                <a class="comments__more-link" href="post.php?post-id=<?= $_GET['post-id'] ?>&show_all_comments#last_message">
                     <span>Показать все комментарии</span>
                     <sup class="comments__amount"><?= htmlspecialchars($commentsCount['count']) ?></sup>
                 </a>
@@ -138,6 +138,7 @@
                 <a class="comments__more-link" href="post.php?post-id=<?= htmlspecialchars($_GET['post-id']) ?>">
                     <span>Скрыть комментарии</span>
                     <sup class="comments__amount"><?= htmlspecialchars($commentsCount['count'] - 3) ?></sup>
+                    <a name="last_message"></a>
                 </a>
               <?php endif ?>
             </div>
