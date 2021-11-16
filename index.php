@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header("Location: feed.php");
         } else {
             $errors['password'] = "Вы ввели неверный email/пароль";
-            }
+        }
     } elseif (!empty($userLogin) && $user['email'] !== $userLogin) {
         $errors['login'] = "Вы ввели неверный email/пароль";
     }

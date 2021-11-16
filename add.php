@@ -15,7 +15,7 @@ $userLogin = $_SESSION['login'];
 
 $result = mysqli_query($connect, "SELECT login, avatar FROM users WHERE id = '$user'");
 $userInformation = mysqli_fetch_array($result, MYSQLI_ASSOC);
-$newMessages = getAllNewMessages($connect, 'messages');
+$newMessages = getAllNewMessages($connect);
 
 $russianTranslation = [
     'heading' => 'Заголовок',

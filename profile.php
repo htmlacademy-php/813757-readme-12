@@ -79,7 +79,6 @@ if (isset($_POST['comment']) && mysqli_num_rows($isExists) > 0) {
     }
 
     if (empty($error)) {
-
         $currentDate = new DateTime("", new DateTimeZone("Europe/Moscow"));
         $formatCurrentDate = $currentDate->format('Y-m-d H:i:s');
         $insertComment = "INSERT INTO comments (creation_date, content, author_id, post_id) VALUES (?, ?, ?, ?)";
@@ -100,7 +99,7 @@ $dbLikes = mysqli_query($connect, $dbLikesLink);
 $likedPosts = mysqli_fetch_all($dbLikes, MYSQLI_ASSOC);
 $hashtags = [];
 
-foreach($authorPosts as $authorPost) {
+foreach ($authorPosts as $authorPost) {
     $dbHashtags = "SELECT h.hashtag FROM posts_hashtags as ph JOIN hashtags as h ON h.id = ph.hashtag_id WHERE ph.post_id = ".$authorPost['id'];
     $dbTags = mysqli_query($connect, $dbHashtags);
     $hashtagsArray = mysqli_fetch_all($dbTags, MYSQLI_ASSOC);
@@ -152,7 +151,7 @@ $pageInformation = [
     'russianValues'=> RUSSIAN_VALUES,
     'user' => $user,
     'userAvatar' => $userAvatar,
-    'newMessages' => getAllNewMessages($connect, 'messages')
+    'newMessages' => getAllNewMessages($connect)
 ];
 
 $layout = include_template('layout.php', $pageInformation);

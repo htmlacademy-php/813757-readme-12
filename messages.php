@@ -38,7 +38,7 @@ foreach ($recipients as $recipient) {
     $dbLastMessage = mysqli_fetch_all($dbLastMessages, MYSQLI_ASSOC);
     $lastMessages[$recipient['id']] = $dbLastMessage[0];
 
-    $dbRecipientNewMessages = mysqli_query($connect,"SELECT COUNT(flag) AS new_messages FROM messages WHERE flag = 1 AND (recipient = $user AND sender = " . $recipient['id'] . ")" );
+    $dbRecipientNewMessages = mysqli_query($connect, "SELECT COUNT(flag) AS new_messages FROM messages WHERE flag = 1 AND (recipient = $user AND sender = " . $recipient['id'] . ")");
     $recipientNewMessages = mysqli_fetch_all($dbRecipientNewMessages, MYSQLI_ASSOC);
     $recipientCountNewMessages[$recipient['id']] = $recipientNewMessages[0];
 }
@@ -47,7 +47,7 @@ $data['recipientCountNewMessages'] = $recipientCountNewMessages;
 
 $data['lastMessages'] = $lastMessages;
 
-$newMessages = getAllNewMessages($connect, 'messages');
+$newMessages = getAllNewMessages($connect);
 
 if (isset($_GET['interlocutor_id'])) {
     $interlocutorId = (int) filter_input(INPUT_GET, 'interlocutor_id');

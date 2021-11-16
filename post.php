@@ -13,7 +13,7 @@ $userAvatar = $_SESSION['avatar'];
 
 $result = mysqli_query($connect, "SELECT login, avatar FROM users WHERE id = '$user'");
 $userInformation = mysqli_fetch_array($result, MYSQLI_ASSOC);
-$newMessages = getAllNewMessages($connect, 'messages');
+$newMessages = getAllNewMessages($connect);
 
 if (isset($_GET['post-id'])) {
     $postId = (int) filter_input(INPUT_GET, 'post-id');
@@ -70,7 +70,6 @@ if (isset($_GET['post-id'])) {
         }
 
         if (empty($error)) {
-
             $currentDate = new DateTime("", new DateTimeZone("Europe/Moscow"));
             $formatCurrentDate = $currentDate->format('Y-m-d H:i:s');
             $insertComment = "INSERT INTO comments (creation_date, content, author_id, post_id) VALUES (?, ?, ?, ?)";

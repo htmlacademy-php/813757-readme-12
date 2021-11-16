@@ -59,13 +59,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors['error'] = validateFile('userpic-file');
         }
 
-        move_uploaded_file($tmpDir,$filePath.$fileName);
+        move_uploaded_file($tmpDir, $filePath.$fileName);
 
         $query = "INSERT INTO users (email, login, password, avatar) VALUES (?, ?, ?, ?)";
         mysqli_stmt_execute(db_get_prepare_stmt($connect, $query, [$email, $login, $password, $avatar]));
         header("Location: index.php");
     }
-
 }
 
 $content = include_template('registration-page.php', [

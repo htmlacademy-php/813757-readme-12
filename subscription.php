@@ -31,11 +31,10 @@ if (isset($_GET['author_id'])) {
         $message->setFrom(['keks@phpdemo.ru' => 'Кекс']);
         $message->setTo([$author['email'] => $author['login']]);
         $message->setBody("<div>Здравствуйте, {$author['login']}. На вас подписался новый пользователь {$login}, оформившего подписку%. Вот ссылка на его профиль: <a href=\"http://813757-readme-12/profile.php?author_id={$user}\">{$login}</a></div>", 'text/html');
-        $result = $mailer->send($message);
+        $mailer->send($message);
     } else {
         $unsubscribe = mysqli_query($connect, "DELETE FROM subscription WHERE user_id = $authorId AND follower = $user");
     }
 
     header("Location: profile.php?author_id=$authorId");
 }
-
