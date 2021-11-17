@@ -24,11 +24,11 @@
         </div>
         <div class="profile__user-buttons user__buttons">
           <?php if ($followerInformation['follower'] !== $user): ?>
-          <a class="profile__user-button user__button user__button--subscription button button--main" href="subscription.php?author_id=<?= $_GET['author_id'] ?>">Подписаться</a>
+          <a class="profile__user-button user__button user__button--subscription button button--main" href="subscription.php?author_id=<?= htmlspecialchars($_GET['author_id']) ?>">Подписаться</a>
           <?php  else: ?>
-          <a class="profile__user-button user__button user__button--subscription button button--main" href="subscription.php?author_id=<?= $_GET['author_id'] ?>">Отписаться</a>
+          <a class="profile__user-button user__button user__button--subscription button button--main" href="subscription.php?author_id=<?= htmlspecialchars($_GET['author_id']) ?>">Отписаться</a>
           <?php endif ?>
-          <a class="profile__user-button user__button user__button--writing button button--green" href="#">Сообщение</a>
+          <a class="profile__user-button user__button user__button--writing button button--green" href="<?= htmlspecialchars($_GET['author_id']) !== $user ? 'messages.php?interlocutor_id=' . htmlspecialchars($_GET['author_id']) : '' ?>">Сообщение</a>
         </div>
       </div>
     </div>

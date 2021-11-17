@@ -105,18 +105,18 @@
                     <li class="comments__item user">
                     <div class="comments__avatar">
                         <a class="user__avatar-link" href="#">
-                        <img class="comments__picture" src="uploads/<?= !empty($comment['avatar']) && file_exists($comment['avatar']) ? htmlspecialchars($comment['avatar']) : "icon-input-user.svg" ?>" alt="Аватар пользователя">
+                        <img class="comments__picture" src="uploads/<?= !empty($comment['avatar']) && file_exists('uploads/' . $comment['avatar']) ? htmlspecialchars($comment['avatar']) : "icon-input-user.svg" ?>" alt="Аватар пользователя">
                         </a>
                     </div>
                     <div class="comments__info">
                         <div class="comments__name-wrapper">
-                        <a class="comments__user-name" href="#">
-                            <span><?= htmlspecialchars($comment['login']) ?></span>
-                        </a>
-                        <time class="comments__time" datetime="<?= htmlspecialchars($comment['creation_date']) ?>"><?= getRelativeFormat(htmlspecialchars($comment['creation_date']))?></time>
+                            <a class="comments__user-name" href="#">
+                                <span><?= htmlspecialchars($comment['login']) ?></span>
+                            </a>
+                            <time class="comments__time" datetime="<?= htmlspecialchars($comment['creation_date']) ?>"><?= getRelativeFormat(htmlspecialchars($comment['creation_date']))?></time>
                         </div>
                         <p class="comments__text">
-                        <?= htmlspecialchars($comment['content']) ?>
+                            <?= htmlspecialchars($comment['content']) ?>
                         </p>
                     </div>
                     </li>
@@ -139,20 +139,20 @@
         <?php endif ?>
         <?php if (isset($_GET['show_comments']) && isset($_GET['post-id']) && $_GET['post-id'] === $authorPost['id']): ?>
         <form class="comments__form form" action="#" method="post">
-        <div class="comments__my-avatar">
-            <img class="comments__picture" src="uploads/<?= empty($comment['avatar']) && !file_exists($comment['avatar']) ? $avatar : htmlspecialchars($comment['avatar']) ?>" alt="Аватар пользователя">
-        </div>
-        <div class="form__input-section <?= !empty($error) ? 'form__input-section--error' : '' ?>">
-            <textarea class="comments__textarea form__textarea form__input" name="comment" placeholder="Ваш комментарий"></textarea>
-            <label class="visually-hidden">Ваш комментарий</label>
-            <button class="form__error-button button" type="button">!</button>
-            <div class="form__error-text">
-            <h3 class="form__error-title">Ошибка валидации</h3>
-            <p class="form__error-desc"><?= $error ?></p>
+            <div class="comments__my-avatar">
+                <img class="comments__picture" src="uploads/<?= htmlspecialchars($userAvatar) ?>" alt="Аватар пользователя">
             </div>
-        </div>
-        <input class="visually-hidden" id="<?= htmlspecialchars($authorPost['id'])?>" type="text" name="<?= htmlspecialchars($authorPost['id']) ?>" value="" placeholder="">
-        <button class="comments__submit button button--green" type="submit">Отправить</button>
+            <div class="form__input-section <?= !empty($error) ? 'form__input-section--error' : '' ?>">
+                <textarea class="comments__textarea form__textarea form__input" name="comment" placeholder="Ваш комментарий"></textarea>
+                <label class="visually-hidden">Ваш комментарий</label>
+                <button class="form__error-button button" type="button">!</button>
+                <div class="form__error-text">
+                <h3 class="form__error-title">Ошибка валидации</h3>
+                <p class="form__error-desc"><?= $error ?></p>
+                </div>
+            </div>
+            <input class="visually-hidden" id="<?= htmlspecialchars($authorPost['id'])?>" type="text" name="<?= htmlspecialchars($authorPost['id']) ?>" value="" placeholder="">
+            <button class="comments__submit button button--green" type="submit">Отправить</button>
         </form>
         <?php endif ?>
     </article>

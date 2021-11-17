@@ -3,18 +3,19 @@
 require("helpers.php");
 require("init.php");
 require("constants.php");
+require_once("send-mail.php");
 
 if (!isset($_SESSION['user'])) {
     header("Location: /index.php");
 }
 
 $user = $_SESSION['user'];
+$userAvatar = $_SESSION['avatar'];
+$userLogin = $_SESSION['login'];
+
 $result = mysqli_query($connect, "SELECT login, avatar FROM users WHERE id = '$user'");
 $userInformation = mysqli_fetch_array($result, MYSQLI_ASSOC);
-
-if (empty($userInformation['avatar'])  || !file_exists('uploads/' . $post['avatar'])) {
-    $userInformation['avatar'] = "icon-input-user.svg";
-}
+$newMessages = getAllNewMessages($connect);
 
 $russianTranslation = [
     'heading' => 'Заголовок',
@@ -137,13 +138,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $result = mysqli_query($connect, $query);
 
             if (!$result) {
-                print("Ошибка подготовки запроса: " . mysqli_error($connect));
-                exit();
+                exit("Ошибка подготовки запроса: " . mysqli_error($connect));
             } else {
                 $lastId = mysqli_insert_id($connect);
                 foreach ($tagsId as $tagId) {
                     $query = "INSERT INTO posts_hashtags SET post_id=$lastId, hashtag_id=$tagId";
                     mysqli_query($connect, $query);
+                }
+
+                $message = new Swift_Message();
+                $message->setSubject("Новая публикация от пользователя {$userInformation['login']} автора поста {$title}");
+            }
+
+            $dbFollowers = mysqli_query($connect, "SELECT * FROM users WHERE id IN (SELECT follower FROM subscription WHERE user_id = " . $user . ")");
+            $followers = mysqli_fetch_all($dbFollowers, MYSQLI_ASSOC);
+
+            if ($followers) {
+                foreach ($followers as $follower) {
+                    $message = new Swift_Message();
+                    $message->setSubject("Новая публикация от пользователя {$userInformation['login']} автора поста {$title}");
+                    $message->setFrom(['keks@phpdemo.ru' => 'Кекс']);
+                    $message->setTo([$follower['email'] => $follower['login']]);
+                    $message->setBody("<div>Здравствуйте, {$follower['login']}. Пользователь {$user} автора поста {$title} только что опубликовал новую запись „{$title}“. Посмотрите её на странице пользователя: <a href=\"http://813757-readme-12/profile.php?author_id={$user}\">{$userLogin}</a></div>", 'text/html');
+                    $result = $mailer->send($message);
                 }
             }
 
@@ -167,7 +184,9 @@ $pageInformation = [
     'title' => 'readme: добавление публикации',
     'menuElements' => MENU_ELEMENTS,
     'content' => $content,
-    'russianValues'=> RUSSIAN_VALUES
+    'russianValues'=> RUSSIAN_VALUES,
+    'userAvatar' => $userAvatar,
+    'newMessages' => $newMessages
 ];
 
 $layout = include_template('layout.php', $pageInformation);

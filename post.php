@@ -9,15 +9,15 @@ if (!isset($_SESSION['user'])) {
 }
 
 $user = $_SESSION['user'];
+$userAvatar = $_SESSION['avatar'];
+
 $result = mysqli_query($connect, "SELECT login, avatar FROM users WHERE id = '$user'");
 $userInformation = mysqli_fetch_array($result, MYSQLI_ASSOC);
-
-if (empty($userInformation['avatar']) || !file_exists('uploads/' . $post['avatar'])) {
-    $userInformation['avatar'] = "icon-input-user.svg";
-}
+$newMessages = getAllNewMessages($connect);
 
 if (isset($_GET['post-id'])) {
     $postId = (int) filter_input(INPUT_GET, 'post-id');
+
     $queryPost = "SELECT p.*, ct.content_title, ct.icon_class, u.login, u.avatar, (SELECT COUNT(*) as count FROM likes WHERE liked_post = p.id)  as likes FROM posts AS p JOIN content_type ct ON p.type_id = ct.id JOIN users u ON p.author_id = u.id WHERE p.id = " . $postId;
 
     $results = mysqli_query($connect, $queryPost);
@@ -27,6 +27,11 @@ if (isset($_GET['post-id'])) {
     }
 
     $post = mysqli_fetch_array($results, MYSQLI_ASSOC);
+
+    $count = $post['views_number'];
+    $count++;
+    $viewsNumber = "UPDATE posts SET views_number = $count WHERE id = $postId";
+    mysqli_query($connect, $viewsNumber);
 
     $dbCommentsCount = mysqli_query($connect, "SELECT COUNT(*) as count FROM comments WHERE post_id = " . $post['id']);
     $commentsCount = mysqli_fetch_array($dbCommentsCount, MYSQLI_ASSOC);
@@ -64,14 +69,13 @@ if (isset($_GET['post-id'])) {
     $error = "";
 
     if (isset($_POST['comment']) && mysqli_num_rows($isExists) > 0) {
-        $comment = trim($_POST['comment']);
+        $comment = mysqli_real_escape_string($connect, trim($_POST['comment']));
 
         if (mb_strlen($comment) < 4) {
             $error = "Это поле обязательно к заполнению!!!";
         }
 
         if (empty($error)) {
-
             $currentDate = new DateTime("", new DateTimeZone("Europe/Moscow"));
             $formatCurrentDate = $currentDate->format('Y-m-d H:i:s');
             $insertComment = "INSERT INTO comments (creation_date, content, author_id, post_id) VALUES (?, ?, ?, ?)";
@@ -98,7 +102,8 @@ $content = include_template('post-details.php', [
     'hashtags' => $hashtags,
     'commentsCount' => $commentsCount,
     'error' => $error,
-    'repostsCount' => $repostsCount
+    'repostsCount' => $repostsCount,
+    'userAvatar' => $userAvatar
 ]);
 
 $pageInformation = [
@@ -107,7 +112,9 @@ $pageInformation = [
     'title' => 'readme: популярное',
     'content' => $content,
     'menuElements' => MENU_ELEMENTS,
-    'russianValues'=> RUSSIAN_VALUES
+    'russianValues'=> RUSSIAN_VALUES,
+    'userAvatar' => $userAvatar,
+    'newMessages' => $newMessages
 ];
 
 $layout = include_template('layout.php', $pageInformation);

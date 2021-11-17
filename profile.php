@@ -9,13 +9,9 @@ if (!isset($_SESSION['user'])) {
 }
 
 $user = $_SESSION['user'];
+$userAvatar = $_SESSION['avatar'];
 $result = mysqli_query($connect, "SELECT login, avatar FROM users WHERE id = '$user'");
 $userInformation = mysqli_fetch_array($result, MYSQLI_ASSOC);
-
-if (empty($userInformation['avatar']) || !file_exists('uploads/' . $post['avatar'])) {
-    $userInformation['avatar'] = "icon-input-user.svg";
-}
-
 $author = mysqli_query($connect, "SELECT * FROM users WHERE id = '".$_GET['author_id']."'");
 $authorData = mysqli_fetch_array($author, MYSQLI_ASSOC);
 
@@ -29,7 +25,6 @@ $queryAuthorPosts = "SELECT p.*, ct.icon_class,
 $dbAuthorPosts = mysqli_query($connect, $queryAuthorPosts);
 $authorPosts = mysqli_fetch_all($dbAuthorPosts, MYSQLI_ASSOC);
 $postsCount = mysqli_num_rows($dbAuthorPosts);
-
 
 $follower = mysqli_query($connect, "SELECT follower FROM subscription WHERE follower = $user AND user_id = " . $_GET['author_id']);
 $followerInformation = mysqli_fetch_array($follower, MYSQLI_ASSOC);
@@ -76,7 +71,7 @@ if (!$isExists) {
 $error = "";
 
 if (isset($_POST['comment']) && mysqli_num_rows($isExists) > 0) {
-    $comment = trim($_POST['comment']);
+    $comment = mysqli_real_escape_string($connect, trim($_POST['comment']));
     $authorId = (int) filter_input(INPUT_GET, 'author_id');
 
     if (mb_strlen($comment) < 4) {
@@ -84,7 +79,6 @@ if (isset($_POST['comment']) && mysqli_num_rows($isExists) > 0) {
     }
 
     if (empty($error)) {
-
         $currentDate = new DateTime("", new DateTimeZone("Europe/Moscow"));
         $formatCurrentDate = $currentDate->format('Y-m-d H:i:s');
         $insertComment = "INSERT INTO comments (creation_date, content, author_id, post_id) VALUES (?, ?, ?, ?)";
@@ -105,7 +99,7 @@ $dbLikes = mysqli_query($connect, $dbLikesLink);
 $likedPosts = mysqli_fetch_all($dbLikes, MYSQLI_ASSOC);
 $hashtags = [];
 
-foreach($authorPosts as $authorPost) {
+foreach ($authorPosts as $authorPost) {
     $dbHashtags = "SELECT h.hashtag FROM posts_hashtags as ph JOIN hashtags as h ON h.id = ph.hashtag_id WHERE ph.post_id = ".$authorPost['id'];
     $dbTags = mysqli_query($connect, $dbHashtags);
     $hashtagsArray = mysqli_fetch_all($dbTags, MYSQLI_ASSOC);
@@ -133,7 +127,8 @@ $profileContent = include_template($mainProfileContent, [
     'likedPosts' => $likedPosts,
     'userFollowers' => $userFollowers,
     'countPosts' => $countPosts,
-    'countFollowers' => $countFollowers
+    'countFollowers' => $countFollowers,
+    'userAvatar' => $userAvatar
 ]);
 
 $content = include_template('profile.php', [
@@ -154,7 +149,9 @@ $pageInformation = [
     'menuElements' => MENU_ELEMENTS,
     'content' => $content,
     'russianValues'=> RUSSIAN_VALUES,
-    'user' => $user
+    'user' => $user,
+    'userAvatar' => $userAvatar,
+    'newMessages' => getAllNewMessages($connect)
 ];
 
 $layout = include_template('layout.php', $pageInformation);

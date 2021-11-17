@@ -92,9 +92,9 @@
           <div class="comments">
             <form class="comments__form form" action="#" method="post">
               <div class="comments__my-avatar">
-                <img class="comments__picture" src="uploads/<?= empty($comment['avatar']) && !file_exists('uploads/' . $comment['avatar']) ? $avatar : htmlspecialchars($comment['avatar']) ?>" alt="Аватар пользователя">
+                <img class="comments__picture" src="uploads/<?= htmlspecialchars($userAvatar) ?>" alt="Аватар пользователя">
               </div>
-              <div class="form__input-section <?= !empty($error) ? 'form__input-section--error' : '' ?>">
+              <div class="form__input-section<?= !empty($error) ? ' form__input-section--error' : '' ?>">
                 <textarea class="comments__textarea form__textarea form__input" name="comment" placeholder="Ваш комментарий"></textarea>
                 <label class="visually-hidden">Ваш комментарий</label>
                 <button class="form__error-button button" type="button">!</button>
@@ -130,7 +130,7 @@
                 <?php endforeach ?>
               </ul>
               <?php if ($commentsCount['count'] > 2 && !isset($_GET['show_all_comments'])): ?>
-                <a class="comments__more-link" href="post.php?post-id=<?= $_GET['post-id'] ?>&show_all_comments">
+                <a class="comments__more-link" href="post.php?post-id=<?= $_GET['post-id'] ?>&show_all_comments#last_message">
                     <span>Показать все комментарии</span>
                     <sup class="comments__amount"><?= htmlspecialchars($commentsCount['count']) ?></sup>
                 </a>
@@ -138,6 +138,7 @@
                 <a class="comments__more-link" href="post.php?post-id=<?= htmlspecialchars($_GET['post-id']) ?>">
                     <span>Скрыть комментарии</span>
                     <sup class="comments__amount"><?= htmlspecialchars($commentsCount['count'] - 3) ?></sup>
+                    <a name="last_message"></a>
                 </a>
               <?php endif ?>
             </div>
@@ -173,7 +174,7 @@
             <?php  else: ?>
             <a class="user__button user__button--subscription button button--main" href="subscription.php?author_id=<?= htmlspecialchars($post['author_id']) ?>">Отписаться</a>
             <?php endif ?>
-            <a class="user__button user__button--writing button button--green" href="#">Сообщение</a>
+            <a class="user__button user__button--writing button button--green" href="<?= htmlspecialchars($post['author_id']) !== $user ? 'messages.php?interlocutor_id=' . htmlspecialchars($post['author_id']) : '' ?>">Сообщение</a>
           </div>
         </div>
       </div>

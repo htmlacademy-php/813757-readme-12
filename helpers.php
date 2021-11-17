@@ -163,7 +163,8 @@ function check_youtube_url(string $url): bool
 
     $id = extract_youtube_id($url);
 
-    set_error_handler(function () {}, E_WARNING);
+    set_error_handler(function () {
+    }, E_WARNING);
     $headers = get_headers('https://www.youtube.com/oembed?format=json&url=http://www.youtube.com/watch?v=' . $id);
     restore_error_handler();
 
@@ -275,7 +276,8 @@ function generate_random_date(int $index): string
  * @param int $max
  * @return string
 */
-function isCorrectLength(string $name, int $min, int $max): string {
+function isCorrectLength(string $name, int $min, int $max): string
+{
     $len = mb_strlen(trim($_POST[$name]));
 
     if ($len < $min || $len > $max) {
@@ -290,8 +292,10 @@ function isCorrectLength(string $name, int $min, int $max): string {
  * @param string $tags
  * @return string
  */
-function getTags(string $tags): string {
+function getTags(string $tags): string
+{
     $tagsArray = explode(" ", $tags);
+
     foreach ($tagsArray as $tag) {
         if (mb_strlen($tag) > 15) {
             return "Каждый тег должен состоять не более чем из 15 символов";
@@ -306,7 +310,8 @@ function getTags(string $tags): string {
 * @param string $name
 * @return string
 */
-function validateUrl(string $link): string {
+function validateUrl(string $link): string
+{
     if (!filter_var($link, FILTER_VALIDATE_URL)) {
         return 'Введите правильную ссылку! Типа https://www.htmlacademy.ru';
     }
@@ -319,7 +324,8 @@ function validateUrl(string $link): string {
 * @param string $file
 * @return string
 */
-function validateFile(string $file): string {
+function validateFile(string $file): string
+{
     $fileName = $_FILES[$file]['name'];
     $fileType = $_FILES[$file]['type'];
     $imageSize = $_FILES[$file]['size'];
@@ -331,7 +337,6 @@ function validateFile(string $file): string {
     }
 
     if (in_array($fileType, $validExtensions)) {
-
         if (file_exists($filePath.$fileName)) {
             return 'Файл с таким именем существует!';
         }
@@ -339,7 +344,6 @@ function validateFile(string $file): string {
         if ($imageSize > 5000000) {
             return 'Извините, ваш файл слишком велик!';
         }
-
     } else {
         return 'Выберите допустимый формат файла!(png, jpeg, gif)';
     }
@@ -353,7 +357,8 @@ function validateFile(string $file): string {
  * @param mysqli_connect $connect
  * @return array
  */
-function upsertTags(string $inputTags, $connect): array {
+function upsertTags(string $inputTags, $connect): array
+{
     $tagsId = [];
     $tags = explode(' ', $inputTags);
 
@@ -394,7 +399,34 @@ function upsertTags(string $inputTags, $connect): array {
     }
 
     return $tagsId;
+}
 
+/**
+ * обрезает строку, если длина больше заданного количества символов символов
+ *
+ * @param string $string
+ * @param int $limit
+ * @return string Итоговый текст
+ */
+function cutString(string $string,  int $limit): string
+{
+    $words = explode(" ", $string);
+    $count = 0;
+    $cutString = "";
+    $newWords = [];
+
+    foreach ($words as $elem) {
+        $count += mb_strlen($elem, "UTF-8");
+
+        if ($count < $limit) {
+            $newWords[] = $elem;
+        }
+
+    };
+
+    $cutString = implode(" ", $newWords);
+
+    return $cutString;
 }
 
 /**
@@ -404,29 +436,34 @@ function upsertTags(string $inputTags, $connect): array {
  * @param int $limit
  * @return string Итоговый HTML
  */
-function getCutString(string $string, int $limit = 300): string {
-    if (mb_strlen($string, "UTF-8") > $limit) {
-        $words = explode(" ", $string);
-        $count = 0;
-        $cutString = "";
-        $newWords = [];
-
-        foreach ($words as $elem) {
-            $count += mb_strlen($elem, "UTF-8");
-
-            if ($count < $limit) {
-                array_push($newWords, $elem);
-            };
-
-        };
-
-        $cutString = implode(" ", $newWords);
-
-        return "<p>{$cutString}...</p><a class=\"post-text__more-link\" href=\"#\">Читать далее</a>";
+function getCutString(string $string, int $limit = 300): string
+{
+    if (mb_strlen($string, "UTF-8") <= $limit) {
+        return "<p>{$string}</p>";
     }
 
-    return "<p>{$string}</p>";
+    $cutString = cutString($string, $limit);
 
+    return "<p>{$cutString}...</p><a class=\"post-text__more-link\" href=\"#\">Читать далее</a>";
+}
+
+/**
+ * обрезает строку, если длина больше 9 символов
+ *
+ * @param string $string
+ * @param int $limit
+ * @return string итоговый текст
+ */
+
+function getPreviewText(string $string, int $limit = 9): string
+{
+    if (mb_strlen($string, "UTF-8") <= $limit) {
+        return $string . "...";
+    }
+
+    $cutString = cutString($string, $limit);
+
+    return $cutString . "...";
 }
 
 /**
@@ -435,7 +472,8 @@ function getCutString(string $string, int $limit = 300): string {
  * @param string $date
  * @return string
  */
-function getRelativeFormat(string $date, string $value="назад"): string {
+function getRelativeFormat(string $date, string $value="назад"): string
+{
     $currentDate = new DateTime("", new DateTimeZone("Europe/Moscow"));
     $publicationDate = new DateTime($date);
     $difference = $currentDate->diff($publicationDate);
@@ -469,12 +507,30 @@ function getRelativeFormat(string $date, string $value="назад"): string {
 }
 
 /**
+ * функция выводит формат времени в зависимости от прошедшего времени
+ * @param string время
+ * @return string возвращает строку с необходимым форматом
+*/
+function formatTime($time): string
+{
+    $months = [1 => 'янв', 2 => 'фев', 3 => 'мар', 4 => 'апр', 5 => 'мая', 6 => 'июн', 7 => 'июл', 8 => 'авг', 9 => 'сен', 10 => 'окт', 11 => 'ноя', 12 => 'дек'];
+    $pastDate = new DateTime($time);
+
+    if ((new DateTime())->diff($pastDate)->days > 1) {
+        return $pastDate->format("j {$months[$pastDate->format('n')]}");
+    }
+
+    return $pastDate->format('H:i');
+}
+
+/**
  * возвращает дату публикации
  *
  * @param int $key
  * @return date
  */
-function getPublicationTime(int $key): string {
+function getPublicationTime(int $key): string
+{
     return (new DateTime(generate_random_date($key)))->format("c");
 }
 
@@ -484,7 +540,8 @@ function getPublicationTime(int $key): string {
  * @param int $key
  * @return format date
  */
-function getFormatTime(int $key): string {
+function getFormatTime(int $key): string
+{
     return (new DateTime(generate_random_date($key)))->format("d.m.Y H:i");
 }
 
@@ -494,7 +551,8 @@ function getFormatTime(int $key): string {
  * @param string $name
  * @return string
  */
-function validateEmail(string $name): string {
+function validateEmail(string $name): string
+{
     if (!filter_input(INPUT_POST, $name, FILTER_VALIDATE_EMAIL)) {
         return "Введите корректный email";
     }
@@ -508,7 +566,8 @@ function validateEmail(string $name): string {
  * @param string $secondValue
  * @return string
  */
-function compareValues(string $firstValue, string $secondValue): string {
+function compareValues(string $firstValue, string $secondValue): string
+{
     if ($firstValue !== $secondValue || empty($secondValue)) {
         return "Пароли не совпадают!";
     }
@@ -521,7 +580,8 @@ function compareValues(string $firstValue, string $secondValue): string {
  * @param array $requiredFields
  * @return array
  */
-function checkRequiredFields(array $requiredFields): array {
+function checkRequiredFields(array $requiredFields): array
+{
     $errors = [];
 
     foreach ($requiredFields as $field) {
@@ -538,7 +598,8 @@ function checkRequiredFields(array $requiredFields): array {
  * @param mysqli_connect $connect
  * @param таблица в которой делается выборка из БД
  */
-function getContent($connect, string $table) {
+function getContent(mysqli $connect, string $table)
+{
     $contentType = mysqli_query($connect, "SELECT * FROM $table");
 
     if (!$contentType) {
@@ -547,4 +608,17 @@ function getContent($connect, string $table) {
     }
 
     return $contentType;
+}
+
+/**
+ * получает подсчет количества записей в таблице по условию
+ * @param mysqli_connect $connect
+ * @return array массив с результатом
+ */
+function getAllNewMessages(mysqli $connect): array
+{
+    $dbNewMessages = mysqli_query($connect, "SELECT COUNT(flag) AS new_messages FROM messages WHERE flag = 1");
+    $newMessages = mysqli_fetch_array($dbNewMessages, MYSQLI_ASSOC);
+
+    return $newMessages;
 }

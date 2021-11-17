@@ -39,8 +39,7 @@
             <?php if ($_SERVER['REQUEST_URI'] !== "/registration.php"): ?>
             <nav class="header__nav">
                 <ul class="header__my-nav">
-
-                <?php foreach ($menuElements as $key => $menuElement): ?>
+                <?php foreach ($menuElements as $menuElement): ?>
                     <li class="header__my-page header__my-page--<?= $menuElement ?>">
                         <a class="header__page-link <?= $activeClass =  $_SERVER['REQUEST_URI'] === ('/' . $menuElement . '.php') ? 'header__page-link--active' : ''; ?>" href="<?= $menuElement ?>.php" title="<?= $russianValues[$menuElement] ?>">
                             <span class="visually-hidden"><?= $russianValues[$menuElement] ?></span>
@@ -52,11 +51,11 @@
                     <li class="header__profile">
                         <a class="header__profile-link" href="#">
                             <div class="header__avatar-wrapper">
-                                <img class="header__profile-avatar" src="uploads/<?= $avatar ?>" alt="Аватар профиля">
+                                <img class="header__profile-avatar" src="uploads/<?= htmlspecialchars($userAvatar) ?>" alt="Аватар профиля">
                             </div>
                             <div class="header__profile-name">
                                 <span>
-                                    <?= $userName ?>
+                                    <?= htmlspecialchars($userName) ?>
                                 </span>
                                 <svg class="header__link-arrow" width="10" height="6">
                                     <use xlink:href="#icon-arrow-right-ad"></use>
@@ -67,21 +66,22 @@
                             <div class="header__profile-tooltip">
                                 <ul class="header__profile-nav">
                                     <li class="header__profile-nav-item">
-                                        <a class="header__profile-nav-link" href="profile.php?author_id=4">
+                                        <a class="header__profile-nav-link" href="profile.php?author_id=<?= $user ?>">
                                             <span class="header__profile-nav-text">
                                                 Мой профиль
                                             </span>
                                         </a>
                                     </li>
                                     <li class="header__profile-nav-item">
-                                        <a class="header__profile-nav-link" href="#">
+                                        <a class="header__profile-nav-link" href="messages.php">
                                             <span class="header__profile-nav-text">
                                                 Сообщения
-                                                <i class="header__profile-indicator">2</i>
+                                                <?php if ($newMessages['new_messages'] !== '0'): ?>
+                                                <i class="header__profile-indicator"><?= $newMessages['new_messages'] ?></i>
+                                                <?php endif ?>
                                             </span>
                                         </a>
                                     </li>
-
                                     <li class="header__profile-nav-item">
                                         <a class="header__profile-nav-link" href="logout.php">
                                             <span class="header__profile-nav-text">
@@ -146,15 +146,11 @@
             </div>
             <div class="footer__my-info">
                 <ul class="footer__my-pages">
-                    <li class="footer__my-page footer__my-page--feed">
-                        <a class="footer__page-link" href="feed.html">Моя лента</a>
+                <?php foreach ($menuElements as $menuElement): ?>
+                    <li class="footer__my-page footer__my-page--<?= $menuElement ?>">
+                        <a class="footer__page-link" href="<?= $menuElement ?>.php"><?= $russianValues[$menuElement] ?></a>
                     </li>
-                    <li class="footer__my-page footer__my-page--popular">
-                        <a class="footer__page-link" href="popular.html">Популярный контент</a>
-                    </li>
-                    <li class="footer__my-page footer__my-page--messages">
-                        <a class="footer__page-link" href="messages.html">Личные сообщения</a>
-                    </li>
+                <?php endforeach; ?>
                 </ul>
                 <div class="footer__copyright">
                     <a class="footer__copyright-link" href="#">
