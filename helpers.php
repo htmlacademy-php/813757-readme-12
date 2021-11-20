@@ -412,7 +412,6 @@ function cutString(string $string,  int $limit): string
 {
     $words = explode(" ", $string);
     $count = 0;
-    $cutString = "";
     $newWords = [];
 
     foreach ($words as $elem) {
@@ -422,7 +421,7 @@ function cutString(string $string,  int $limit): string
             $newWords[] = $elem;
         }
 
-    };
+    }
 
     $cutString = implode(" ", $newWords);
 
@@ -618,7 +617,6 @@ function getContent(mysqli $connect, string $table)
 function getAllNewMessages(mysqli $connect): array
 {
     $dbNewMessages = mysqli_query($connect, "SELECT COUNT(flag) AS new_messages FROM messages WHERE flag = 1");
-    $newMessages = mysqli_fetch_array($dbNewMessages, MYSQLI_ASSOC);
 
-    return $newMessages;
+    return mysqli_fetch_array($dbNewMessages, MYSQLI_ASSOC);
 }

@@ -11,7 +11,7 @@
                 </div>
                 <div class="post__info">
                     <b class="post__author-name">Репост: <?= htmlspecialchars($authorPost['original_recoding_author']) ?></b>
-                    <time class="post__time" datetime="<? htmlspecialchars($authorPost['date_creation']) ?>"><?= getRelativeFormat(htmlspecialchars($authorPost['date_creation']))?></time>
+                    <time class="post__time" datetime="<?= htmlspecialchars($authorPost['date_creation']) ?>"><?= getRelativeFormat(htmlspecialchars($authorPost['date_creation']))?></time>
                 </div>
                 </a>
             </div>
