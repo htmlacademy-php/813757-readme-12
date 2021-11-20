@@ -14,7 +14,7 @@ $back = $_SERVER['HTTP_REFERER'];
 $result = mysqli_query($connect, "SELECT login, avatar FROM users WHERE id = '$user'");
 $userInformation = mysqli_fetch_array($result, MYSQLI_ASSOC);
 
-$newMessages = getAllNewMessages($connect, 'messages');
+$newMessages = getAllNewMessages($connect);
 
 if (empty(trim($_GET['search']))) {
     $content = include_template('no-results.php', [

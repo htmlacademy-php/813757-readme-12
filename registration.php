@@ -2,6 +2,7 @@
 
 require("helpers.php");
 require("init.php");
+require("constants.php");
 
 $russianTranslation = [
     'email' => 'Электронная почта',
@@ -74,6 +75,8 @@ $content = include_template('registration-page.php', [
 
 $pageInformation = [
     'title' => 'readme: регистрация',
+    'menuElements' => MENU_ELEMENTS,
+    'russianValues'=> RUSSIAN_VALUES,
     'content' => $content
 ];
 

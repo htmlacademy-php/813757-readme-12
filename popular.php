@@ -41,11 +41,7 @@ $order = isset($_GET['order']) ? filter_input(INPUT_GET, 'order') : "DESC";
 $notesOnPage = 6;
 $query .= " ORDER BY $sort $order LIMIT $notesOnPage";
 
-if (isset($_GET['page'])) {
-    $page = $_GET['page'];
-} else {
-    $page = 1;
-}
+$page = $_GET['page'] ?? 1;
 
 $from = ($page - 1) * $notesOnPage;
 
