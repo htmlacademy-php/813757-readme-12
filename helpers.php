@@ -101,7 +101,6 @@ function db_get_prepare_stmt($link, $sql, $data = []): object
  */
 function get_noun_plural_form(int $number, string $one, string $two, string $many): string
 {
-    $number = (int)$number;
     $mod10 = $number % 10;
     $mod100 = $number % 100;
 
@@ -125,8 +124,10 @@ function get_noun_plural_form(int $number, string $one, string $two, string $man
 
 /**
  * Подключает шаблон, передает туда данные и возвращает итоговый HTML контент
+ *
  * @param string $name Путь к файлу шаблона относительно папки templates
  * @param array $data Ассоциативный массив с данными для шаблона
+ *
  * @return string Итоговый HTML
  */
 function include_template(string $name, array $data = []): string
@@ -142,16 +143,15 @@ function include_template(string $name, array $data = []): string
     extract($data);
     require $name;
 
-    $result = ob_get_clean();
-
-    return $result;
+    return ob_get_clean();
 }
 
 /**
  * Функция проверяет доступно ли видео по ссылке на youtube
+ *
  * @param string $url ссылка на видео
  *
- * @return string Ошибку если валидация не прошла
+ * @return bool возвращает значение или ошибку
  */
 function check_youtube_url(string $url): bool
 {
@@ -183,8 +183,10 @@ function check_youtube_url(string $url): bool
 
 /**
  * Возвращает код iframe для вставки youtube видео на страницу
+ *
  * @param string $youtube_url Ссылка на youtube видео
- * @return string
+ *
+ * @return string код iframe
  */
 function embed_youtube_video(string $youtube_url): string
 {
@@ -201,24 +203,30 @@ function embed_youtube_video(string $youtube_url): string
 
 /**
  * Возвращает img-тег с обложкой видео для вставки на страницу
+ *
  * @param string $youtube_url Ссылка на youtube видео
+ * @param int $width
+ * @param int $height
+ *
  * @return string
  */
-function embed_youtube_cover(string $youtube_url, int $width=320, int $height=120): string
+function embed_youtube_cover(string $youtube_url, int $width = 320, int $height = 120): string
 {
     $res = "";
     $id = extract_youtube_id($youtube_url);
 
     if ($id) {
         $src = sprintf("https://img.youtube.com/vi/%s/mqdefault.jpg", $id);
-        $res = '<img alt="youtube cover" width="'.$width.'" height="'.$height.'" src="' . $src . '" />';
+        $res = '<img alt="youtube cover" width="' . $width . '" height="' . $height . '" src="' . $src . '" />';
     }
     return $res;
 }
 
 /**
  * Извлекает из ссылки на youtube видео его уникальный ID
+ *
  * @param string $youtube_url Ссылка на youtube видео
+ *
  * @return string
  */
 function extract_youtube_id(string $youtube_url): string
@@ -228,11 +236,11 @@ function extract_youtube_id(string $youtube_url): string
     $parts = parse_url($youtube_url);
 
     if ($parts) {
-        if ($parts['path'] == '/watch') {
+        if ($parts['path'] === '/watch') {
             parse_str($parts['query'], $vars);
             $id = $vars['v'] ?? null;
         } else {
-            if ($parts['host'] == 'youtu.be') {
+            if ($parts['host'] === 'youtu.be') {
                 $id = substr($parts['path'], 1);
             }
         }
@@ -240,45 +248,18 @@ function extract_youtube_id(string $youtube_url): string
     return $id;
 }
 
-/** генерирует случайную дату
- *
- * @param $index
- * @return false|string
- */
-function generate_random_date(int $index): string
-{
-    $deltas = [['minutes' => 59], ['hours' => 23], ['days' => 6], ['weeks' => 4], ['months' => 11]];
-    $dcnt = count($deltas);
-
-    if ($index < 0) {
-        $index = 0;
-    }
-
-    if ($index >= $dcnt) {
-        $index = $dcnt - 1;
-    }
-
-    $delta = $deltas[$index];
-    $timeval = rand(1, current($delta));
-    $timename = key($delta);
-
-    $ts = strtotime("$timeval $timename ago");
-    $dt = date('Y-m-d H:i:s', $ts);
-
-    return $dt;
-}
-
 /**
  * проверяет длину строки в input
  *
- * @param string $name
- * @param int $min
- * @param int $max
- * @return string
-*/
-function isCorrectLength(string $name, int $min, int $max): string
+ * @param string $value строка
+ * @param int $min минимальная длина строки
+ * @param int $max максимальная длина строки
+ *
+ * @return string возвращает строку с ошибкой, иначе пустую строку, если валидация прошла
+ */
+function isCorrectLength(string $value, int $min, int $max): string
 {
-    $len = mb_strlen(trim($_POST[$name]));
+    $len = mb_strlen(trim($_POST[$value]));
 
     if ($len < $min || $len > $max) {
         return "Значение должно быть от {$min} до {$max} символов";
@@ -289,8 +270,9 @@ function isCorrectLength(string $name, int $min, int $max): string
 /**
  * валидация поля с тегами
  *
- * @param string $tags
- * @return string
+ * @param string $tags строка со словами, записанными через пробел
+ *
+ * @return string возвращает строку с ошибкой, иначе пустую строку, если валидация прошла
  */
 function getTags(string $tags): string
 {
@@ -306,10 +288,12 @@ function getTags(string $tags): string
 }
 
 /**
-* валидация поля с ссылкой
-* @param string $name
-* @return string
-*/
+ * валидация поля с ссылкой
+ *
+ * @param string $link строка с ссылкой
+ *
+ * @return string возвращает строку с ошибкой, иначе пустую строку, если валидация прошла
+ */
 function validateUrl(string $link): string
 {
     if (!filter_var($link, FILTER_VALIDATE_URL)) {
@@ -320,16 +304,18 @@ function validateUrl(string $link): string
 }
 
 /**
-* валидация загрузки файла
-* @param string $file
-* @return string
-*/
+ * валидация загрузки файла
+ *
+ * @param string $file имя файла
+ *
+ * @return string возвращает строку с ошибкой, иначе пустую строку, если валидация прошла
+ */
 function validateFile(string $file): string
 {
     $fileName = $_FILES[$file]['name'];
     $fileType = $_FILES[$file]['type'];
     $imageSize = $_FILES[$file]['size'];
-    $filePath = __DIR__.'/uploads/';
+    $filePath = __DIR__ . '/uploads/';
     $validExtensions = ['image/png', 'image/jpeg', 'image/gif'];
 
     if (empty($fileName)) {
@@ -337,7 +323,7 @@ function validateFile(string $file): string
     }
 
     if (in_array($fileType, $validExtensions)) {
-        if (file_exists($filePath.$fileName)) {
+        if (file_exists($filePath . $fileName)) {
             return 'Файл с таким именем существует!';
         }
 
@@ -353,11 +339,12 @@ function validateFile(string $file): string
 /**
  * проверяет наличие тега в БД и если он отсутствует добавляет его в БД
  *
- * @param array $inputTags
- * @param mysqli_connect $connect
- * @return array
+ * @param string $inputTags строка со словами введенными через пробел
+ * @param object $connect соединение с базой данных
+ *
+ * @return array возвращает массив id тегов
  */
-function upsertTags(string $inputTags, $connect): array
+function upsertTags(string $inputTags, object $connect): array
 {
     $tagsId = [];
     $tags = explode(' ', $inputTags);
@@ -404,11 +391,12 @@ function upsertTags(string $inputTags, $connect): array
 /**
  * обрезает строку, если длина больше заданного количества символов символов
  *
- * @param string $string
- * @param int $limit
- * @return string Итоговый текст
+ * @param string $string строка со словами введенными через пробел
+ * @param int $limit максимальное количество символов
+ *
+ * @return string итоговый текст
  */
-function cutString(string $string,  int $limit): string
+function cutString(string $string, int $limit): string
 {
     $words = explode(" ", $string);
     $count = 0;
@@ -423,17 +411,16 @@ function cutString(string $string,  int $limit): string
 
     }
 
-    $cutString = implode(" ", $newWords);
-
-    return $cutString;
+    return implode(" ", $newWords);
 }
 
 /**
  * обрезает строку, если длина больше 300 символов
  *
- * @param string $string
- * @param int $limit
- * @return string Итоговый HTML
+ * @param string $string строка со словами введенными через пробел
+ * @param int $limit максимальное количество символов
+ *
+ * @return string итоговый HTML
  */
 function getCutString(string $string, int $limit = 300): string
 {
@@ -449,8 +436,9 @@ function getCutString(string $string, int $limit = 300): string
 /**
  * обрезает строку, если длина больше 9 символов
  *
- * @param string $string
- * @param int $limit
+ * @param string $string строка со словами введенными через пробел
+ * @param int $limit максимальное количество символов
+ *
  * @return string итоговый текст
  */
 
@@ -468,10 +456,12 @@ function getPreviewText(string $string, int $limit = 9): string
 /**
  * возвращает разницу во времени
  *
- * @param string $date
- * @return string
+ * @param string $date строка с датой
+ * @param string $value строка которая указывает, что действие произошло раньше
+ *
+ * @return string $timeDifference строка со значением сколько времени назад произошло действие
  */
-function getRelativeFormat(string $date, string $value="назад"): string
+function getRelativeFormat(string $date, string $value = "назад"): string
 {
     $currentDate = new DateTime("", new DateTimeZone("Europe/Moscow"));
     $publicationDate = new DateTime($date);
@@ -507,12 +497,27 @@ function getRelativeFormat(string $date, string $value="назад"): string
 
 /**
  * функция выводит формат времени в зависимости от прошедшего времени
- * @param string время
- * @return string возвращает строку с необходимым форматом
-*/
-function formatTime($time): string
+ *
+ * @param string $time время полученное из БД
+ *
+ * @return string $pastDate возвращает строку с необходимым форматом
+ */
+function formatTime(string $time): string
 {
-    $months = [1 => 'янв', 2 => 'фев', 3 => 'мар', 4 => 'апр', 5 => 'мая', 6 => 'июн', 7 => 'июл', 8 => 'авг', 9 => 'сен', 10 => 'окт', 11 => 'ноя', 12 => 'дек'];
+    $months = [
+        1 => 'янв',
+        2 => 'фев',
+        3 => 'мар',
+        4 => 'апр',
+        5 => 'мая',
+        6 => 'июн',
+        7 => 'июл',
+        8 => 'авг',
+        9 => 'сен',
+        10 => 'окт',
+        11 => 'ноя',
+        12 => 'дек'
+    ];
     $pastDate = new DateTime($time);
 
     if ((new DateTime())->diff($pastDate)->days > 1) {
@@ -523,32 +528,11 @@ function formatTime($time): string
 }
 
 /**
- * возвращает дату публикации
- *
- * @param int $key
- * @return date
- */
-function getPublicationTime(int $key): string
-{
-    return (new DateTime(generate_random_date($key)))->format("c");
-}
-
-/**
- * возвращает формат даты
- *
- * @param int $key
- * @return format date
- */
-function getFormatTime(int $key): string
-{
-    return (new DateTime(generate_random_date($key)))->format("d.m.Y H:i");
-}
-
-/**
  * валидация поля email
  *
- * @param string $name
- * @return string
+ * @param string $name строка со значением для валидации
+ *
+ * @return string возвращает строку с ошибкой или пустую строку в случае отсутствия ошибки
  */
 function validateEmail(string $name): string
 {
@@ -561,9 +545,10 @@ function validateEmail(string $name): string
 /**
  * сравнение значений полей
  *
- * @param string $firstValue
- * @param string $secondValue
- * @return string
+ * @param string $firstValue значение первого поля
+ * @param string $secondValue значение второго поля
+ *
+ * @return string возвращает строку с ошибкой или пустую строку в случае отсутствия ошибки
  */
 function compareValues(string $firstValue, string $secondValue): string
 {
@@ -576,8 +561,9 @@ function compareValues(string $firstValue, string $secondValue): string
 /**
  * Проверяет поля на заполненность
  *
- * @param array $requiredFields
- * @return array
+ * @param array $requiredFields массив с именами полей обязательными к заполнению
+ *
+ * @return array массив ошибок
  */
 function checkRequiredFields(array $requiredFields): array
 {
@@ -594,10 +580,13 @@ function checkRequiredFields(array $requiredFields): array
 
 /**
  * получает данные из БД, в случае ошибки подготовки запроса предупреждает об этом
- * @param mysqli_connect $connect
- * @param таблица в которой делается выборка из БД
+ *
+ * @param object $connect соединение с базой данных
+ * @param string $table название таблицы в которой делается выборка из БД
+ *
+ * @return object возвращает объект запроса выполненного к БД
  */
-function getContent(mysqli $connect, string $table)
+function getContent(object $connect, string $table): object
 {
     $contentType = mysqli_query($connect, "SELECT * FROM $table");
 
@@ -611,12 +600,16 @@ function getContent(mysqli $connect, string $table)
 
 /**
  * получает подсчет количества записей в таблице по условию
- * @param mysqli_connect $connect
+ *
+ * @param object $connect соединение с базой данных
+ * @param int $user id пользователя
+ *
  * @return array массив с результатом
  */
-function getAllNewMessages(mysqli $connect): array
+function getAllNewMessages(object $connect, int $user): array
 {
-    $dbNewMessages = mysqli_query($connect, "SELECT COUNT(flag) AS new_messages FROM messages WHERE flag = 1");
+    $dbNewMessages = mysqli_query($connect,
+        "SELECT COUNT(flag) AS new_messages FROM messages WHERE flag = 1 AND recipient = $user");
 
     return mysqli_fetch_array($dbNewMessages, MYSQLI_ASSOC);
 }

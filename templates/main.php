@@ -125,7 +125,7 @@
                         </div>
                         <div class="post__indicators">
                             <div class="post__buttons">
-                                <a class="post__indicator post__indicator--likes button" href="likes.php?post-id=<?= $post['id'] ?>" title="Лайк">
+                                <a class="post__indicator post__indicator--likes button" href="likes.php?post-id=<?= htmlspecialchars($post['id']) ?>)" title="Лайк">
                                     <svg class="post__indicator-icon" width="20" height="17">
                                         <use xlink:href="#icon-heart"></use>
                                     </svg>

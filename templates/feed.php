@@ -31,9 +31,8 @@
                         </blockquote>
                         <?php elseif ($post['icon_class'] === $types[1]): ?>
                         <p>
-                            <?= htmlspecialchars($post['content']) ?>
+                            <?= getCutString(htmlspecialchars($post['content'])) ?>
                         </p>
-                        <a class="post-text__more-link" href="#">Читать далее</a>
                         <?php elseif ($post['icon_class'] === $types[2]): ?>
                         <div class="post-photo__image-wrapper">
                             <img src="uploads/<?= htmlspecialchars($post['image']) ?>" alt="Фото от пользователя" width="760" height="396">
@@ -79,24 +78,24 @@
                         <?php endif ?>
                         <footer class="post__footer post__indicators">
                             <div class="post__buttons">
-                                <a class="post__indicator post__indicator--likes button" href="#" title="Лайк">
-                                <svg class="post__indicator-icon" width="20" height="17">
-                                    <use xlink:href="#icon-heart"></use>
-                                </svg>
-                                <svg class="post__indicator-icon post__indicator-icon--like-active" width="20" height="17">
-                                    <use xlink:href="#icon-heart-active"></use>
-                                </svg>
-                                <span><?= htmlspecialchars($post['likes']) ?></span>
-                                <span class="visually-hidden">количество лайков</span>
+                                <a class="post__indicator post__indicator--likes button" href="likes.php?post-id=<?= htmlspecialchars($post['id']) ?>" title="Лайк">
+                                    <svg class="post__indicator-icon" width="20" height="17">
+                                        <use xlink:href="#icon-heart"></use>
+                                    </svg>
+                                    <svg class="post__indicator-icon post__indicator-icon--like-active" width="20" height="17">
+                                        <use xlink:href="#icon-heart-active"></use>
+                                    </svg>
+                                    <span><?= htmlspecialchars($post['likes']) ?></span>
+                                    <span class="visually-hidden">количество лайков</span>
                                 </a>
-                                <a class="post__indicator post__indicator--comments button" href="#" title="Комментарии">
-                                <svg class="post__indicator-icon" width="19" height="17">
-                                    <use xlink:href="#icon-comment"></use>
-                                </svg>
-                                <span><?= htmlspecialchars($post['comments']) ?></span>
-                                <span class="visually-hidden">количество комментариев</span>
+                                <a class="post__indicator post__indicator--comments button" href="post.php?post-id=<?= htmlspecialchars($post['id']) ?>" title="Комментарии">
+                                    <svg class="post__indicator-icon" width="19" height="17">
+                                        <use xlink:href="#icon-comment"></use>
+                                    </svg>
+                                    <span><?= htmlspecialchars($post['comments']) ?></span>
+                                    <span class="visually-hidden">количество комментариев</span>
                                 </a>
-                                <a class="post__indicator post__indicator--repost button" href="repost.php?post-id=<?= $_GET['post-id']?>" title="Репост">
+                                <a class="post__indicator post__indicator--repost button" href="repost.php?post-id=<?= htmlspecialchars($post['id']) ?>" title="Репост">
                                     <svg class="post__indicator-icon" width="19" height="17">
                                         <use xlink:href="#icon-repost"></use>
                                     </svg>

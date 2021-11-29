@@ -68,7 +68,7 @@
                 </svg>
                 <label class="visually-hidden">Логин</label>
               </div>
-              <span class="form__error-label form__error-label--login"><?= $errors['login'] ?></span>
+              <span class="form__error-label form__error-label--login"><?= !empty($errors['login']) ? $errors['login'] : '' ?></span>
             </div>
             <div class="authorization__input-wrapper form__input-wrapper">
               <div class="form__input-section <?= isset($errors['password']) ? 'form__input-section--error' : '' ?>">
@@ -78,7 +78,7 @@
                 </svg>
                 <label class="visually-hidden">Пароль</label>
               </div>
-              <span class="form__error-label"><?= $errors['password'] ?></span>
+              <span class="form__error-label"><?= !empty($errors['password']) ? $errors['password'] : '' ?></span>
             </div>
             <a class="authorization__recovery" href="#">Восстановить пароль</a>
             <button class="authorization__submit button button--main" type="submit">Войти</button>
@@ -130,7 +130,7 @@
               </li>
             </ul>
             <div class="footer__copyright">
-              <a class="footer__copyright-link" href="#">
+              <a class="footer__copyright-link" href="htmlacademy.ru">
                 <span>Разработано HTML Academy</span>
                 <svg class="footer__copyright-logo" width="27" height="34">
                   <use xlink:href="#icon-htmlacademy"></use>

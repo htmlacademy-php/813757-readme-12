@@ -14,7 +14,7 @@
           <?php foreach ($posts as $post): ?>
             <article class="search__post post post-<?= $post['icon_class'] ?>">
                 <header class="post__header post__author">
-                    <a class="post__author-link" href="#" title="Автор">
+                    <a class="post__author-link" href="profile.php?author_id=<?= htmlspecialchars($post['author_id']) ?>" title="Автор">
                         <div class="post__avatar-wrapper">
                             <img class="post__author-avatar" src="uploads/<?= !empty($post['avatar']) && file_exists('uploads/' . $post['avatar']) ? htmlspecialchars($post['avatar']) : 'icon-input-user.svg' ?>" alt="Аватар пользователя" width="60" height="60">
                         </div>
@@ -26,15 +26,14 @@
                 </header>
                 <div class="post__main">
                     <?php if (isset($_GET) && $post['icon_class'] === $types[2]): ?>
-                    <h2><a href="#"><?= $post['title'] ?></a></h2>
+                    <h2><a href="post.php?post-id=<?= htmlspecialchars($post['id']) ?>"><?= $post['title'] ?></a></h2>
                     <div class="post-photo__image-wrapper">
                         <img src="uploads/<?= $post['image'] ?>" alt="Фото от пользователя" width="760" height="396">
                     </div>
 
                     <?php elseif (isset($_GET) && $post['icon_class'] === $types[1]): ?>
                     <h2><a href="#"><?= $post['title'] ?></a></h2>
-                    <p><?= $post['content'] ?></p>
-                    <a class="post-text__more-link" href="#">Читать далее</a>
+                    <p><?= getCutString(htmlspecialchars($post['content'])) ?></p>
 
                     <?php elseif (isset($_GET) && $post['icon_class'] === $types[4]): ?>
                     <div class="post-video__block">
@@ -85,22 +84,22 @@
                 </div>
                 <footer class="post__footer post__indicators">
                     <div class="post__buttons">
-                        <a class="post__indicator post__indicator--likes button" href="#" title="Лайк">
-                        <svg class="post__indicator-icon" width="20" height="17">
-                            <use xlink:href="#icon-heart"></use>
-                        </svg>
-                        <svg class="post__indicator-icon post__indicator-icon--like-active" width="20" height="17">
-                            <use xlink:href="#icon-heart-active"></use>
-                        </svg>
-                        <span>250</span>
-                        <span class="visually-hidden">количество лайков</span>
+                        <a class="post__indicator post__indicator--likes button" href="likes.php?post-id=<?= $post['id'] ?>" title="Лайк">
+                            <svg class="post__indicator-icon" width="20" height="17">
+                                <use xlink:href="#icon-heart"></use>
+                            </svg>
+                            <svg class="post__indicator-icon post__indicator-icon--like-active" width="20" height="17">
+                                <use xlink:href="#icon-heart-active"></use>
+                            </svg>
+                            <span><?= htmlspecialchars($post['likes']) ?></span>
+                            <span class="visually-hidden">количество лайков</span>
                         </a>
-                        <a class="post__indicator post__indicator--comments button" href="#" title="Комментарии">
-                        <svg class="post__indicator-icon" width="19" height="17">
-                            <use xlink:href="#icon-comment"></use>
-                        </svg>
-                        <span>25</span>
-                        <span class="visually-hidden">количество комментариев</span>
+                        <a class="post__indicator post__indicator--comments button" href="post.php?post-id=<?= htmlspecialchars($post['id']) ?>" title="Комментарии">
+                            <svg class="post__indicator-icon" width="19" height="17">
+                                <use xlink:href="#icon-comment"></use>
+                            </svg>
+                            <span><?= htmlspecialchars($post['comments']) ?></span>
+                            <span class="visually-hidden">количество комментариев</span>
                         </a>
                     </div>
                 </footer>
