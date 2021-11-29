@@ -31,7 +31,7 @@ if (isset($_GET['type_id'])) {
 
 $dbPostsRow = mysqli_query($connect, $dbPosts);
 $posts = mysqli_fetch_all($dbPostsRow, MYSQLI_ASSOC);
-$newMessages = getAllNewMessages($connect);
+$newMessages = getAllNewMessages($connect, $user);
 
 $content = include_template('feed.php', [
     'posts' => $posts,

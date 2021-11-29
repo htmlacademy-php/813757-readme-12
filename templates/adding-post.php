@@ -11,7 +11,7 @@
                     <li class="adding-post__tabs-item filters__item">
                         <a class="adding-post__tabs-link filters__button filters__button--<?= $type['icon_class'] ?> <?= $activeClass = ((isset($_GET['form-type']) && $_GET['form-type'] === $type['icon_class']) || (!isset($_GET['form-type']) && $type['icon_class'] === 'quote')) ? 'filters__button--active' : '' ?> tabs__item tabs__item--active button" href="add.php?form-type=<?= $type['icon_class'] ?>">
                             <svg class="filters__icon" width="22" height="18">
-                            <use xlink:href="#icon-filter-<?= $type['icon_class'] ?>"></use>
+                              <use xlink:href="#icon-filter-<?= $type['icon_class'] ?>"></use>
                             </svg>
                             <span><?= $type['content_title'] ?></span>
                         </a>
@@ -21,7 +21,7 @@
             </div>
             <div class="adding-post__tab-content">
               <section class="adding-post__<?= $formType ?> tabs__content tabs__content--active">
-                <h2 class="visually-hidden">Форма добавления <?= $form_type ?></h2>
+                <h2 class="visually-hidden">Форма добавления <?= $formType ?></h2>
                 <form class="adding-post__form form" action="add.php?form-type=<?= $formType ?>" method="post" <?= ($formType === $types[2]) ? 'enctype="multipart/form-data"' : "" ?>>
                   <div class="form__text-inputs-wrapper">
                     <div class="form__text-inputs">
@@ -32,7 +32,7 @@
                             <button class="form__error-button button" type="button">!<span class="visually-hidden">Информация об ошибке</span></button>
                           <div class="form__error-text">
                             <h3 class="form__error-title">Заголовок сообщения</h3>
-                            <p class="form__error-desc"><?= $errors['heading'] ?></p>
+                            <p class="form__error-desc"><?= !empty($errors['heading']) ? $errors['heading'] : '' ?></p>
                           </div>
                         </div>
                       </div>
@@ -44,7 +44,7 @@
                                 <button class="form__error-button button" type="button">!<span class="visually-hidden">Информация об ошибке</span></button>
                                 <div class="form__error-text">
                                     <h3 class="form__error-title">Заголовок сообщения</h3>
-                                    <p class="form__error-desc"><?= $errors['photo-url'] ?></p>
+                                    <p class="form__error-desc"><?= !empty($errors['photo-url']) ? $errors['photo-url'] : '' ?></p>
                                 </div>
                             </div>
                         <?php elseif ($formType === $types[4]): ?>
@@ -54,7 +54,7 @@
                                 <button class="form__error-button button" type="button">!<span class="visually-hidden">Информация об ошибке</span></button>
                                 <div class="form__error-text">
                                     <h3 class="form__error-title">Заголовок сообщения</h3>
-                                    <p class="form__error-desc"><?= $errors['video-url'] ?></p>
+                                    <p class="form__error-desc"><?= !empty($errors['video-url']) ? $errors['video-url'] : '' ?></p>
                                 </div>
                                 <input class="visually-hidden" id="" type="text" name="video" value="video" title="">
                             </div>
@@ -66,7 +66,7 @@
                                 <button class="form__error-button button" type="button">!<span class="visually-hidden">Информация об ошибке</span></button>
                                 <div class="form__error-text">
                                     <h3 class="form__error-title">Заголовок сообщения</h3>
-                                    <p class="form__error-desc"><?= $errors['post-link'] ?></p>
+                                    <p class="form__error-desc"><?= !empty($errors['post-link']) ? $errors['post-link'] : '' ?></p>
                                 </div>
                                 <input class="visually-hidden" id="" type="text" name="link" value="link" title="">
                             </div>
@@ -77,18 +77,18 @@
                                 <button class="form__error-button button" type="button">!<span class="visually-hidden">Информация об ошибке</span></button>
                                 <div class="form__error-text">
                                     <h3 class="form__error-title">Заголовок сообщения</h3>
-                                    <p class="form__error-desc"><?= $errors['cite-text'] ?></p>
+                                    <p class="form__error-desc"><?= !empty($errors['cite-text']) ? $errors['cite-text'] : '' ?></p>
                                 </div>
                             </div>
 
                         <?php elseif ($formType === $types[1]): ?>
                             <label class="adding-post__label form__label" for="post-text">Текст поста <span class="form__input-required">*</span></label>
                             <div class="form__input-section  <?= isset($errors['post-text']) ? 'form__input-section--error' : '' ?>">
-                                <textarea class="adding-post__textarea form__textarea form__input" id="post-text" name="post-text" placeholder="Введите текст публикации"><?= $_POST['post-link'] ?? "" ?></textarea>
+                                <textarea class="adding-post__textarea form__textarea form__input" id="post-text" name="post-text" placeholder="Введите текст публикации"><?= $_POST['post-text'] ?? "" ?></textarea>
                                 <button class="form__error-button button" type="button">!<span class="visually-hidden">Информация об ошибке</span></button>
                                 <div class="form__error-text">
                                     <h3 class="form__error-title">Заголовок сообщения</h3>
-                                    <p class="form__error-desc"><?= $errors['post-text'] ?></p>
+                                    <p class="form__error-desc"><?= !empty($errors['post-text']) ? $errors['post-text'] : '' ?></p>
                                 </div>
                                 <input class="visually-hidden" id="" type="text" name="text" value="text" title="">
                             </div>
@@ -101,7 +101,7 @@
                           <button class="form__error-button button" type="button">!<span class="visually-hidden">Информация об ошибке</span></button>
                           <div class="form__error-text">
                             <h3 class="form__error-title">Заголовок сообщения</h3>
-                            <p class="form__error-desc"><?= $errors['tags'] ?></p>
+                            <p class="form__error-desc"><?= !empty($errors['tags']) ? $errors['tags'] : '' ?></p>
                           </div>
                         </div>
                       </div>
@@ -134,7 +134,7 @@
                   <input class="visually-hidden" id="" type="text" name="" value="" title="">
                   <div class="adding-post__buttons">
                     <button class="adding-post__submit button button--main" type="submit">Опубликовать</button>
-                    <a class="adding-post__close" href="#">Закрыть</a>
+                    <a class="adding-post__close" href="popular.php">Закрыть</a>
                   </div>
                 </form>
               </section>

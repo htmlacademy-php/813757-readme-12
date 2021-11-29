@@ -47,7 +47,7 @@ $data['recipientCountNewMessages'] = $recipientCountNewMessages;
 
 $data['lastMessages'] = $lastMessages;
 
-$newMessages = getAllNewMessages($connect);
+$newMessages = getAllNewMessages($connect, $user);
 
 if (isset($_GET['interlocutor_id'])) {
     $interlocutorId = (int) filter_input(INPUT_GET, 'interlocutor_id');
@@ -82,9 +82,7 @@ if (isset($_GET['interlocutor_id'])) {
     if (isset($_POST['message']) && mysqli_num_rows($isExists) > 0) {
         $message = mysqli_real_escape_string($connect, trim($_POST['message']));
 
-        if (mb_strlen($message) < 2) {
-            $error = "Это поле обязательно к заполнению!!!";
-        }
+        $error = isCorrectLength('message', 2, 2000);
 
         if (empty($error)) {
             $currentDate = new DateTime("", new DateTimeZone("Europe/Moscow"));

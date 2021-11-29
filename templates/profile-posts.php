@@ -5,20 +5,20 @@
         <?php if ($authorPost['repost']): ?>
         <header class="post__header">
             <div class="post__author">
-                <a class="post__author-link" href="#" title="Автор">
-                <div class="post__avatar-wrapper post__avatar-wrapper--repost">
-                    <img class="post__author-avatar" src="img/userpic-tanya.jpg" alt="Аватар пользователя">
-                </div>
-                <div class="post__info">
-                    <b class="post__author-name">Репост: <?= htmlspecialchars($authorPost['original_recoding_author']) ?></b>
-                    <time class="post__time" datetime="<?= htmlspecialchars($authorPost['date_creation']) ?>"><?= getRelativeFormat(htmlspecialchars($authorPost['date_creation']))?></time>
-                </div>
+                <a class="post__author-link" href="profile.php?author_id=<?= htmlspecialchars($authorPost['original_recoding_author']) ?>" title="Автор">
+                    <div class="post__avatar-wrapper post__avatar-wrapper--repost">
+                        <img class="post__author-avatar" src="uploads/<?= htmlspecialchars($authorPost['avatar']) ?>" alt="Аватар пользователя">
+                    </div>
+                    <div class="post__info">
+                        <b class="post__author-name">Репост: <?= htmlspecialchars($authorPost['original_recoding_author_login']) ?></b>
+                        <time class="post__time" datetime="<?= htmlspecialchars($authorPost['date_creation']) ?>"><?= getRelativeFormat(htmlspecialchars($authorPost['date_creation']))?></time>
+                    </div>
                 </a>
             </div>
         </header>
         <?php else: ?>
         <header class="post__header">
-        <h2><a href="#"><?= htmlspecialchars($authorPost['title']) ?></a></h2>
+        <h2><a href="post.php?post-id=<?= htmlspecialchars($authorPost['id']) ?>"><?= htmlspecialchars($authorPost['title']) ?></a></h2>
         </header>
         <?php endif ?>
         <div class="post__main">
@@ -65,17 +65,17 @@
             <div class="post__buttons">
             <a class="post__indicator post__indicator--likes button" href="likes.php?post-id=<?= htmlspecialchars($authorPost['id']) ?>" title="Лайк">
                 <svg class="post__indicator-icon" width="20" height="17">
-                <use xlink:href="#icon-heart"></use>
+                    <use xlink:href="#icon-heart"></use>
                 </svg>
                 <svg class="post__indicator-icon post__indicator-icon--like-active" width="20" height="17">
-                <use xlink:href="#icon-heart-active"></use>
+                    <use xlink:href="#icon-heart-active"></use>
                 </svg>
                 <span><?= htmlspecialchars($authorPost['likes']) ?></span>
                 <span class="visually-hidden">количество лайков</span>
             </a>
             <a class="post__indicator post__indicator--repost button" href="repost.php?post-id=<?= htmlspecialchars($authorPost['id']) ?>" title="Репост">
                 <svg class="post__indicator-icon" width="19" height="17">
-                <use xlink:href="#icon-repost"></use>
+                    <use xlink:href="#icon-repost"></use>
                 </svg>
                 <span><?= htmlspecialchars($authorPost['reposts']) ?></span>
                 <span class="visually-hidden">количество репостов</span>
@@ -86,7 +86,7 @@
         <ul class="post__tags">
         <?php foreach($hashtags[$authorPost['id']] as $postHashtag): ?>
             <?php foreach($postHashtag as $hashtag): ?>
-            <li><a href="#">#<?= htmlspecialchars($hashtag) ?></a></li>
+            <li><a href="search.php?search=%23<?= $hashtag ?>">#<?= htmlspecialchars($hashtag) ?></a></li>
             <?php endforeach ?>
         <?php endforeach ?>
         </ul>
@@ -104,13 +104,13 @@
                     <?php if ($comment['post_id'] === $authorPost['id']): ?>
                     <li class="comments__item user">
                     <div class="comments__avatar">
-                        <a class="user__avatar-link" href="#">
-                        <img class="comments__picture" src="uploads/<?= !empty($comment['avatar']) && file_exists('uploads/' . $comment['avatar']) ? htmlspecialchars($comment['avatar']) : "icon-input-user.svg" ?>" alt="Аватар пользователя">
+                        <a class="user__avatar-link" href="profile.php?author_id=<?= htmlspecialchars($comment['user_id']) ?>">
+                            <img class="comments__picture" src="uploads/<?= !empty($comment['avatar']) && file_exists('uploads/' . $comment['avatar']) ? htmlspecialchars($comment['avatar']) : "icon-input-user.svg" ?>" alt="Аватар пользователя">
                         </a>
                     </div>
                     <div class="comments__info">
                         <div class="comments__name-wrapper">
-                            <a class="comments__user-name" href="#">
+                            <a class="comments__user-name" href="profile.php?author_id=<?= htmlspecialchars($comment['user_id']) ?>">
                                 <span><?= htmlspecialchars($comment['login']) ?></span>
                             </a>
                             <time class="comments__time" datetime="<?= htmlspecialchars($comment['creation_date']) ?>"><?= getRelativeFormat(htmlspecialchars($comment['creation_date']))?></time>

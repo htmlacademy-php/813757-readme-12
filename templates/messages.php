@@ -56,12 +56,12 @@
             <li class="messages__item<?= $message['sender'] === $user ? ' messages__item--my' : '' ?>">
                 <div class="messages__info-wrapper">
                     <div class="messages__item-avatar">
-                        <a class="messages__author-link" href="#">
+                        <a class="messages__author-link" href="profile.php?author_id=<?= htmlspecialchars($message['sender']) ?>">
                             <img class="messages__avatar" src="uploads/<?= !empty($message['sender_avatar']) && file_exists('uploads/' . $message['sender_avatar']) ? htmlspecialchars($message['sender_avatar']) : 'icon-input-user.svg' ?>" alt="Аватар пользователя">
                         </a>
                     </div>
                     <div class="messages__item-info">
-                        <a class="messages__author" href="#">
+                        <a class="messages__author" href="profile.php?author_id=<?= htmlspecialchars($message['sender']) ?>">
                             <?= htmlspecialchars($message['sender_login']) ?>
                         </a>
                         <time class="messages__time" datetime="<?= htmlspecialchars($message['message_date']) ?>">

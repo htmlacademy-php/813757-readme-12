@@ -23,7 +23,7 @@
           </p>
         </div>
         <div class="profile__user-buttons user__buttons">
-          <?php if ($followerInformation['follower'] !== $user): ?>
+          <?php if (!in_array($user, $followerInformation)): ?>
           <a class="profile__user-button user__button user__button--subscription button button--main" href="subscription.php?author_id=<?= htmlspecialchars($_GET['author_id']) ?>">Подписаться</a>
           <?php  else: ?>
           <a class="profile__user-button user__button user__button--subscription button button--main" href="subscription.php?author_id=<?= htmlspecialchars($_GET['author_id']) ?>">Отписаться</a>

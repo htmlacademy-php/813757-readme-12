@@ -13,7 +13,7 @@ $userAvatar = $_SESSION['avatar'];
 
 $result = mysqli_query($connect, "SELECT login, avatar FROM users WHERE id = '$user'");
 $userInformation = mysqli_fetch_array($result, MYSQLI_ASSOC);
-$newMessages = getAllNewMessages($connect);
+$newMessages = getAllNewMessages($connect, $user);
 
 if (isset($_GET['post-id'])) {
     $postId = (int) filter_input(INPUT_GET, 'post-id');
@@ -36,7 +36,7 @@ if (isset($_GET['post-id'])) {
     $dbCommentsCount = mysqli_query($connect, "SELECT COUNT(*) as count FROM comments WHERE post_id = " . $post['id']);
     $commentsCount = mysqli_fetch_array($dbCommentsCount, MYSQLI_ASSOC);
 
-    $dbCommentsLink = "SELECT c.creation_date, c.content, u.avatar, u.login FROM comments AS c JOIN users u ON c.author_id = u.id WHERE post_id = " . $post['id'];
+    $dbCommentsLink = "SELECT c.creation_date, c.content, u.avatar, u.login, u.id AS user_id FROM comments AS c JOIN users u ON c.author_id = u.id WHERE post_id = " . $post['id'];
     $dbComments = mysqli_query($connect, $dbCommentsLink);
 
     if (!isset($_GET['show_all_comments'])) {
@@ -71,9 +71,7 @@ if (isset($_GET['post-id'])) {
     if (isset($_POST['comment']) && mysqli_num_rows($isExists) > 0) {
         $comment = mysqli_real_escape_string($connect, trim($_POST['comment']));
 
-        if (mb_strlen($comment) < 4) {
-            $error = "Это поле обязательно к заполнению!!!";
-        }
+        $error = isCorrectLength('comment', 2, 2000);
 
         if (empty($error)) {
             $currentDate = new DateTime("", new DateTimeZone("Europe/Moscow"));

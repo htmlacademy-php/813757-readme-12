@@ -15,19 +15,20 @@ $userInformation = mysqli_fetch_array($result, MYSQLI_ASSOC);
 $author = mysqli_query($connect, "SELECT * FROM users WHERE id = '".$_GET['author_id']."'");
 $authorData = mysqli_fetch_array($author, MYSQLI_ASSOC);
 
-$queryAuthorPosts = "SELECT p.*, ct.icon_class,
+$queryAuthorPosts = "SELECT p.*, ct.icon_class, us.login AS original_recoding_author_login, us.avatar,
                     (SELECT COUNT(*) as count FROM likes WHERE liked_post = p.id) as likes,
                     (SELECT COUNT(*) as count FROM posts WHERE original_id = p.id) as reposts
                     FROM posts AS p
                     JOIN content_type ct ON p.type_id = ct.id
                     JOIN users u ON p.author_id = u.id
+                    LEFT JOIN users us ON p.original_recoding_author = us.id
                     WHERE author_id = " . $_GET['author_id'];
 $dbAuthorPosts = mysqli_query($connect, $queryAuthorPosts);
 $authorPosts = mysqli_fetch_all($dbAuthorPosts, MYSQLI_ASSOC);
 $postsCount = mysqli_num_rows($dbAuthorPosts);
 
-$follower = mysqli_query($connect, "SELECT follower FROM subscription WHERE follower = $user AND user_id = " . $_GET['author_id']);
-$followerInformation = mysqli_fetch_array($follower, MYSQLI_ASSOC);
+$followers = mysqli_query($connect, "SELECT follower FROM subscription WHERE user_id = " . $_GET['author_id']);
+$followerInformation = array_column(mysqli_fetch_all($followers, MYSQLI_ASSOC), 'follower');
 
 $dbUserFollowers = mysqli_query($connect, "SELECT * FROM subscription AS s LEFT JOIN users u ON u.id = s.user_id WHERE follower = " . $_GET['author_id']);
 $userFollowers = mysqli_fetch_all($dbUserFollowers, MYSQLI_ASSOC);
@@ -50,7 +51,7 @@ $dbFollowers = mysqli_query($connect, "SELECT COUNT(*) as count FROM subscriptio
 $followerCounts = mysqli_fetch_array($dbFollowers, MYSQLI_ASSOC);
 
 $postId = (int) filter_input(INPUT_GET, 'post-id');
-$dbCommentsLink = "SELECT c.post_id, c.creation_date, c.content, u.avatar, u.login FROM comments AS c JOIN users u ON c.author_id = u.id WHERE post_id = $postId";
+$dbCommentsLink = "SELECT c.post_id, c.creation_date, c.content, u.avatar, u.login, u.id AS user_id FROM comments AS c JOIN users u ON c.author_id = u.id WHERE post_id = $postId";
 $dbComments = mysqli_query($connect, $dbCommentsLink);
 $commentsCount = mysqli_num_rows($dbComments);
 
@@ -74,9 +75,7 @@ if (isset($_POST['comment']) && mysqli_num_rows($isExists) > 0) {
     $comment = mysqli_real_escape_string($connect, trim($_POST['comment']));
     $authorId = (int) filter_input(INPUT_GET, 'author_id');
 
-    if (mb_strlen($comment) < 4) {
-        $error = "Это поле обязательно к заполнению!!!";
-    }
+    $error = isCorrectLength('comment', 2, 2000);
 
     if (empty($error)) {
         $currentDate = new DateTime("", new DateTimeZone("Europe/Moscow"));
@@ -89,14 +88,15 @@ if (isset($_POST['comment']) && mysqli_num_rows($isExists) > 0) {
     }
 }
 
-$dbLikesLink = "SELECT p.id, p.image, p.video, u.avatar, u.login, ct.icon_class
+$dbLikesLink = "SELECT p.id, p.image, p.video, u.avatar, u.login, u.id AS user_id, ct.icon_class
                 FROM posts AS p
                 LEFT JOIN likes AS l ON l.liked_post = p.id
                 LEFT JOIN users AS u ON u.id = l.user_id
                 LEFT JOIN content_type ct ON p.type_id = ct.id
-                WHERE p.author_id = " . $_GET['author_id'];
+                WHERE p.author_id = " . $_GET['author_id'] . " AND l.liked_post != ''";
 $dbLikes = mysqli_query($connect, $dbLikesLink);
 $likedPosts = mysqli_fetch_all($dbLikes, MYSQLI_ASSOC);
+
 $hashtags = [];
 
 foreach ($authorPosts as $authorPost) {
@@ -151,7 +151,7 @@ $pageInformation = [
     'russianValues'=> RUSSIAN_VALUES,
     'user' => $user,
     'userAvatar' => $userAvatar,
-    'newMessages' => getAllNewMessages($connect)
+    'newMessages' => getAllNewMessages($connect, $user)
 ];
 
 $layout = include_template('layout.php', $pageInformation);

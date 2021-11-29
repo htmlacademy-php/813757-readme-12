@@ -49,7 +49,7 @@
                 </ul>
                 <ul class="header__user-nav">
                     <li class="header__profile">
-                        <a class="header__profile-link" href="#">
+                        <a class="header__profile-link" href="profile.php?author_id=<?= !empty($user) ? $user : '' ?>">
                             <div class="header__avatar-wrapper">
                                 <img class="header__profile-avatar" src="uploads/<?= htmlspecialchars($userAvatar) ?>" alt="Аватар профиля">
                             </div>
@@ -66,7 +66,7 @@
                             <div class="header__profile-tooltip">
                                 <ul class="header__profile-nav">
                                     <li class="header__profile-nav-item">
-                                        <a class="header__profile-nav-link" href="profile.php?author_id=<?= $user ?>">
+                                        <a class="header__profile-nav-link" href="profile.php?author_id=<?= !empty($user) ? $user : '' ?>">
                                             <span class="header__profile-nav-text">
                                                 Мой профиль
                                             </span>
@@ -76,7 +76,7 @@
                                         <a class="header__profile-nav-link" href="messages.php">
                                             <span class="header__profile-nav-text">
                                                 Сообщения
-                                                <?php if ($newMessages['new_messages'] !== '0'): ?>
+                                                <?php if (!empty($newMessages['new_messages']) && $newMessages['new_messages'] !== '0'): ?>
                                                 <i class="header__profile-indicator"><?= $newMessages['new_messages'] ?></i>
                                                 <?php endif ?>
                                             </span>
@@ -153,7 +153,7 @@
                 <?php endforeach; ?>
                 </ul>
                 <div class="footer__copyright">
-                    <a class="footer__copyright-link" href="#">
+                    <a class="footer__copyright-link" href="htmlacademy.ru">
                         <span>Разработано HTML Academy</span>
                         <svg class="footer__copyright-logo" width="27" height="34">
                             <use xlink:href="#icon-htmlacademy"></use>

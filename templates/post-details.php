@@ -64,7 +64,7 @@
                 <span><?= htmlspecialchars($post['likes']) ?></span>
                 <span class="visually-hidden">количество лайков</span>
               </a>
-              <a class="post__indicator post__indicator--comments button" href="#" title="Комментарии">
+              <a class="post__indicator post__indicator--comments button" href="post.php?post-id=<?= $post['id'] ?>" title="Комментарии">
                 <svg class="post__indicator-icon" width="19" height="17">
                   <use xlink:href="#icon-comment"></use>
                 </svg>
@@ -95,7 +95,7 @@
                 <img class="comments__picture" src="uploads/<?= htmlspecialchars($userAvatar) ?>" alt="Аватар пользователя">
               </div>
               <div class="form__input-section<?= !empty($error) ? ' form__input-section--error' : '' ?>">
-                <textarea class="comments__textarea form__textarea form__input" name="comment" placeholder="Ваш комментарий"></textarea>
+                <textarea class="comments__textarea form__textarea form__input" name="comment" placeholder="Ваш комментарий"><?= $_POST['comment'] ?? ''?></textarea>
                 <label class="visually-hidden">Ваш комментарий</label>
                 <button class="form__error-button button" type="button">!</button>
                 <div class="form__error-text">
@@ -111,13 +111,13 @@
                 <?php foreach ($comments as $comment):?>
                 <li class="comments__item user">
                     <div class="comments__avatar">
-                        <a class="user__avatar-link" href="#">
+                        <a class="user__avatar-link" href="profile.php?author_id=<?= htmlspecialchars($comment['user_id']) ?>">
                             <img class="comments__picture" src="uploads/<?= !empty($comment['avatar'])  && file_exists('uploads/' . $comment['avatar']) ? htmlspecialchars($comment['avatar']) : 'icon-input-user.svg' ?>" alt="Аватар пользователя">
                         </a>
                     </div>
                     <div class="comments__info">
                         <div class="comments__name-wrapper">
-                        <a class="comments__user-name" href="#">
+                        <a class="comments__user-name" href="profile.php?author_id=<?= htmlspecialchars($comment['user_id']) ?>">
                             <span><?= $comment['login'] ?></span>
                         </a>
                         <time class="comments__time" datetime="<?= htmlspecialchars($comment['creation_date']) ?>"><?= getRelativeFormat(htmlspecialchars($comment['creation_date'])) ?></time>

@@ -14,7 +14,7 @@
               <button class="form__error-button button" type="button">!<span class="visually-hidden">Информация об ошибке</span></button>
               <div class="form__error-text">
                 <h3 class="form__error-title">Заголовок сообщения</h3>
-                <p class="form__error-desc"><?= $errors['email'] ?></p>
+                <p class="form__error-desc"><?= !empty($errors['email']) ? $errors['email'] : '' ?></p>
               </div>
             </div>
           </div>
@@ -25,7 +25,7 @@
               <button class="form__error-button button" type="button">!<span class="visually-hidden">Информация об ошибке</span></button>
               <div class="form__error-text">
                 <h3 class="form__error-title">Заголовок сообщения</h3>
-                <p class="form__error-desc"><?= $errors['login'] ?></p>
+                <p class="form__error-desc"><?= !empty($errors['login']) ? $errors['login'] : '' ?></p>
               </div>
             </div>
           </div>
@@ -36,7 +36,7 @@
               <button class="form__error-button button" type="button">!<span class="visually-hidden">Информация об ошибке</span></button>
               <div class="form__error-text">
                 <h3 class="form__error-title">Заголовок сообщения</h3>
-                <p class="form__error-desc"><?= $errors['password'] ?></p>
+                <p class="form__error-desc"><?= !empty($errors['password']) ? $errors['password'] : '' ?></p>
               </div>
             </div>
           </div>
@@ -47,7 +47,7 @@
               <button class="form__error-button button" type="button">!<span class="visually-hidden">Информация об ошибке</span></button>
               <div class="form__error-text">
                 <h3 class="form__error-title">Заголовок сообщения</h3>
-                <p class="form__error-desc"><?= $errors['password-repeat'] ?></p>
+                <p class="form__error-desc"><?= !empty($errors['password-repeat']) ? $errors['password-repeat'] : '' ?></p>
               </div>
             </div>
           </div>

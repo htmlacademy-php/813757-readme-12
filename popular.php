@@ -67,7 +67,7 @@ if (!$result) {
     exit("Ошибка подготовки запроса: " . mysqli_error($connect));
 }
 
-$newMessages = getAllNewMessages($connect);
+$newMessages = getAllNewMessages($connect, $user);
 
 mysqli_close($connect);
 

@@ -10,11 +10,11 @@ if (!isset($_SESSION['user'])) {
 
 $user = $_SESSION['user'];
 $userAvatar = $_SESSION['avatar'];
-$back = $_SERVER['HTTP_REFERER'];
 $result = mysqli_query($connect, "SELECT login, avatar FROM users WHERE id = '$user'");
 $userInformation = mysqli_fetch_array($result, MYSQLI_ASSOC);
 
-$newMessages = getAllNewMessages($connect);
+$newMessages = getAllNewMessages($connect, $user);
+$back = $_SERVER['HTTP_REFERER'];
 
 if (empty(trim($_GET['search']))) {
     $content = include_template('no-results.php', [
@@ -40,10 +40,10 @@ if (empty(trim($_GET['search']))) {
 $search = mysqli_real_escape_string($connect, trim($_GET['search']));
 
 if (mb_substr($search, 0, 1) !== "#") {
-    $query = "SELECT p.*, ct.content_title, ct.icon_class, u.login, u.avatar FROM posts AS p JOIN content_type ct ON p.type_id = ct.id JOIN users u ON p.author_id = u.id WHERE MATCH(p.title, p.content) AGAINST ('$search*' IN BOOLEAN MODE) ORDER BY p.views_number DESC";
+    $query = "SELECT p.*, ct.content_title, ct.icon_class, u.login, u.avatar, (SELECT COUNT(*) as count FROM likes WHERE liked_post = p.id) as likes, (SELECT COUNT(*) as count FROM comments WHERE post_id = p.id) as comments FROM posts AS p JOIN content_type ct ON p.type_id = ct.id JOIN users u ON p.author_id = u.id WHERE MATCH(p.title, p.content) AGAINST ('$search*' IN BOOLEAN MODE) ORDER BY p.views_number DESC";
 } else {
     $tag = mb_substr($search, 1);
-    $query = "SELECT p.*, ct.content_title, ct.icon_class, u.login, u.avatar, ph.post_id, h.hashtag FROM posts AS p JOIN content_type ct ON p.type_id = ct.id JOIN users u ON p.author_id = u.id JOIN posts_hashtags ph ON ph.post_id = p.id JOIN hashtags h ON h.id = ph.hashtag_id WHERE h.hashtag LIKE '%$tag%' ORDER BY p.date_creation DESC";
+    $query = "SELECT p.*, ct.content_title, ct.icon_class, u.login, u.avatar, ph.post_id, h.hashtag, (SELECT COUNT(*) as count FROM likes WHERE liked_post = p.id) as likes, (SELECT COUNT(*) as count FROM comments WHERE post_id = p.id) as comments FROM posts AS p JOIN content_type ct ON p.type_id = ct.id JOIN users u ON p.author_id = u.id JOIN posts_hashtags ph ON ph.post_id = p.id JOIN hashtags h ON h.id = ph.hashtag_id WHERE h.hashtag LIKE '%$tag%' ORDER BY p.date_creation DESC";
 }
 
 $results = mysqli_query($connect, $query);
@@ -63,7 +63,8 @@ if (empty($posts)) {
         'menuElements' => MENU_ELEMENTS,
         'content' => $content,
         'russianValues'=> RUSSIAN_VALUES,
-        'newMessages' => $newMessages
+        'newMessages' => $newMessages,
+        'userAvatar' => $userAvatar
     ];
 
     $layout = include_template('layout.php', $pageInformation);

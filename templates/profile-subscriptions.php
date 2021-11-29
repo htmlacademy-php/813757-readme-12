@@ -5,12 +5,12 @@
     <li class="post-mini post-mini--photo post user">
       <div class="post-mini__user-info user__info">
         <div class="post-mini__avatar user__avatar">
-          <a class="user__avatar-link" href="#">
+          <a class="user__avatar-link" href="profile.php?author_id=<?= $userFollower['user_id'] ?>">
             <img class="post-mini__picture user__picture" src="uploads/<?= !empty($userFollower['avatar']) && file_exists('uploads/' . $userFollower['avatar']) ? $userFollower['avatar'] : 'icon-input-user.svg' ?>" alt="Аватар пользователя">
           </a>
         </div>
         <div class="post-mini__name-wrapper user__name-wrapper">
-          <a class="post-mini__name user__name" href="#">
+          <a class="post-mini__name user__name" href="profile.php?author_id=<?= $userFollower['user_id'] ?>">
             <span><?= $userFollower['login'] ?></span>
           </a>
           <time class="post-mini__time user__additional" datetime="<?= htmlspecialchars($userFollower['registration_date']) ?>"><?= getRelativeFormat(htmlspecialchars($userFollower['registration_date']), "на сайте") ?>на сайте</time>
