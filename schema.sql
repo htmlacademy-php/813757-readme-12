@@ -9,7 +9,7 @@ CREATE TABLE users (
   registration_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   email VARCHAR(255) NOT NULL UNIQUE,
   login VARCHAR(10) NOT NULL UNIQUE,
-  password VARCHAR(20),
+  password VARCHAR(255),
   avatar VARCHAR(255)
 );
 

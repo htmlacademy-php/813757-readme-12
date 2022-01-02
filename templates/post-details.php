@@ -169,7 +169,7 @@
             </p>
           </div>
           <div class="post-details__user-buttons user__buttons">
-            <?php if ($followerInformation['follower'] !== $user): ?>
+            <?php if (!isset($followerInformation['follower']) || $followerInformation['follower'] !== $user): ?>
             <a class="user__button user__button--subscription button button--main" href="subscription.php?author_id=<?= htmlspecialchars($post['author_id']) ?>">Подписаться</a>
             <?php  else: ?>
             <a class="user__button user__button--subscription button button--main" href="subscription.php?author_id=<?= htmlspecialchars($post['author_id']) ?>">Отписаться</a>

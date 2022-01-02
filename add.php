@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     switch ($formType) {
         case 'quote';
-            $rules['cite-text'] = isCorrectLength('cite-text', 10, 70);
+            $rules['cite-text'] = isCorrectLength('cite-text', 10, 1000);
             break;
 
         case 'text':

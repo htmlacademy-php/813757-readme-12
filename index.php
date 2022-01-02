@@ -1,7 +1,7 @@
 <?php
 
-require("helpers.php");
 require("init.php");
+require("helpers.php");
 
 if (isset($_SESSION['user'])) {
     header("Location: /feed.php");
@@ -16,6 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $userPassword = mysqli_real_escape_string($connect, trim($_POST['password']));
     $result = mysqli_query($connect, "SELECT email, password, id, avatar, login FROM users WHERE email = '$userLogin'");
     $user = $result ? mysqli_fetch_array($result, MYSQLI_ASSOC) : null;
+    
     if ($user && !count($errors)) {
         if (password_verify($userPassword, $user['password'])) {
             $_SESSION['user'] = $user['id'];
@@ -26,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $errors['password'] = "Вы ввели неверный email/пароль";
         }
-    } elseif (!empty($userLogin) && $user['email'] !== $userLogin) {
+    } elseif (!empty($userLogin) && (empty($user['email']) || $user['email'] !== $userLogin)) {
         $errors['login'] = "Вы ввели неверный email/пароль";
     }
 }

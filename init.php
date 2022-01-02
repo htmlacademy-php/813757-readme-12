@@ -2,9 +2,9 @@
 
 session_start();
 
-$host = '813757-readme-12';
+$host = 'localhost';
 $login = 'root';
-$password = 'root';
+$password = '';
 $database = 'readme';
 
 $connect = mysqli_connect($host, $login, $password, $database);
