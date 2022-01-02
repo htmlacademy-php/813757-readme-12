@@ -94,7 +94,7 @@ $dbLikesLink = "SELECT p.id, p.image, p.video, u.avatar, u.login, u.id AS user_i
                 LEFT JOIN users AS u ON u.id = l.user_id
                 LEFT JOIN content_type ct ON p.type_id = ct.id
                 WHERE p.author_id = " . $_GET['author_id'] . " AND l.liked_post != ''";
-$dbLikes = mysqli_query($connect, $dbLikesLink);
+$dbLikes = mysqli_query($connect, $dbLikesLink) or die(mysqli_error($connect));
 $likedPosts = mysqli_fetch_all($dbLikes, MYSQLI_ASSOC);
 
 $hashtags = [];
